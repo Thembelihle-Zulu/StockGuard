@@ -4,9 +4,11 @@ import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
 import "./App.css";
 import { FarmProfile } from "./component/FarmProfile";
+import { Route, Routes } from "react-router";
+import { RegisterAnimal } from "./component/RegisterAnimal";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
   const provinces = [
     "Eastern Cape",
     "Free State",
@@ -22,7 +24,18 @@ function App() {
   return (
     <>
       <div className="App">
-        <FarmProfile provinces={provinces} farmTypes={farmTypes} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <FarmProfile provinces={provinces} farmTypes={farmTypes} />
+            }
+          />
+          <Route
+            path="/onboarding/register-animal"
+            element={<RegisterAnimal animalType={animal_type} />}
+          />
+        </Routes>
       </div>
     </>
   );

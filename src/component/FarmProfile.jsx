@@ -8,6 +8,7 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
+import { useNavigate } from "react-router";
 
 const farmProfileSchema = object({
   farmName: string().required("Farm name is required"),
@@ -21,6 +22,7 @@ const farmProfileSchema = object({
 });
 
 export function FarmProfile({ provinces, farmTypes }) {
+  const navigate = useNavigate();
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
@@ -34,27 +36,27 @@ export function FarmProfile({ provinces, farmTypes }) {
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
         console.log(data);
+        navigate("/onboarding/register-animal");
+        // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(data),
+        // })
+        //   .then((res) => {
+        //     if (!res.ok) {
+        //       throw new Error("Something went wrong");
+        //     }
 
-        fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error("Something went wrong");
-            }
-
-            return res.json();
-          })
-          .then((savedProfile) => {
-            console.log(savedProfile);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        //     return res.json();
+        //   })
+        //   .then((savedProfile) => {
+        //     console.log(savedProfile);
+        //   })
+        //   .catch((err) => {
+        //     console.error(err);
+        //   });
       },
     });
   return (
