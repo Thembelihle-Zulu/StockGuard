@@ -6,6 +6,7 @@ import "./App.css";
 import { FarmProfile } from "./component/FarmProfile";
 import { Route, Routes } from "react-router";
 import { RegisterAnimal } from "./component/RegisterAnimal";
+import { AnimalInspection } from "./component/AnimalInspection";
 
 function App() {
   const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
@@ -34,6 +35,10 @@ function App() {
           <Route
             path="/onboarding/register-animal"
             element={<RegisterAnimal animalType={animal_type} />}
+          />
+          <Route
+            path="/onboarding/animal-inspection"
+            element={<AnimalInspection animalType={animal_type} />}
           />
         </Routes>
       </div>

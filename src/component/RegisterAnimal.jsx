@@ -8,6 +8,7 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
+import { useNavigate } from "react-router";
 
 const farmProfileSchema = object({
   tagNumber: string().required("Farm name is required"),
@@ -18,9 +19,11 @@ const farmProfileSchema = object({
   image: string().required("City field is required"),
   age: number().required("Postal code is required"),
   estimatedValue: number().required("estimatedValue selection is required"),
+  status: string().required("City field is required"),
 });
 
 export function RegisterAnimal({ animalType }) {
+  const navigate = useNavigate();
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
@@ -30,31 +33,32 @@ export function RegisterAnimal({ animalType }) {
         estimatedValue: "",
         age: "",
         image: "",
+        status: "Alive",
       },
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
-        console.log(data);
+        console.log("ckssa");
+        navigate("/onboarding/animal-inspection");
+        // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(data),
+        // })
+        //   .then((res) => {
+        //     if (!res.ok) {
+        //       throw new Error("Something went wrong");
+        //     }
 
-        fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error("Something went wrong");
-            }
-
-            return res.json();
-          })
-          .then((savedProfile) => {
-            console.log(savedProfile);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        //     return res.json();
+        //   })
+        //   .then((savedProfile) => {
+        //     console.log(savedProfile);
+        //   })
+        //   .catch((err) => {
+        //     console.error(err);
+        //   });
       },
     });
   return (
@@ -76,7 +80,7 @@ export function RegisterAnimal({ animalType }) {
           onBlur={handleBlur}
           type="text"
         />
-        {touched.tagNumber && errors.tagNumber ? errors.targetNumber : null}
+        {touched.tagNumber && errors.tagNumber ? errors.tagNumber : null}
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-standard-label">
@@ -147,7 +151,16 @@ export function RegisterAnimal({ animalType }) {
           type="text"
         />
         {touched.status && errors.status ? errors.status : null}
-
+        <TextField
+          label="image"
+          name="image"
+          variant="filled"
+          onChange={handleChange}
+          value={values.image}
+          onBlur={handleBlur}
+          type="text"
+        />
+        {touched.image && errors.image ? errors.image : null}
         <Button
           type="submit"
           variant="contained"
