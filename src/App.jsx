@@ -7,7 +7,7 @@ import { FarmProfile } from "./component/FarmProfile";
 import { Route, Routes } from "react-router";
 import { RegisterAnimal } from "./component/RegisterAnimal";
 import { AnimalInspection } from "./component/AnimalInspection";
-
+import { SelectCover } from "./component/SelectCover";
 function App() {
   const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
   const provinces = [
@@ -40,6 +40,7 @@ function App() {
             path="/onboarding/animal-inspection"
             element={<AnimalInspection animalType={animal_type} />}
           />
+          <Route path="/onboarding/select-cover" element={<SelectCover />} />
         </Routes>
       </div>
     </>

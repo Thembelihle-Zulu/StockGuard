@@ -5,11 +5,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Button from "@mui/material/Button";
+
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router";
 import { Label } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const farmProfileSchema = object({
   status: string().required("status is required"),
@@ -19,6 +22,17 @@ const farmProfileSchema = object({
   vetenaryHealthReport: string().required("vetenaryHealthReport is required"),
 });
 
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 export function AnimalInspection() {
   const navigate = useNavigate();
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
@@ -31,7 +45,7 @@ export function AnimalInspection() {
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
         console.log(data);
-        navigate("/onboarding/register-animal");
+        navigate("/onboarding/select-cover");
         // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
         //   method: "POST",
         //   headers: {
@@ -69,7 +83,7 @@ export function AnimalInspection() {
           inspection
         </div>
         <Label>Upload: </Label>
-        <TextField
+        {/* <TextField
           label="animalTagNameImage"
           name="animalTagNameImage"
           variant="filled"
@@ -80,9 +94,42 @@ export function AnimalInspection() {
         />
         {touched.animalTagNameImage && errors.animalTagNameImage
           ? errors.animalTagNameImage
-          : null}
+          : null} */}
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+        >
+          Upload Tag Image
+          <VisuallyHiddenInput
+            type="file"
+            name="image"
+            onChange={handleChange}
+            value={values.image}
+            onBlur={handleBlur}
+          />
+        </Button>
 
-        <TextField
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+        >
+          Upload Vetenary Health Report
+          <VisuallyHiddenInput
+            type="file"
+            name="image"
+            onChange={handleChange}
+            value={values.image}
+            onBlur={handleBlur}
+          />
+        </Button>
+
+        {/* <TextField
           label="vetenaryHealthReport"
           name="vetenaryHealthReport"
           variant="filled"
@@ -93,7 +140,7 @@ export function AnimalInspection() {
         />
         {touched.vetenaryHealthReport && errors.vetenaryHealthReport
           ? errors.vetenaryHealthReport
-          : null}
+          : null} */}
 
         <TextField
           label="status"
