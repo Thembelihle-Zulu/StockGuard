@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import InputLabel from "@mui/material/InputLabel";
@@ -33,7 +33,7 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-export function AnimalInspection() {
+export function AnimalInspection({ setActive }) {
   const navigate = useNavigate();
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
@@ -45,7 +45,7 @@ export function AnimalInspection() {
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
         console.log(data);
-        navigate("/onboarding/select-cover");
+        setActiveStep((prev) => prev + 1);
         // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
         //   method: "POST",
         //   headers: {
@@ -82,7 +82,7 @@ export function AnimalInspection() {
           To qualify for insurance, every animal must complete a pre-insurance
           inspection
         </div>
-        <Label>Upload: </Label>
+        <Typography>Upload: </Typography>
         {/* <TextField
           label="animalTagNameImage"
           name="animalTagNameImage"
@@ -105,9 +105,9 @@ export function AnimalInspection() {
           Upload Tag Image
           <VisuallyHiddenInput
             type="file"
-            name="image"
+            name="animalTagNameImage"
             onChange={handleChange}
-            value={values.image}
+            value={values.animalTagNameImage}
             onBlur={handleBlur}
           />
         </Button>
@@ -122,9 +122,9 @@ export function AnimalInspection() {
           Upload Vetenary Health Report
           <VisuallyHiddenInput
             type="file"
-            name="image"
+            name="vetenaryHealthReport"
             onChange={handleChange}
-            value={values.image}
+            value={values.vetenaryHealthReport}
             onBlur={handleBlur}
           />
         </Button>

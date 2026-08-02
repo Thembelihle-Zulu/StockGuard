@@ -1,29 +1,20 @@
-import { TextField } from "@mui/material";
-import { useFormik } from "formik";
-import { object, string, number } from "yup";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import SendIcon from "@mui/icons-material/Send";
-import Box from "@mui/material/Box";
-import { useNavigate } from "react-router";
 import { Label } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
+import DoneIcon from "@mui/icons-material/Done";
+import SendIcon from "@mui/icons-material/Send";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import ImageIcon from "@mui/icons-material/Image";
-import WorkIcon from "@mui/icons-material/Work";
-import DoneIcon from "@mui/icons-material/Done";
-import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import ListItemText from "@mui/material/ListItemText";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router";
+import { object, string } from "yup";
+import Typography from "@mui/material/Typography";
 const farmProfileSchema = object({
   status: string().required("status is required"),
   animalTagNameImage: string().required(
@@ -44,7 +35,7 @@ export function SelectCover() {
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
         console.log(data);
-        navigate("/onboarding/register-animal");
+
         // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
         //   method: "POST",
         //   headers: {
@@ -77,16 +68,15 @@ export function SelectCover() {
         className="onboarding-card"
       >
         <h2>Select Health Cover</h2>
-        <div>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Livestock Health Cover"
-            />
-          </FormGroup>
-        </div>
-        <Label>Includes: </Label>
 
+        <FormGroup>
+          <FormControlLabel
+            control={<Checkbox defaultChecked />}
+            label="Livestock Health Cover"
+          />
+        </FormGroup>
+
+        <Typography>Includes: </Typography>
         <List
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         >
@@ -120,7 +110,7 @@ export function SelectCover() {
           <p>Monthly Premuim</p>
           <h2>R250</h2>
         </div>
-        <div>
+        <div className="premium-box waiting-period">
           <p>Waiting period</p>
           <h2>14 Days</h2>
         </div>

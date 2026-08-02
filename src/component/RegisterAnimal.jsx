@@ -37,7 +37,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export function RegisterAnimal({ animalType }) {
+export function RegisterAnimal({ animalType, setActiveStep }) {
   const navigate = useNavigate();
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
@@ -49,31 +49,33 @@ export function RegisterAnimal({ animalType }) {
         age: "",
         image: "",
         status: "Alive",
+        farm_profile_id: "hjhdshjdsdshjdsjdshds",
       },
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
-        console.log("ckssa");
-        navigate("/onboarding/animal-inspection");
-        // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(data),
-        // })
-        //   .then((res) => {
-        //     if (!res.ok) {
-        //       throw new Error("Something went wrong");
-        //     }
+        console.log(data);
 
-        //     return res.json();
-        //   })
-        //   .then((savedProfile) => {
-        //     console.log(savedProfile);
-        //   })
-        //   .catch((err) => {
-        //     console.error(err);
-        //   });
+        fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Something went wrong");
+            }
+
+            return res.json();
+          })
+          .then((savedProfile) => {
+            console.log(savedProfile);
+          })
+          .then(() => setActiveStep((prev) => prev + 1))
+          .catch((err) => {
+            console.error(err);
+          });
       },
     });
   return (
@@ -167,7 +169,19 @@ export function RegisterAnimal({ animalType }) {
           disabled
         />
         {touched.status && errors.status ? errors.status : null}
-
+        {false && (
+          <TextField
+            label="status"
+            name="status"
+            variant="filled"
+            onChange={handleChange}
+            value={values.farm_profile_id}
+            onBlur={handleBlur}
+            type="text"
+            disabled
+          />
+        )}
+        {/* {touched.farm_profile_id && errors.farm_profile_id ? errors.status : null} */}
         <Button
           component="label"
           role={undefined}
