@@ -35,8 +35,8 @@
 }
 
 body{
-  display: grid;
-  justify-content: center;
+  /* display: grid;
+  justify-content: center; */
   background-color: whitesmoke;
   padding-block-start: 1rem;
 }
@@ -58,5 +58,349 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    nav{
+      display: flex;
+      flex-direction: row;
+      gap:2rem
+    }
   }
+
+  .button-group{
+    display: flex;
+    gap:1rem
+  }
+
+  position-anchor: initial;
+
+}
+.text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding-block-start: 2rem;
+}
+
+/* Pill badge */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: oklch(0.93 0.05 154.55);
+  color: oklch(0.32 0.1 154.55);
+  border: none;
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.pill-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background-color: oklch(0.55 0.15 154.55);
+  flex-shrink: 0;
+}
+
+/* Headline */
+.headline {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 3.2rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: oklch(0.2 0.03 154.55); /* near-black, slight green tint */
+  margin: 0;
+}
+
+.headline .accent {
+  font-style: italic;
+  color: oklch(0.32 0.13 154.55); /* dark green */
+}
+
+/* Paragraph */
+.subtext {
+  font-size: 1.1rem;
+  color: oklch(0.5 0.02 154.55);
+  line-height: 1.6;
+  max-width: 32rem;
+  margin: 0;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-primary {
+  background-color: oklch(0.32 0.1 154.55); /* dark green, matches accent */
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.9rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background-color: oklch(0.27 0.1 154.55);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: oklch(0.32 0.1 154.55);
+  border: 1.5px solid oklch(0.8 0.03 154.55);
+  border-radius: 2rem;
+  padding: 0.9rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: oklch(0.97 0.02 154.55);
+}
+.image-content {
+  background-image: url("https://images.unsplash.com/photo-1636998980792-63f27ddea4e3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 1rem;
+  overflow: hidden; /* clips children to the rounded corners */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+
+.claims,
+.claims-text-bottom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: oklch(90.935% 0.00919 161.94);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  max-width: 15rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+}
+
+.claims-text-bottom .icon {
+  font-size: 1.25rem;
+  flex-shrink: 0; /* now genuinely useful — keeps the emoji from squishing if text wraps */
+}
+
+.claims {
+  align-self: flex-end; /* top-right */
+}
+
+.claims-text-bottom {
+  margin-top: auto; /* pushed to bottom */
+  
+
+}
+
+.claims p,
+.claims-text-bottom p {
+  margin: 0;
+}
+
+.claims ul,
+.claims-text-bottom ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.Features {
+  padding-block-start: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+
+  
+}
+
+
+.benefits{
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  gap:1rem;
+  li{
+    list-style: none;
+  }
+
+  
+}
+
+.why-us{
+  min-height: 600px;
+  padding-block-start: 5rem;
+  
+  .text{
+    text-align: center;
+  }
+}
+.cards-container{
+  display: flex;
+  flex-direction: row;
+  gap: 2rem
+}
+
+.cover-card {
+  background-color: rgb(238, 237, 234); /* softer, closer to your screenshot's off-white cards */
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1; /* so all three cards match height in a row */
+}
+.how{
+  text-align: center;
+}
+
+.icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  font-size: 1.5rem;
+  background-color: oklch(0.95 0.03 154); /* pale green, swap per card if you want different colors per icon */
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  color: green; /* match your brand green */
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.how {
+  text-align: center;
+  padding-block: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  color: oklch(0.4 0.13 154.55);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 4rem;
+  max-width: 70rem;
+  width: 100%;
+}
+
+.timeline-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 16rem;
+}
+
+/* connecting line — drawn once per step, extending right to the next icon */
+.timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 1.75rem; /* vertically centered on the icon */
+  left: calc(50% + 2.5rem);
+  width: calc(100% + 4rem - 5rem);
+  height: 1px;
+  background-color: oklch(0.85 0.03 154);
+}
+
+.timeline-icon {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background-color: oklch(0.35 0.11 154.55); /* dark green */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-icon .icon {
+  font-size: 1.5rem;
+  filter: brightness(0) invert(1); /* makes emoji read as white-ish; remove if you swap for SVG icons */
+}
+
+.step-number {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background-color: oklch(0.9 0.05 154.55);
+  color: oklch(0.35 0.11 154.55);
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-step h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.timeline-step p {
+  margin: 0;
+  color: gray;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.cta-button {
+  background-color: oklch(0.35 0.11 154.55);
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.9rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cta-button:hover {
+  background-color: oklch(0.3 0.11 154.55);
+}
+
+.text{
+  text-align: center;
 }

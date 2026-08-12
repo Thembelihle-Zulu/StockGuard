@@ -21,8 +21,12 @@ const farmProfileSchema = object({
   farmType: string().required("Farm type selection is required"),
 });
 
-export function FarmProfile({ provinces, farmTypes, active, setActiveStep }) {
-  const navigate = useNavigate();
+export function FarmProfile({
+  provinces,
+  farmTypes,
+  setActiveStep,
+  setFarmProfile,
+}) {
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
@@ -36,28 +40,8 @@ export function FarmProfile({ provinces, farmTypes, active, setActiveStep }) {
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
         console.log(data);
-        // navigate("/onboarding/register-animal");
         setActiveStep((prev) => prev + 1);
-        // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(data),
-        // })
-        //   .then((res) => {
-        //     if (!res.ok) {
-        //       throw new Error("Something went wrong");
-        //     }
-
-        //     return res.json();
-        //   })
-        //   .then((savedProfile) => {
-        //     console.log(savedProfile);
-        //   })
-        //   .catch((err) => {
-        //     console.error(err);
-        //   });
+        setFarmProfile(data);
       },
     });
   return (
@@ -70,11 +54,6 @@ export function FarmProfile({ provinces, farmTypes, active, setActiveStep }) {
           onSubmit={handleSubmit}
           className="onboarding-card"
         >
-          {/* <img
-          src="src/assets/icons/farm_profile.png"
-          alt="profile-picture"
-          className="farm-profile-pic"
-        /> */}
           <h2>Farm Profile</h2>
           <TextField
             label="Farm Name"

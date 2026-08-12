@@ -5,7 +5,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router";
@@ -16,6 +20,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const farmProfileSchema = object({
   status: string().required("status is required"),
+  inspectionDate: date().required("Select inspection date"),
   animalTagNameImage: string().required(
     "A valid animalTagNameImage is required",
   ),
@@ -33,39 +38,20 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-export function AnimalInspection({ setActive }) {
-  const navigate = useNavigate();
+export function AnimalInspection({ setInspection }) {
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
         status: "pending",
         animalTagNameImage: "",
         vetenaryHealthReport: "",
+        inspectionDate: "",
       },
       validationSchema: farmProfileSchema,
       onSubmit: (data) => {
         console.log(data);
         setActiveStep((prev) => prev + 1);
-        // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(data),
-        // })
-        //   .then((res) => {
-        //     if (!res.ok) {
-        //       throw new Error("Something went wrong");
-        //     }
-
-        //     return res.json();
-        //   })
-        //   .then((savedProfile) => {
-        //     console.log(savedProfile);
-        //   })
-        //   .catch((err) => {
-        //     console.error(err);
-        //   });
+        setInspection(data);
       },
     });
   return (
@@ -82,6 +68,16 @@ export function AnimalInspection({ setActive }) {
           To qualify for insurance, every animal must complete a pre-insurance
           inspection
         </div>
+        <DatePicker
+          label="Inspection Date"
+          name="inspectionDate"
+          onChange={handleChange}
+          value={values.inspectionDate}
+          onBlur={handleBlur}
+        />
+        {touched.inspectionDate && errors.inspectionDate
+          ? errors.inspectionDate
+          : null}
         <Typography>Upload: </Typography>
         {/* <TextField
           label="animalTagNameImage"
@@ -111,7 +107,6 @@ export function AnimalInspection({ setActive }) {
             onBlur={handleBlur}
           />
         </Button>
-
         <Button
           component="label"
           role={undefined}
@@ -128,7 +123,6 @@ export function AnimalInspection({ setActive }) {
             onBlur={handleBlur}
           />
         </Button>
-
         {/* <TextField
           label="vetenaryHealthReport"
           name="vetenaryHealthReport"
@@ -141,7 +135,6 @@ export function AnimalInspection({ setActive }) {
         {touched.vetenaryHealthReport && errors.vetenaryHealthReport
           ? errors.vetenaryHealthReport
           : null} */}
-
         <TextField
           label="status"
           name="status"
@@ -152,6 +145,7 @@ export function AnimalInspection({ setActive }) {
           disabled
           type="text"
         />
+        inspectionDate
         {touched.status && errors.status ? errors.status : null}
         <Button
           type="submit"

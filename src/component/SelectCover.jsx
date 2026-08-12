@@ -36,26 +36,26 @@ export function SelectCover() {
       onSubmit: (data) => {
         console.log(data);
 
-        // fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(data),
-        // })
-        //   .then((res) => {
-        //     if (!res.ok) {
-        //       throw new Error("Something went wrong");
-        //     }
+        fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Something went wrong");
+            }
 
-        //     return res.json();
-        //   })
-        //   .then((savedProfile) => {
-        //     console.log(savedProfile);
-        //   })
-        //   .catch((err) => {
-        //     console.error(err);
-        //   });
+            return res.json();
+          })
+          .then((savedProfile) => {
+            console.log(savedProfile);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       },
     });
   return (
