@@ -1,28 +1,27 @@
-import { TextField } from "@mui/material";
+import { useState } from "react";
+import { TextField, Typography, Stack, Paper } from "@mui/material";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
-import { useNavigate } from "react-router";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-const farmProfileSchema = object({
-  tagNumber: string().required("Farm name is required"),
-  species: string()
-    .required("A valid street address is required")
-    .min(3, "Enter a vaild address"),
-  breed: string().required("Province selection is required"),
-  image: string().required("City field is required"),
-  age: number().required("Postal code is required"),
-  estimatedValue: number().required("estimatedValue selection is required"),
-  status: string().required("City field is required"),
+const API_BASE = "http://127.0.0.1:5000/api/onboarding";
+
+const animalSchema = object({
+  tagNumber: string().required("Tag number is required"),
+  species: string().required("Species is required"),
+  breed: string().required("Breed is required"),
+  image: string().required("Please upload an image"),
+  age: number().required("Age is required"),
+  estimatedValue: number().required("Estimated value is required"),
+  status: string().required("Status is required"),
 });
 
 const VisuallyHiddenInput = styled("input")({
@@ -37,176 +36,335 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export function RegisterAnimal({ animalType, setActiveStep }) {
-  const navigate = useNavigate();
-  const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
-    useFormik({
-      initialValues: {
-        tagNumber: "",
-        species: "",
-        breed: "",
-        estimatedValue: "",
-        age: "",
-        image: "",
-        status: "Alive",
-        farm_profile_id: "hjhdshjdsdshjdsjdshds",
-      },
-      validationSchema: farmProfileSchema,
-      onSubmit: (data) => {
-        console.log(data);
+export function RegisterAnimal({
+  animalType,
+  setActiveStep,
+  setFirstAnimal,
+  farmProfile,
+}) {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-        fetch("https://6a6284d51bffb2ffab8b5373.mockapi.io/farm_profile", {
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+    touched,
+    errors,
+  } = useFormik({
+    initialValues: {
+      tagNumber: "",
+      species: "",
+      breed: "",
+      estimatedValue: "",
+      age: "",
+      image: "",
+      status: "Alive",
+    },
+    validationSchema: animalSchema,
+    onSubmit: async (data) => {
+      setSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        const res = await fetch(`${API_BASE}/animal`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error("Something went wrong");
-            }
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tag_number: data.tagNumber,
+            species: data.species,
+            breed: data.breed,
+            estimated_value: data.estimatedValue,
+            age: data.age,
+            image: data.image,
+            status: data.status,
+            farm_profile_id: farmProfile?.id,
+          }),
+        });
 
-            return res.json();
-          })
-          .then((savedProfile) => {
-            console.log(savedProfile);
-          })
-          .then(() => setActiveStep((prev) => prev + 1))
-          .catch((err) => {
-            console.error(err);
-          });
-      },
-    });
+        if (!res.ok) throw new Error("Failed to register animal");
+
+        const savedAnimal = await res.json();
+        console.log("Animal saved:", savedAnimal);
+
+        setFirstAnimal(savedAnimal); // has .id now, used by inspection step
+        setActiveStep((prev) => prev + 1);
+      } catch (err) {
+        console.error(err);
+        setSubmitError(
+          err.message || "Something went wrong. Please try again.",
+        );
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // storing filename here since the field is validated as a string;
+      // if you need to actually upload the file, keep the File object in
+      // separate state rather than in formik's values
+      setFieldValue("image", file.name);
+    }
+  };
+
+  // Shared outlined-field styling: brand-green focus/label states in place of MUI's default blue.
+  const fieldSx = {
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "oklch(0.32 0.1 154.55)",
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "oklch(0.32 0.1 154.55)",
+    },
+  };
+
   return (
-    <div className="form-container">
-      <Box
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        py: { xs: 4, md: 6 },
+        px: 2,
+      }}
+    >
+      <Paper
+        elevation={0}
         component="form"
-        sx={{ "& .MuiTextField-root": { m: 1, width: "100%" } }}
-        autoComplete="off"
         onSubmit={handleSubmit}
-        className="onboarding-card"
+        autoComplete="off"
+        sx={{
+          width: "100%",
+          maxWidth: 560,
+          borderRadius: 4,
+          p: { xs: 3, md: 5 },
+          border: "1px solid oklch(0.9 0.02 154.55)",
+          "& .MuiTextField-root": { width: "100%" },
+        }}
       >
-        <h2>Register First Animal</h2>
-        <TextField
-          label="Animal Tag Number"
-          name="tagNumber"
-          variant="filled"
-          onChange={handleChange}
-          value={values.tagNumber}
-          onBlur={handleBlur}
-          type="text"
-        />
-        {touched.tagNumber && errors.tagNumber ? errors.tagNumber : null}
+        <Typography
+          component="h2"
+          sx={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontSize: "1.75rem",
+            fontWeight: 700,
+            color: "oklch(0.2 0.03 154.55)",
+            mb: 3,
+          }}
+        >
+          Register First Animal
+        </Typography>
 
-        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-standard-label">
-            Species
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            value={values.species}
-            name="species"
-            onChange={handleChange}
-            onBlur={handleBlur}
-          >
-            <MenuItem value="">
-              <em aria-disabled={true}>--Select Animal Type--</em>
-            </MenuItem>
-            {animalType.map((type, index) => (
-              <MenuItem key={index} value={type}>
-                {type}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {touched.species && errors.species ? errors.species : null}
+        <Stack spacing={2.5}>
+          <Box>
+            <TextField
+              label="Animal Tag Number"
+              name="tagNumber"
+              variant="outlined"
+              onChange={handleChange}
+              value={values.tagNumber}
+              onBlur={handleBlur}
+              type="text"
+              sx={fieldSx}
+            />
+            {touched.tagNumber && errors.tagNumber ? (
+              <Typography color="error" variant="caption" display="block">
+                {errors.tagNumber}
+              </Typography>
+            ) : null}
+          </Box>
 
-        <TextField
-          fullWidth
-          label="breed"
-          name="breed"
-          variant="filled"
-          onChange={handleChange}
-          value={values.breed}
-          onBlur={handleBlur}
-          type="text"
-        />
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
+            <Box sx={{ flex: 1 }}>
+              <FormControl variant="outlined" fullWidth sx={fieldSx}>
+                <InputLabel id="species-label">Species</InputLabel>
+                <Select
+                  labelId="species-label"
+                  id="species-select"
+                  label="Species"
+                  value={values.species}
+                  name="species"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                >
+                  <MenuItem value="" disabled>
+                    <em>--Select Animal Type--</em>
+                  </MenuItem>
+                  {animalType.map((type, index) => (
+                    <MenuItem key={index} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {touched.species && errors.species ? (
+                <Typography color="error" variant="caption" display="block">
+                  {errors.species}
+                </Typography>
+              ) : null}
+            </Box>
 
-        {touched.breed && errors.breed ? errors.breed : null}
-        <TextField
-          label="estimatedValue"
-          name="estimatedValue"
-          variant="filled"
-          onChange={handleChange}
-          value={values.estimatedValue}
-          onBlur={handleBlur}
-          type="text"
-        />
-        {touched.estimatedValue && errors.estimatedValue
-          ? errors.estimatedValue
-          : null}
+            <Box sx={{ flex: 1 }}>
+              <TextField
+                fullWidth
+                label="Breed"
+                name="breed"
+                variant="outlined"
+                onChange={handleChange}
+                value={values.breed}
+                onBlur={handleBlur}
+                type="text"
+                sx={fieldSx}
+              />
+              {touched.breed && errors.breed ? (
+                <Typography color="error" variant="caption" display="block">
+                  {errors.breed}
+                </Typography>
+              ) : null}
+            </Box>
+          </Stack>
 
-        <TextField
-          label="age"
-          name="age"
-          variant="filled"
-          onChange={handleChange}
-          value={values.age}
-          onBlur={handleBlur}
-          type="number"
-        />
-        {touched.age && errors.age ? errors.age : null}
-        <TextField
-          label="status"
-          name="status"
-          variant="filled"
-          onChange={handleChange}
-          value={values.status}
-          onBlur={handleBlur}
-          type="text"
-          disabled
-        />
-        {touched.status && errors.status ? errors.status : null}
-        {false && (
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
+            <Box sx={{ flex: 1 }}>
+              <TextField
+                label="Estimated Value"
+                name="estimatedValue"
+                variant="outlined"
+                onChange={handleChange}
+                value={values.estimatedValue}
+                onBlur={handleBlur}
+                type="number"
+                sx={fieldSx}
+              />
+              {touched.estimatedValue && errors.estimatedValue ? (
+                <Typography color="error" variant="caption" display="block">
+                  {errors.estimatedValue}
+                </Typography>
+              ) : null}
+            </Box>
+
+            <Box sx={{ flex: 1 }}>
+              <TextField
+                label="Age"
+                name="age"
+                variant="outlined"
+                onChange={handleChange}
+                value={values.age}
+                onBlur={handleBlur}
+                type="number"
+                sx={fieldSx}
+              />
+              {touched.age && errors.age ? (
+                <Typography color="error" variant="caption" display="block">
+                  {errors.age}
+                </Typography>
+              ) : null}
+            </Box>
+          </Stack>
+
           <TextField
-            label="status"
+            label="Status"
             name="status"
-            variant="filled"
-            onChange={handleChange}
-            value={values.farm_profile_id}
-            onBlur={handleBlur}
-            type="text"
+            variant="outlined"
+            value={values.status}
             disabled
+            type="text"
+            sx={{
+              "& .MuiOutlinedInput-root.Mui-disabled": {
+                bgcolor: "oklch(0.97 0.02 154.55)",
+              },
+              "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "oklch(0.85 0.03 154.55)",
+                },
+              "& .MuiInputBase-input.Mui-disabled": {
+                color: "oklch(0.32 0.1 154.55)",
+                WebkitTextFillColor: "oklch(0.32 0.1 154.55)",
+              },
+            }}
           />
-        )}
-        {/* {touched.farm_profile_id && errors.farm_profile_id ? errors.status : null} */}
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-        >
-          Upload image
-          <VisuallyHiddenInput
-            type="file"
-            name="image"
-            onChange={handleChange}
-            value={values.image}
-            onBlur={handleBlur}
-          />
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          endIcon={<SendIcon />}
-          style={{ width: "50%" }}
-        >
-          Register Animal
-        </Button>
-      </Box>
-    </div>
+
+          <Box>
+            <Button
+              component="label"
+              role={undefined}
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              sx={{
+                bgcolor: "transparent",
+                color: "oklch(0.32 0.1 154.55)",
+                border: "1.5px solid oklch(0.8 0.03 154.55)",
+                borderRadius: "2rem",
+                px: "1.5rem",
+                py: "0.6rem",
+                textTransform: "none",
+                fontWeight: 600,
+                "&:hover": { bgcolor: "oklch(0.97 0.02 154.55)" },
+              }}
+            >
+              Upload image
+              <VisuallyHiddenInput
+                type="file"
+                name="image"
+                onChange={handleImageChange}
+                onBlur={handleBlur}
+              />
+            </Button>
+            {values.image && (
+              <Typography
+                variant="caption"
+                display="block"
+                sx={{ mt: 1, color: "oklch(0.4 0.13 154.55)", fontWeight: 500 }}
+              >
+                ✓ {values.image}
+              </Typography>
+            )}
+            {touched.image && errors.image ? (
+              <Typography color="error" variant="caption" display="block">
+                {errors.image}
+              </Typography>
+            ) : null}
+          </Box>
+
+          {submitError && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              {submitError}
+            </Typography>
+          )}
+
+          <Button
+            type="submit"
+            variant="contained"
+            endIcon={<SendIcon />}
+            disabled={submitting}
+            sx={{
+              alignSelf: "center",
+              width: { xs: "100%", sm: "60%" },
+              mt: 1,
+              bgcolor: "oklch(0.32 0.1 154.55)",
+              color: "white",
+              borderRadius: "2rem",
+              py: "0.75rem",
+              fontWeight: 600,
+              textTransform: "none",
+              boxShadow: "none",
+              "&:hover": {
+                bgcolor: "oklch(0.27 0.1 154.55)",
+                boxShadow: "none",
+              },
+              "&.Mui-disabled": {
+                bgcolor: "oklch(0.9 0.02 154.55)",
+                color: "oklch(0.6 0.02 154.55)",
+              },
+            }}
+          >
+            {submitting ? "Registering..." : "Register Animal"}
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   );
 }

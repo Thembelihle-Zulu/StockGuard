@@ -1,24 +1,19 @@
-import { TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import { TextField, Typography, Stack, Paper } from "@mui/material";
 import { useFormik } from "formik";
-import { object, string, number } from "yup";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import dayjs from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { object, string, date } from "yup";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import SendIcon from "@mui/icons-material/Send";
+import { styled } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import SendIcon from "@mui/icons-material/Send";
-import Box from "@mui/material/Box";
-import { useNavigate } from "react-router";
-import { Label } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-const farmProfileSchema = object({
+const API_BASE = "http://127.0.0.1:5000/api/onboarding";
+
+const inspectionSchema = object({
   status: string().required("status is required"),
   inspectionDate: date().required("Select inspection date"),
   animalTagNameImage: string().required(
@@ -38,124 +33,334 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-export function AnimalInspection({ setInspection }) {
-  const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
-    useFormik({
-      initialValues: {
-        status: "pending",
-        animalTagNameImage: "",
-        vetenaryHealthReport: "",
-        inspectionDate: "",
-      },
-      validationSchema: farmProfileSchema,
-      onSubmit: (data) => {
-        console.log(data);
+
+export function AnimalInspection({
+  setActiveStep,
+  setInspection,
+  firstAnimal,
+}) {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+    touched,
+    errors,
+  } = useFormik({
+    initialValues: {
+      status: "pending",
+      animalTagNameImage: "",
+      vetenaryHealthReport: "",
+      inspectionDate: null,
+    },
+    validationSchema: inspectionSchema,
+    onSubmit: async (data) => {
+      setSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        const res = await fetch(`${API_BASE}/inspection`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...data,
+            livestock_id: firstAnimal?.id,
+          }),
+        });
+
+        if (!res.ok) throw new Error("Failed to save inspection");
+
+        const savedInspection = await res.json();
+        console.log("Inspection saved:", savedInspection);
+
+        setInspection(savedInspection); // has .id now, used by later steps
         setActiveStep((prev) => prev + 1);
-        setInspection(data);
-      },
-    });
+      } catch (err) {
+        console.error(err);
+        setSubmitError(
+          err.message || "Something went wrong. Please try again.",
+        );
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
+  const handleFileChange = (fieldName) => (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Storing the file name here since the field is validated as a string.
+      // If you need the actual File object for upload, store it in separate
+      // state (e.g. a `files` object) rather than in formik's values.
+      setFieldValue(fieldName, file.name);
+    }
+  };
+
+  // Shared outlined-field styling: brand-green focus/label states in place of MUI's default blue.
+  const fieldSx = {
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "oklch(0.32 0.1 154.55)",
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "oklch(0.32 0.1 154.55)",
+    },
+  };
+
   return (
-    <div className="form-container">
-      <Box
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        py: { xs: 4, md: 6 },
+        px: 2,
+      }}
+    >
+      <Paper
+        elevation={0}
         component="form"
-        sx={{ "& .MuiTextField-root": { m: 1, width: "100%" } }}
-        autoComplete="off"
         onSubmit={handleSubmit}
-        className="onboarding-card"
+        autoComplete="off"
+        sx={{
+          width: "100%",
+          maxWidth: 560,
+          borderRadius: 4,
+          p: { xs: 3, md: 5 },
+          border: "1px solid oklch(0.9 0.02 154.55)",
+          "& .MuiTextField-root": { width: "100%" },
+        }}
       >
-        <h2>Animal Inspection</h2>
-        <div>
+        <Typography
+          component="h2"
+          sx={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontSize: "1.75rem",
+            fontWeight: 700,
+            color: "oklch(0.2 0.03 154.55)",
+            mb: 1,
+          }}
+        >
+          Animal Inspection
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: "0.95rem",
+            color: "oklch(0.5 0.02 154.55)",
+            lineHeight: 1.5,
+            mb: 3,
+          }}
+        >
           To qualify for insurance, every animal must complete a pre-insurance
-          inspection
-        </div>
-        <DatePicker
-          label="Inspection Date"
-          name="inspectionDate"
-          onChange={handleChange}
-          value={values.inspectionDate}
-          onBlur={handleBlur}
-        />
-        {touched.inspectionDate && errors.inspectionDate
-          ? errors.inspectionDate
-          : null}
-        <Typography>Upload: </Typography>
-        {/* <TextField
-          label="animalTagNameImage"
-          name="animalTagNameImage"
-          variant="filled"
-          onChange={handleChange}
-          value={values.animalTagNameImage}
-          onBlur={handleBlur}
-          type="text"
-        />
-        {touched.animalTagNameImage && errors.animalTagNameImage
-          ? errors.animalTagNameImage
-          : null} */}
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-        >
-          Upload Tag Image
-          <VisuallyHiddenInput
-            type="file"
-            name="animalTagNameImage"
-            onChange={handleChange}
-            value={values.animalTagNameImage}
-            onBlur={handleBlur}
-          />
-        </Button>
-        <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
-        >
-          Upload Vetenary Health Report
-          <VisuallyHiddenInput
-            type="file"
-            name="vetenaryHealthReport"
-            onChange={handleChange}
-            value={values.vetenaryHealthReport}
-            onBlur={handleBlur}
-          />
-        </Button>
-        {/* <TextField
-          label="vetenaryHealthReport"
-          name="vetenaryHealthReport"
-          variant="filled"
-          onChange={handleChange}
-          value={values.vetenaryHealthReport}
-          onBlur={handleBlur}
-          type="text"
-        />
-        {touched.vetenaryHealthReport && errors.vetenaryHealthReport
-          ? errors.vetenaryHealthReport
-          : null} */}
-        <TextField
-          label="status"
-          name="status"
-          variant="filled"
-          onChange={handleChange}
-          value={values.status}
-          onBlur={handleBlur}
-          disabled
-          type="text"
-        />
-        inspectionDate
-        {touched.status && errors.status ? errors.status : null}
-        <Button
-          type="submit"
-          variant="contained"
-          endIcon={<SendIcon />}
-          style={{ width: "50%" }}
-        >
-          Continue
-        </Button>
-      </Box>
-    </div>
+          inspection.
+        </Typography>
+
+        <Stack spacing={2.5}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box>
+              <DatePicker
+                label="Inspection Date"
+                value={values.inspectionDate}
+                onChange={(newValue) =>
+                  setFieldValue("inspectionDate", newValue)
+                }
+                onBlur={handleBlur}
+                slotProps={{
+                  textField: {
+                    name: "inspectionDate",
+                    fullWidth: true,
+                    variant: "outlined",
+                    sx: fieldSx,
+                  },
+                }}
+              />
+              {touched.inspectionDate && errors.inspectionDate ? (
+                <Typography color="error" variant="caption" display="block">
+                  {errors.inspectionDate}
+                </Typography>
+              ) : null}
+            </Box>
+          </LocalizationProvider>
+
+          <Box>
+            <Typography
+              variant="caption"
+              sx={{
+                display: "block",
+                mb: 1,
+                color: "oklch(0.5 0.02 154.55)",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.03em",
+              }}
+            >
+              Upload
+            </Typography>
+
+            <Stack spacing={2}>
+              <Box>
+                <Button
+                  component="label"
+                  role={undefined}
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  sx={{
+                    bgcolor: "transparent",
+                    color: "oklch(0.32 0.1 154.55)",
+                    border: "1.5px solid oklch(0.8 0.03 154.55)",
+                    borderRadius: "2rem",
+                    px: "1.5rem",
+                    py: "0.6rem",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    "&:hover": { bgcolor: "oklch(0.97 0.02 154.55)" },
+                  }}
+                >
+                  Upload Tag Image
+                  <VisuallyHiddenInput
+                    type="file"
+                    name="animalTagNameImage"
+                    onChange={handleFileChange("animalTagNameImage")}
+                    onBlur={handleBlur}
+                  />
+                </Button>
+                {values.animalTagNameImage && (
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    sx={{
+                      mt: 1,
+                      color: "oklch(0.4 0.13 154.55)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    ✓ {values.animalTagNameImage}
+                  </Typography>
+                )}
+                {touched.animalTagNameImage && errors.animalTagNameImage ? (
+                  <Typography color="error" variant="caption" display="block">
+                    {errors.animalTagNameImage}
+                  </Typography>
+                ) : null}
+              </Box>
+
+              <Box>
+                <Button
+                  component="label"
+                  role={undefined}
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  sx={{
+                    bgcolor: "transparent",
+                    color: "oklch(0.32 0.1 154.55)",
+                    border: "1.5px solid oklch(0.8 0.03 154.55)",
+                    borderRadius: "2rem",
+                    px: "1.5rem",
+                    py: "0.6rem",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    "&:hover": { bgcolor: "oklch(0.97 0.02 154.55)" },
+                  }}
+                >
+                  Upload Vetenary Health Report
+                  <VisuallyHiddenInput
+                    type="file"
+                    name="vetenaryHealthReport"
+                    onChange={handleFileChange("vetenaryHealthReport")}
+                    onBlur={handleBlur}
+                  />
+                </Button>
+                {values.vetenaryHealthReport && (
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    sx={{
+                      mt: 1,
+                      color: "oklch(0.4 0.13 154.55)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    ✓ {values.vetenaryHealthReport}
+                  </Typography>
+                )}
+                {touched.vetenaryHealthReport && errors.vetenaryHealthReport ? (
+                  <Typography color="error" variant="caption" display="block">
+                    {errors.vetenaryHealthReport}
+                  </Typography>
+                ) : null}
+              </Box>
+            </Stack>
+          </Box>
+
+          <Box>
+            <TextField
+              label="Status"
+              name="status"
+              variant="outlined"
+              onChange={handleChange}
+              value={values.status}
+              onBlur={handleBlur}
+              disabled
+              type="text"
+              sx={{
+                "& .MuiOutlinedInput-root.Mui-disabled": {
+                  bgcolor: "oklch(0.97 0.02 154.55)",
+                },
+                "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: "oklch(0.85 0.03 154.55)",
+                  },
+                "& .MuiInputBase-input.Mui-disabled": {
+                  color: "oklch(0.32 0.1 154.55)",
+                  WebkitTextFillColor: "oklch(0.32 0.1 154.55)",
+                },
+              }}
+            />
+            {touched.status && errors.status ? (
+              <Typography color="error" variant="caption" display="block">
+                {errors.status}
+              </Typography>
+            ) : null}
+          </Box>
+
+          {submitError && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              {submitError}
+            </Typography>
+          )}
+
+          <Button
+            type="submit"
+            variant="contained"
+            endIcon={<SendIcon />}
+            disabled={submitting}
+            sx={{
+              alignSelf: "center",
+              width: { xs: "100%", sm: "60%" },
+              mt: 1,
+              bgcolor: "oklch(0.32 0.1 154.55)",
+              color: "white",
+              borderRadius: "2rem",
+              py: "0.75rem",
+              fontWeight: 600,
+              textTransform: "none",
+              boxShadow: "none",
+              "&:hover": {
+                bgcolor: "oklch(0.27 0.1 154.55)",
+                boxShadow: "none",
+              },
+              "&.Mui-disabled": {
+                bgcolor: "oklch(0.9 0.02 154.55)",
+                color: "oklch(0.6 0.02 154.55)",
+              },
+            }}
+          >
+            {submitting ? "Saving..." : "Continue"}
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   );
 }

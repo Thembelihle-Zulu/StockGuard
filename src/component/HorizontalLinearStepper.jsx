@@ -87,8 +87,37 @@ export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
   }, [activeStep, isStepOptional]);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Stepper activeStep={activeStep}>
+    <Box
+      sx={{ width: "100%", pt: { xs: 3, md: 4 }, pb: 2, px: { xs: 2, md: 4 } }}
+    >
+      <Stepper
+        activeStep={activeStep}
+        sx={{
+          "& .MuiStepIcon-root": {
+            color: "oklch(0.9 0.02 154.55)", // upcoming steps
+          },
+          "& .MuiStepIcon-root.Mui-active": {
+            color: "oklch(0.32 0.1 154.55)", // current step
+          },
+          "& .MuiStepIcon-root.Mui-completed": {
+            color: "oklch(0.55 0.15 154.55)", // completed steps
+          },
+          "& .MuiStepLabel-label": {
+            fontFamily: '"Inter", "Helvetica Neue", Arial, sans-serif',
+          },
+          "& .MuiStepLabel-label.Mui-active": {
+            fontWeight: 600,
+            color: "oklch(0.2 0.03 154.55)",
+          },
+          "& .MuiStepConnector-line": {
+            borderColor: "oklch(0.9 0.02 154.55)",
+          },
+          "& .MuiStepConnector-root.Mui-active .MuiStepConnector-line, & .MuiStepConnector-root.Mui-completed .MuiStepConnector-line":
+            {
+              borderColor: "oklch(0.55 0.15 154.55)",
+            },
+        }}
+      >
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
@@ -110,7 +139,19 @@ export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
             <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleReset} ref={resetButtonRef}>
+            <Button
+              onClick={handleReset}
+              ref={resetButtonRef}
+              sx={{
+                bgcolor: "oklch(0.32 0.1 154.55)",
+                color: "white",
+                borderRadius: "2rem",
+                px: "1.5rem",
+                textTransform: "none",
+                fontWeight: 600,
+                "&:hover": { bgcolor: "oklch(0.27 0.1 154.55)" },
+              }}
+            >
               Reset
             </Button>
           </Box>
@@ -119,20 +160,45 @@ export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
         <React.Fragment>
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
             <Button
-              color="inherit"
               disabled={activeStep === 0}
               onClick={handleBack}
-              sx={{ mr: 1 }}
+              sx={{
+                color: "oklch(0.32 0.1 154.55)",
+                textTransform: "none",
+                fontWeight: 600,
+                mr: 1,
+                "&.Mui-disabled": { color: "oklch(0.8 0.02 154.55)" },
+              }}
             >
               Back
             </Button>
             <Box sx={{ flex: "1 1 auto" }} />
             {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+              <Button
+                onClick={handleSkip}
+                sx={{
+                  color: "oklch(0.35 0.02 154.55)",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  mr: 1,
+                }}
+              >
                 Skip
               </Button>
             )}
-            <Button onClick={handleNext} ref={nextButtonRef}>
+            <Button
+              onClick={handleNext}
+              ref={nextButtonRef}
+              sx={{
+                bgcolor: "oklch(0.32 0.1 154.55)",
+                color: "white",
+                borderRadius: "2rem",
+                px: "1.75rem",
+                textTransform: "none",
+                fontWeight: 600,
+                "&:hover": { bgcolor: "oklch(0.27 0.1 154.55)" },
+              }}
+            >
               {activeStep === steps.length - 1 ? "Finish" : "Next"}
             </Button>
           </Box>

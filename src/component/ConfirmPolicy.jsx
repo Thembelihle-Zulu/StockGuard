@@ -12,67 +12,38 @@ import Typography from "@mui/material/Typography";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 
-const API_BASE = "https://6a6284d51bffb2ffab8b5373.mockapi.io";
+const API_BASE = "http://127.0.0.1:5000/api/onboarding";
 
 export function ConfirmPolicy({
   setActiveStep,
+  setCreatedPolicy,
   farmProfile,
   firstAnimal,
   inspection,
+  cover,
 }) {
+  // Payment method is UI-only for now — there's no column for it on the
+  // `policy` table, so it isn't sent in the POST. Add a `payment_method`
+  // column (or a separate `payment` table) if you want this persisted.
   const [paymentMethod, setPaymentMethod] = useState("mobile_money");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const monthlyPremium = 250;
+  const monthlyPremium = cover?.monthlyPremium ?? 0;
 
   const handleActivate = async () => {
     setSubmitting(true);
     setError(null);
 
     try {
-      // 1. Save farm profile
-      const farmRes = await fetch(`${API_BASE}/farm_profile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(farmProfile),
-      });
-      if (!farmRes.ok) throw new Error("Failed to save farm profile");
-      const savedFarmProfile = await farmRes.json();
-
-      // 2. Save first animal
-      const animalRes = await fetch(`${API_BASE}/animal`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...firstAnimal,
-          farm_profile_id: savedFarmProfile.id,
-        }),
-      });
-      if (!animalRes.ok) throw new Error("Failed to save animal");
-      const savedAnimal = await animalRes.json();
-
-      // 3. Save inspection
-      const inspectionRes = await fetch(`${API_BASE}/inspection`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...inspection,
-          animal_id: savedAnimal.id,
-        }),
-      });
-      if (!inspectionRes.ok) throw new Error("Failed to save inspection");
-      await inspectionRes.json();
-
-      // 4. Create the policy record
       const policyPayload = {
         policy_number: `POL-${Date.now()}`,
-        farm_profile_id: savedFarmProfile.id,
+        farm_profile_id: farmProfile?.id,
         product_id: 1, // Livestock Health Cover product id
         creation_date: new Date().toISOString(),
         status: "Active",
         monthly_premium: monthlyPremium,
-        payment_method: paymentMethod, // extra field, drop if not on your table
+        animal_count_at_pricing: cover?.declaredAnimalCount ?? 1,
       };
 
       const policyRes = await fetch(`${API_BASE}/policy`, {
@@ -84,7 +55,7 @@ export function ConfirmPolicy({
       const savedPolicy = await policyRes.json();
 
       console.log("Policy activated:", savedPolicy);
-      setCreatedPolicy(savedPolicy); // add this line
+      setCreatedPolicy(savedPolicy);
       setActiveStep((prev) => prev + 1);
     } catch (err) {
       console.error(err);
@@ -122,20 +93,23 @@ export function ConfirmPolicy({
         </Typography>
 
         <Box sx={{ textAlign: "left" }}>
-          <ReviewRow label="Farm" value={farmProfile?.farm_name || "-"} />
-          <ReviewRow
-            label="Farmer Type"
-            value={farmProfile?.farm_type || "-"}
-          />
+          <ReviewRow label="Farm" value={farmProfile?.farmName || "-"} />
+          <ReviewRow label="Farmer Type" value={farmProfile?.farmType || "-"} />
           <ReviewRow
             label="Animal"
             value={
               firstAnimal
-                ? `${firstAnimal.animal_type || ""} #${
-                    firstAnimal.tag_number || ""
-                  }`
+                ? `${firstAnimal.species || ""} #${firstAnimal.tagNumber || ""}`
                 : "-"
             }
+          />
+          <ReviewRow
+            label="Animals Insured"
+            value={cover?.declaredAnimalCount ?? "-"}
+          />
+          <ReviewRow
+            label="Coverage Tier"
+            value={cover?.coverageTier === "full" ? "Full" : "Basic"}
           />
 
           <Box sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
@@ -157,11 +131,9 @@ export function ConfirmPolicy({
             <Typography color="text.secondary">Inspection</Typography>
             <Chip
               label={
-                !inspection?.status
+                !inspection?.status || inspection.status === "pending"
                   ? "Pending Review"
-                  : inspection.status === "pending"
-                    ? "Pending Review"
-                    : inspection.status
+                  : inspection.status
               }
               sx={{ bgcolor: "grey.200" }}
               size="small"
