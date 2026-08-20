@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Sidebar } from "../component/Sidebar";
+import { ClaimsList } from "./ClaimsList";
 
 export function Dashboard() {
+  const [showClaims, toggle] = useState(false);
   return (
     <>
       <header class="topnav" role="banner">
@@ -94,7 +97,12 @@ export function Dashboard() {
           </div>
         </div>
       </header>
-      <Sidebar />
+      <Sidebar toggle={toggle} showClaims={showClaims} />
+      {showClaims && (
+        <section className="claim-list">
+          <ClaimsList />
+        </section>
+      )}
     </>
   );
 }

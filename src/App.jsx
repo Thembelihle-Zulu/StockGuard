@@ -8,16 +8,18 @@ import {
   GlobalStyles,
 } from "@mui/material";
 import ShieldIcon from "@mui/icons-material/Shield";
-import { Onboarding } from "./pags/Onboarding";
+import { Onboarding } from "./pages/Onboarding";
 import "./App.css";
 import { AnimalInspection } from "./component/AnimalInspection";
 import { RegisterAnimal } from "./component/RegisterAnimal";
 import { SelectCover } from "./component/SelectCover";
-import { Home } from "./pags/Home";
-// import { Signup } from "./pags/Signup";
-// import { Dashboard } from "./pags/dashboard";
-import { Dashboard } from "./pags/dashboard";
-import { FileClaim } from "./pags/FileClaim";
+import { Home } from "./pages/Home";
+// import { Signup } from "./pages/Signup";
+// import { Dashboard } from "./pages/dashboard";
+import { Dashboard } from "./pages/dashboard";
+import { FileClaim } from "./pages/FileClaim";
+import { Claim } from "./component/Claim";
+import { ClaimsList } from "./pages/ClaimsList";
 function App() {
   const navigate = useNavigate();
   const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
@@ -49,6 +51,7 @@ function App() {
           <Route path="/signup" element={<Signup />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/file-claim" element={<FileClaim />} />
+        <Route path="/claims" element={<ClaimsList />} />
       </Routes>
     </>
   );

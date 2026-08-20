@@ -1,4 +1,4 @@
-export function Sidebar() {
+export function Sidebar({ toggle, showClaims }) {
   return (
     <>
       <aside
@@ -93,7 +93,14 @@ export function Sidebar() {
               </a>
             </li>
             <li>
-              <a class="nav-item" href="#">
+              <a
+                class="nav-item"
+                href="#"
+                onClick={() => {
+                  toggle(!showClaims);
+                  console.log("Hello");
+                }}
+              >
                 <svg
                   width="18"
                   height="18"
