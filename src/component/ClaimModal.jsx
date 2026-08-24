@@ -1,80 +1,114 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import { DetailModal, DetailRow } from "./DetailModal";
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(2),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
-}));
+const API_ORIGIN = "http://127.0.0.1:5000";
+
+function EvidenceLink({ label, url }) {
+  if (!url) return null;
+  return (
+    <Button
+      component="a"
+      href={`${API_ORIGIN}${url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      startIcon={<DescriptionOutlinedIcon />}
+      sx={{
+        justifyContent: "flex-start",
+        textTransform: "none",
+        color: "oklch(0.32 0.1 154.55)",
+        border: "1px solid oklch(0.85 0.02 154.55)",
+        borderRadius: 2,
+        px: 2,
+        py: 1,
+        fontWeight: 500,
+      }}
+    >
+      {label}
+    </Button>
+  );
+}
 
 export function ClaimModal({ open, setOpen, claim }) {
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
-    <React.Fragment>
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
-        open={open}
+    <DetailModal
+      open={open}
+      setOpen={setOpen}
+      title={claim.claim_type || "Claim"}
+      status={claim.status}
+      imageUrl={
+        claim.incident_image ? `${API_ORIGIN}${claim.incident_image}` : null
+      }
+      imageAlt={`Incident photo for claim on livestock ${claim.livestock_id}`}
+    >
+      <Stack
+        spacing={0.5}
+        divider={<Divider sx={{ borderColor: "oklch(0.92 0.01 154.55)" }} />}
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Modal title
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            <h3>{claim.id}</h3>
-          </Typography>
-          <Typography gutterBottom>
-            <div className="claim-card-details">
-              <p className="claim-card-animal">Animal: {claim.livestock_id}</p>
-              <p className="claim-card-type">Claim Type: {claim.claim_type}</p>
-              <p className="claim-card-cause">Cause: {claim.cause}</p>
+        <DetailRow label="Animal" value={claim.livestock_id} />
+        <DetailRow
+          label="Date of Incident"
+          value={
+            claim.date_of_incident
+              ? new Date(claim.date_of_incident).toLocaleDateString()
+              : "—"
+          }
+        />
+        {claim.claim_amount != null && (
+          <DetailRow label="Claim Amount" value={`R${claim.claim_amount}`} />
+        )}
+      </Stack>
 
-              <h6>Status: </h6>
-              <span
-                className={`claim-status-badge claim-status-${claim.status.toLowerCase()}`}
-              >
-                {claim.status}
-              </span>
-              <p className="claim-card-date">
-                Date Submitted:{" "}
-                {new Date(claim.date_of_incident).toLocaleDateString()}
-              </p>
-            </div>
+      <Box sx={{ mt: 2.5 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            display: "block",
+            mb: 1,
+            color: "oklch(0.5 0.02 154.55)",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.03em",
+          }}
+        >
+          Cause
+        </Typography>
+        <Typography sx={{ color: "oklch(0.25 0.02 154.55)" }}>
+          {claim.cause || "No description provided."}
+        </Typography>
+      </Box>
+
+      {(claim.veterinary_invoice || claim.veterinary_death_report) && (
+        <Box sx={{ mt: 2.5 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              mb: 1,
+              color: "oklch(0.5 0.02 154.55)",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.03em",
+            }}
+          >
+            Evidence
           </Typography>
-          <Typography gutterBottom>{claim.description}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
-    </React.Fragment>
+          <Stack spacing={1}>
+            <EvidenceLink
+              label="Veterinary Invoice"
+              url={claim.veterinary_invoice}
+            />
+            <EvidenceLink
+              label="Veterinary Death Report"
+              url={claim.veterinary_death_report}
+            />
+          </Stack>
+        </Box>
+      )}
+    </DetailModal>
   );
 }

@@ -89,7 +89,7 @@ export function Home() {
                 Login
               </Button>
               <Button
-                onClick={() => navigate("/onboarding")}
+                onClick={() => navigate("/login")}
                 sx={{
                   bgcolor: "oklch(0.32 0.1 154.55)",
                   color: "white",

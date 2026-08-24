@@ -1,15 +1,17 @@
 import { ClaimModal } from "./ClaimModal";
 import { useState } from "react";
-export function Claim({ claim }) {
+export function Claim({ item }) {
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const claim = item;
+  console.log(claim);
   return (
     <div className="claim-card">
       <img
         className="claim-card-image"
-        src={claim.incident_image}
+        src={`http://127.0.0.1:5000${claim.incident_image}`}
         alt={`Incident photo for claim on livestock ${claim.livestock_id}`}
       />
 

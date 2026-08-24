@@ -1,98 +1,127 @@
+import { useState } from "react";
 import { useFormik } from "formik";
-import { object, string, number, date } from "yup";
-import { API_URL } from "../global";
-import { Navigate, NavLink, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { object, string } from "yup";
 import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Signup } from "./Signup";
+import CircularProgress from "@mui/material/CircularProgress";
+import { NavLink, useNavigate } from "react-router";
 
+// Matches the User model exactly: email + password, not username.
+// There is no username column on User at all.
 const loginSchema = object({
-  username: string()
-    .required("username is missing 🫨")
-    .min(4, "username is too short 😅"),
-  password: string().required().min(8).max(12),
+  email: string().email("Enter a valid email").required("Email is required"),
+  password: string().required("Password is required"),
 });
 
+const API_URL = "http://127.0.0.1:5000/api";
+
 export function Login() {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [error, setError] = useState("");
 
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
-        username: "",
+        email: "",
         password: "",
       },
       validationSchema: loginSchema,
-      onSubmit: (data) => {
+      onSubmit: async (data) => {
         setLoading(true);
-        fetch(`${API_URL}/auth/login`, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) =>
-            res.ok ? res.json() : Promise.reject("Access Denied"),
-          )
-          //   .then((data) => {
-          //     localStorage.setItem("token", data.token);
-          //     localStorage.setItem("role", data.role);
-          //   })
-          .then(() => navigate("/movies"))
-          .catch((err) => setError(err))
-          .finally(() => setLoading(false));
+        setError("");
+
+        try {
+          const res = await fetch(`${API_URL}/users/login`, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          const body = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            // Covers both "no account with this email" and "wrong
+            // password" — the backend intentionally returns the same
+            // generic message for both (login_user always says
+            // "Invalid credentials" either way), which is correct
+            // security practice: it doesn't let someone probe which
+            // emails have accounts by trying logins and comparing
+            // error messages.
+            throw new Error(body.error || "Invalid email or password");
+          }
+
+          // Success — only now do we store the session and navigate.
+          localStorage.setItem("token", body.token);
+          localStorage.setItem("role", body.role);
+          navigate("/dashboard");
+        } catch (err) {
+          console.error(err);
+          setError(err.message || "Something went wrong. Please try again.");
+        } finally {
+          setLoading(false);
+        }
       },
     });
 
-  // Safety mechanism
-  //   useEffect(() => {
-  //     localStorage.clear();
-  //   }, []);
-
-  // No refresh & Collect data
   return (
-    <form onSubmit={handleSubmit} className="basic-form">
-      {error && <Alert severity="error">{error}</Alert>}
+    <form onSubmit={handleSubmit} className="login-form">
+      {error && (
+        <Alert severity="error" className="login-alert">
+          {error}
+        </Alert>
+      )}
+
       <TextField
-        // Same as Input
-        value={values.username} // 2
+        value={values.email}
         onChange={handleChange}
         onBlur={handleBlur}
-        name="username" // 3
-        placeholder="John"
-        // Change
+        name="email"
+        placeholder="you@example.com"
         variant="outlined"
-        label="Username"
-        error={touched.username && errors.username}
-        helperText={
-          touched.username && errors.username ? errors.username : null
-        }
+        label="Email"
+        type="email"
+        className="login-field"
+        error={touched.email && Boolean(errors.email)}
+        helperText={touched.email && errors.email ? errors.email : null}
       />
+
       <TextField
         type="password"
         value={values.password}
         onChange={handleChange}
         onBlur={handleBlur}
         name="password"
-        placeholder="password"
+        placeholder="Password"
         variant="outlined"
         label="Password"
-        error={touched.password && errors.password}
+        className="login-field"
+        error={touched.password && Boolean(errors.password)}
         helperText={
           touched.password && errors.password ? errors.password : null
         }
       />
-      Don't have an account?{" "}
-      <NavLink path="/signup" element={<Navigate replace to="/signup" />}>
-        Signup
-      </NavLink>
-      <Button loading={loading} variant="contained" type="submit">
-        Login
+
+      <p className="login-signup-prompt">
+        Don't have an account?{" "}
+        <NavLink to="/signup" className="login-signup-link">
+          Sign up
+        </NavLink>
+      </p>
+
+      <Button
+        variant="contained"
+        type="submit"
+        disabled={loading}
+        className="login-submit-btn"
+        startIcon={
+          loading ? <CircularProgress size={16} color="inherit" /> : null
+        }
+      >
+        {loading ? "Logging in..." : "Login"}
       </Button>
     </form>
   );

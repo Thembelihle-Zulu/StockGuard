@@ -1,10 +1,9 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import SendIcon from "@mui/icons-material/Send";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -19,6 +18,8 @@ import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
 import { number, object, string } from "yup";
 import { getPremium } from "../utils/Premuimcalculator";
+import { apiFetch } from "../utils/api";
+
 const coverSchema = object({
   declaredAnimalCount: number()
     .typeError("Enter a number")
@@ -28,7 +29,24 @@ const coverSchema = object({
   coverageTier: string().required("Select a coverage tier"),
 });
 
-export function SelectCover({ setActiveStep, setCover, farmProfile }) {
+// farmProfileId is passed down from Onboarding.js (set after FarmProfile's
+// save). Used only to look up farm_type for the premium calculation via
+// GET /farm_profile/<id>, which enforces its own ownership check server-side.
+export function SelectCover({ setActiveStep, setCover, farmProfileId }) {
+  const [farmType, setFarmType] = useState(null);
+
+  useEffect(() => {
+    if (!farmProfileId) return;
+
+    apiFetch(`onboarding/farm_profile/${farmProfileId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load farm profile");
+        return res.json();
+      })
+      .then((profile) => setFarmType(profile.farm_type))
+      .catch((err) => console.error(err));
+  }, [farmProfileId]);
+
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
@@ -38,7 +56,7 @@ export function SelectCover({ setActiveStep, setCover, farmProfile }) {
       validationSchema: coverSchema,
       onSubmit: (data) => {
         const { monthlyPremium, tierLabel } = getPremium(
-          farmProfile?.farmType,
+          farmType,
           data.declaredAnimalCount,
           data.coverageTier,
         );
@@ -51,28 +69,19 @@ export function SelectCover({ setActiveStep, setCover, farmProfile }) {
           tierLabel,
         };
 
-        console.log(coverSelection);
-        // No fetch here — there's no dedicated table for a "cover selection".
-        // This just carries the inputs forward; ConfirmPolicy uses them to
-        // create the actual policy record (monthly_premium,
-        // animal_count_at_pricing) once the farmer activates.
+        // No fetch here — there's no dedicated table for a "cover
+        // selection". This just carries the inputs forward; ConfirmPolicy
+        // uses them to create the actual policy record.
         setCover(coverSelection);
         setActiveStep((prev) => prev + 1);
       },
     });
 
-  // Live preview as they type/toggle, before submitting
   const preview = useMemo(
-    () =>
-      getPremium(
-        farmProfile?.farmType,
-        values.declaredAnimalCount,
-        values.coverageTier,
-      ),
-    [farmProfile?.farmType, values.declaredAnimalCount, values.coverageTier],
+    () => getPremium(farmType, values.declaredAnimalCount, values.coverageTier),
+    [farmType, values.declaredAnimalCount, values.coverageTier],
   );
 
-  // Shared outlined-field styling: brand-green focus/label states in place of MUI's default blue.
   const fieldSx = {
     "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
       borderColor: "oklch(0.32 0.1 154.55)",
@@ -139,11 +148,7 @@ export function SelectCover({ setActiveStep, setCover, farmProfile }) {
 
           <Box>
             <Typography
-              sx={{
-                mb: 1,
-                fontWeight: 600,
-                color: "oklch(0.2 0.03 154.55)",
-              }}
+              sx={{ mb: 1, fontWeight: 600, color: "oklch(0.2 0.03 154.55)" }}
             >
               Coverage Tier
             </Typography>
@@ -191,9 +196,7 @@ export function SelectCover({ setActiveStep, setCover, farmProfile }) {
                       <Radio
                         sx={{
                           color: "oklch(0.8 0.03 154.55)",
-                          "&.Mui-checked": {
-                            color: "oklch(0.32 0.1 154.55)",
-                          },
+                          "&.Mui-checked": { color: "oklch(0.32 0.1 154.55)" },
                         }}
                       />
                     }
@@ -277,7 +280,7 @@ export function SelectCover({ setActiveStep, setCover, farmProfile }) {
             <Typography
               sx={{ color: "oklch(0.5 0.02 154.55)", fontSize: "0.9rem" }}
             >
-              {farmProfile?.farmType || "Farm"} · {preview.tierLabel}
+              {farmType || "Farm"} · {preview.tierLabel}
             </Typography>
             <Typography
               component="h2"

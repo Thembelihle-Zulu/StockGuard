@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TextField, Typography, Stack, Paper } from "@mui/material";
+import { TextField, Typography, Stack, Paper, IconButton } from "@mui/material";
 import { useFormik } from "formik";
 import { object, string, number, date } from "yup";
 import InputLabel from "@mui/material/InputLabel";
@@ -14,17 +14,12 @@ import { styled } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
-const API_BASE = "http://127.0.0.1:5000/api";
+import CloseIcon from "@mui/icons-material/Close";
+import { apiFetch } from "../utils/api";
+import { uploadFile } from "../utils/uploadFile";
 
 const claimTypes = ["Treatment Claim", "Mortality Claim"];
 
-// Matches the Claim model's columns exactly (see models/claim.py):
-// livestock_id, claim_type, cause, date_of_incident, claim_amount,
-// incident_image, veterinary_invoice, veterinary_death_report.
-// status and created_date are intentionally NOT collected here — the
-// backend now sets both itself (see claims_bp.py) rather than trusting
-// the client, so there's nothing for this form to send for either.
 const claimSchema = object({
   livestockId: string().required("Select the animal this claim is for"),
   claimType: string().required("Select a claim type"),
@@ -39,9 +34,6 @@ const claimSchema = object({
     .positive("Enter an amount greater than 0")
     .required("Claim amount is required"),
   incidentImage: string().required("Please upload a photo of the incident"),
-  // veterinaryInvoice / veterinaryDeathReport are validated conditionally
-  // below, based on claimType — a Treatment Claim needs an invoice, a
-  // Mortality Claim needs a death report, not both.
   veterinaryInvoice: string().when("claimType", {
     is: "Treatment Claim",
     then: (schema) => schema.required("Please upload the veterinary invoice"),
@@ -67,40 +59,25 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-// farmProfileId scopes the animal picker to this farm's own livestock
-// (via GET /api/onboarding/animal?farm_profile_id=...) rather than every
-// animal in the system. Pass farmProfile?.id from wherever this route
-// renders — it isn't wired up yet, since FileClaim previously took no
-// props at all.
-export function FileClaim() {
-  const farmProfileId = "74aa71c8-5def-4ce7-960b-741d7c26a03c";
+// Animals come from GET /animal (get_all_animals), already scoped
+// server-side to the authenticated user's own farm via JWT. No
+// farm_profile_id is sent or needed here — the backend derives it.
+export function FileClaim({ handleClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [animals, setAnimals] = useState([]);
   const [animalsError, setAnimalsError] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (!farmProfileId) {
-      setAnimalsError(
-        "No farm profile is set — the animal list can't be loaded.",
-      );
-      return;
-    }
-
-    fetch(
-      `${API_BASE}/onboarding/animal?farm_profile_id=${encodeURIComponent(farmProfileId)}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      },
-    )
-      .then((res) => (res?.ok ? res.json() : Promise.reject("error")))
+    apiFetch("onboarding/animal")
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setAnimals(Array.isArray(data) ? data : []))
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setAnimalsError("Couldn't load your animals. Please try again.");
       });
-  }, [farmProfileId]);
+  }, []);
 
   const {
     values,
@@ -127,9 +104,8 @@ export function FileClaim() {
       setSubmitError(null);
 
       try {
-        const res = await fetch(`${API_BASE}/claims`, {
+        const res = await apiFetch("claims", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             livestock_id: data.livestockId,
             claim_type: data.claimType,
@@ -146,26 +122,37 @@ export function FileClaim() {
 
         const savedClaim = await res.json();
         console.log("Claim submitted:", savedClaim);
-        // TODO: once a claim-status/track page exists, this is the spot
-        // to navigate there or surface the saved claim to the user.
+
+        // success actions only run here, once the save is confirmed —
+        // not in `finally`, which runs on failure too
+        onSuccess && onSuccess();
+        handleClose();
       } catch (err) {
         console.error(err);
         setSubmitError(
           err.message || "Something went wrong. Please try again.",
         );
+        // no handleClose()/onSuccess() here on purpose — the farmer needs
+        // to see submitError and stays on the form to retry
       } finally {
         setSubmitting(false);
       }
     },
   });
 
-  const handleFileChange = (fieldName) => (event) => {
+  const handleFileChange = (fieldName, subfolder) => async (event) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // Storing the file name here since the field is validated as a
-      // string. If you need the actual File object for upload, keep it
-      // in separate state rather than in formik's values.
-      setFieldValue(fieldName, file.name);
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const url = await uploadFile(file, subfolder);
+      setFieldValue(fieldName, url); // real saved path, not just file.name
+    } catch (err) {
+      console.error(err);
+      setSubmitError(err.message || "Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -213,18 +200,34 @@ export function FileClaim() {
           "& .MuiTextField-root": { width: "100%" },
         }}
       >
-        <Typography
-          component="h2"
+        <Box
           sx={{
-            fontFamily: '"Playfair Display", Georgia, serif',
-            fontSize: "1.75rem",
-            fontWeight: 700,
-            color: "oklch(0.2 0.03 154.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             mb: 3,
           }}
         >
-          File a Claim
-        </Typography>
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: "1.75rem",
+              fontWeight: 700,
+              color: "oklch(0.2 0.03 154.55)",
+            }}
+          >
+            File a Claim
+          </Typography>
+
+          <IconButton
+            onClick={handleClose}
+            aria-label="Close"
+            sx={{ color: "oklch(0.2 0.03 154.55)" }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
 
         <Stack spacing={2.5}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
@@ -381,13 +384,14 @@ export function FileClaim() {
                   role={undefined}
                   tabIndex={-1}
                   startIcon={<CloudUploadIcon />}
+                  disabled={uploading}
                   sx={uploadButtonSx}
                 >
                   Upload Incident Photo
                   <VisuallyHiddenInput
                     type="file"
                     name="incidentImage"
-                    onChange={handleFileChange("incidentImage")}
+                    onChange={handleFileChange("incidentImage", "claims")}
                     onBlur={handleBlur}
                   />
                 </Button>
@@ -401,7 +405,7 @@ export function FileClaim() {
                       fontWeight: 500,
                     }}
                   >
-                    ✓ {values.incidentImage}
+                    ✓ Uploaded
                   </Typography>
                 )}
                 {touched.incidentImage && errors.incidentImage ? (
@@ -411,11 +415,6 @@ export function FileClaim() {
                 ) : null}
               </Box>
 
-              {/* Only one of these two shows, based on claim type — a
-                  Treatment Claim needs a vet invoice (the animal survived
-                  and was treated); a Mortality Claim needs a vet death
-                  report instead. Matches Section 5.1's survived-vs-died
-                  evidence split. */}
               {values.claimType === "Treatment Claim" && (
                 <Box>
                   <Button
@@ -423,13 +422,14 @@ export function FileClaim() {
                     role={undefined}
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
+                    disabled={uploading}
                     sx={uploadButtonSx}
                   >
                     Upload Veterinary Invoice
                     <VisuallyHiddenInput
                       type="file"
                       name="veterinaryInvoice"
-                      onChange={handleFileChange("veterinaryInvoice")}
+                      onChange={handleFileChange("veterinaryInvoice", "claims")}
                       onBlur={handleBlur}
                     />
                   </Button>
@@ -443,7 +443,7 @@ export function FileClaim() {
                         fontWeight: 500,
                       }}
                     >
-                      ✓ {values.veterinaryInvoice}
+                      ✓ Uploaded
                     </Typography>
                   )}
                   {touched.veterinaryInvoice && errors.veterinaryInvoice ? (
@@ -461,13 +461,17 @@ export function FileClaim() {
                     role={undefined}
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
+                    disabled={uploading}
                     sx={uploadButtonSx}
                   >
                     Upload Veterinary Death Report
                     <VisuallyHiddenInput
                       type="file"
                       name="veterinaryDeathReport"
-                      onChange={handleFileChange("veterinaryDeathReport")}
+                      onChange={handleFileChange(
+                        "veterinaryDeathReport",
+                        "claims",
+                      )}
                       onBlur={handleBlur}
                     />
                   </Button>
@@ -481,7 +485,7 @@ export function FileClaim() {
                         fontWeight: 500,
                       }}
                     >
-                      ✓ {values.veterinaryDeathReport}
+                      ✓ Uploaded
                     </Typography>
                   )}
                   {touched.veterinaryDeathReport &&
@@ -505,7 +509,7 @@ export function FileClaim() {
             type="submit"
             variant="contained"
             endIcon={<SendIcon />}
-            disabled={submitting}
+            disabled={submitting || uploading}
             sx={{
               alignSelf: "center",
               width: { xs: "100%", sm: "60%" },

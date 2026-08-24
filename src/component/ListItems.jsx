@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
-import { Claim } from "../component/Claim";
+import { apiFetch } from "../utils/api";
 
-export function ListItems({ Component, url }) {
+export function ListItems({ Component, url, onCountChange }) {
   const [items, setItems] = useState([]);
-  // http://127.0.0.1:5000/api/claims
+
   useEffect(() => {
-    fetch(url)
+    apiFetch(url)
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setItems(data))
       .catch(console.error);
   }, [url]);
 
+  useEffect(() => {
+    onCountChange?.(items.length);
+  }, [items]);
+
   return (
     <div className="claims-grid">
       {items.map((item) => (
-        <Component key={item.id} claim={item} />
+        <Component key={item.id} item={item} />
       ))}
     </div>
   );

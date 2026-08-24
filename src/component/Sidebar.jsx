@@ -1,4 +1,9 @@
-export function Sidebar({ toggle, showClaims }) {
+export function Sidebar({
+  onToggleClaims,
+  livestockCount,
+  activePanel,
+  onToggleLivestock,
+}) {
   return (
     <>
       <aside
@@ -53,7 +58,7 @@ export function Sidebar({ toggle, showClaims }) {
               </a>
             </li>
             <li>
-              <a class="nav-item" href="#">
+              <a class="nav-item" onClick={onToggleLivestock}>
                 <svg
                   width="18"
                   height="18"
@@ -68,7 +73,7 @@ export function Sidebar({ toggle, showClaims }) {
                   <path d="M12 8v4l3 3" />
                 </svg>
                 My Livestock
-                <span class="nav-badge">847</span>
+                <span class="nav-badge">{livestockCount}</span>
               </a>
             </li>
             <li>
@@ -93,14 +98,7 @@ export function Sidebar({ toggle, showClaims }) {
               </a>
             </li>
             <li>
-              <a
-                class="nav-item"
-                href="#"
-                onClick={() => {
-                  toggle(!showClaims);
-                  console.log("Hello");
-                }}
-              >
+              <a class="nav-item" href="#" onClick={onToggleClaims}>
                 <svg
                   width="18"
                   height="18"

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -6,14 +7,23 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router";
+import { apiFetch } from "../utils/api";
 
-export function PolicyCreated({ policy, inspection }) {
+export function PolicyCreated({ policyNumber }) {
   const navigate = useNavigate();
+  const [policy, setPolicy] = useState(null);
 
-  const inspectionStatus =
-    !inspection?.status || inspection.status === "pending"
-      ? "Pending Review"
-      : inspection.status;
+  useEffect(() => {
+    if (!policyNumber) return;
+
+    apiFetch(`onboarding/policy/${policyNumber}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load policy");
+        return res.json();
+      })
+      .then(setPolicy)
+      .catch((err) => console.error(err));
+  }, [policyNumber]);
 
   return (
     <div className="form-container">
@@ -54,7 +64,7 @@ export function PolicyCreated({ policy, inspection }) {
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {policy?.policy_number || "-"}
+              {policy?.policy_number || policyNumber || "-"}
             </Typography>
           </Box>
 
@@ -70,7 +80,7 @@ export function PolicyCreated({ policy, inspection }) {
             Inspection Status
           </Typography>
           <Chip
-            label={inspectionStatus}
+            label="Pending Review"
             sx={{ bgcolor: "grey.200", mb: 2 }}
             size="small"
           />
@@ -79,7 +89,7 @@ export function PolicyCreated({ policy, inspection }) {
             Premium
           </Typography>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            R{policy?.monthly_premium || 0}/month
+            R{policy?.monthly_premium ?? 0}/month
           </Typography>
         </Box>
 

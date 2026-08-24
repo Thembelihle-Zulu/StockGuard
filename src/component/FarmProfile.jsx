@@ -9,8 +9,7 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
-
-const API_BASE = "http://127.0.0.1:5000/api/onboarding";
+import { apiFetch } from "../utils/api";
 
 const farmProfileSchema = object({
   farmName: string().required("Farm name is required"),
@@ -23,12 +22,7 @@ const farmProfileSchema = object({
   farmType: string().required("Farm type selection is required"),
 });
 
-export function FarmProfile({
-  provinces,
-  farmTypes,
-  setActiveStep,
-  setFarmProfile,
-}) {
+export function FarmProfile({ provinces, farmTypes, setActiveStep, onSaved }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
@@ -48,14 +42,14 @@ export function FarmProfile({
         setSubmitError(null);
 
         try {
-          const res = await fetch(`${API_BASE}/farm_profile`, {
+          const res = await apiFetch("onboarding/farm_profile", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               farm_name: data.farmName,
               street_address: data.streetAddress,
               province: data.province,
               postal_code: data.postalCode,
+              policy_holder_id: "",
               farm_type: data.farmType,
               city: data.city,
             }),
@@ -64,9 +58,7 @@ export function FarmProfile({
           if (!res.ok) throw new Error("Failed to save farm profile");
 
           const savedProfile = await res.json();
-          console.log("Farm profile saved:", savedProfile);
-
-          setFarmProfile(savedProfile); 
+          onSaved(savedProfile);
           setActiveStep((prev) => prev + 1);
         } catch (err) {
           console.error(err);

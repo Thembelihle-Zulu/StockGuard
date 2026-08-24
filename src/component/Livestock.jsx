@@ -1,16 +1,21 @@
-import { ClaimModal } from "./ClaimModal";
+import { LivestockModal } from "./LivestockModal";
 import { useState } from "react";
-export function LIvestock({ livestock }) {
+
+const API_ORIGIN = "http://127.0.0.1:5000";
+
+export function Livestock({ item }) {
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const livestock = item;
+
   return (
     <div className="claim-card">
       <img
         className="claim-card-image"
-        src={livestock.image}
-        alt={`Incident photo for livestock on livestock ${livestock.id}`}
+        src={`${API_ORIGIN}${livestock.image}`}
+        alt={livestock.tag_number}
       />
 
       <div className="claim-card-details">
@@ -21,13 +26,12 @@ export function LIvestock({ livestock }) {
 
       <div className="claim-card-meta">
         <span
-          className={`claim-status-badge claim-status-${claim.status.toLowerCase()}`}
+          className={`claim-status-badge claim-status-${(livestock.status || "alive").toLowerCase()}`}
         >
-          {livestock.status}
+          {livestock.status || "Alive"}
         </span>
         <p className="claim-card-date">
-          Estimated Value:{" "}
-          {new Date(livestock.estimated_value).toLocaleDateString()}
+          Estimated Value: R {livestock.estimated_value}
         </p>
       </div>
 
@@ -36,7 +40,9 @@ export function LIvestock({ livestock }) {
           View Details
         </button>
       </div>
-      {open && <ClaimModal setOpen={setOpen} open={open} claim={claim} />}
+      {open && (
+        <LivestockModal setOpen={setOpen} open={open} livestock={livestock} />
+      )}
     </div>
   );
 }

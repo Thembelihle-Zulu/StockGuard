@@ -710,6 +710,55 @@ body{
   z-index: 1;
   position: relative;
 }
+
+/* ===== ClaimsList.jsx ===== */
+/* Paste into index.css. */
+
+.claims-page {
+  max-width: 60rem;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+}
+
+.claims-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.claims-page-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: oklch(0.2 0.03 154.55);
+  margin: 0;
+}
+
+.claims-new-btn {
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+  border-radius: 2rem;
+  padding-inline: 1.5rem;
+  padding-block: 0.6rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+}
+
+.claims-new-btn:hover {
+  background-color: oklch(0.27 0.1 154.55);
+  box-shadow: none;
+}
+
+/* Sits above the claims grid, spacing it from the filter pills above. */
+.claims-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
 .claim-card {
   display: flex;
   flex-direction: row;
@@ -814,6 +863,202 @@ body{
 }
 
 .claim-list{
+ /* padding-inline-start: var(--sidebar-w); */
+  
+}
+.claims-page{
+padding-inline-start: calc(var(--sidebar-w) + 2rem) ;
+}
+
+.pills{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.claim-status-badge {
+  display: inline-block;
+  padding-inline: 0.75rem;
+  padding-block: 0.25rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.claim-status-pending {
+  background-color: oklch(0.95 0.015 90);
+  color: oklch(0.45 0.01 90);
+  border: 1px solid oklch(0.85 0.015 90);
+}
  
-  padding-inline-start: var(--sidebar-w);
+.claim-status-approved {
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+}
+ 
+.claim-status-denied {
+  background-color: oklch(0.93 0.06 25);
+  color: oklch(0.45 0.15 25);
+}
+
+/* ===== Signup.jsx ===== */
+/* Paste into index.css. Same structure/conventions as FileClaim.css —
+   brand-green oklch palette, Playfair heading, outlined fields with a
+   focus-within border/label state instead of MUI's default blue. */
+
+.signup-page {
+  display: flex;
+  justify-content: center;
+  padding-block: 2rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 900px) {
+  .signup-page {
+    padding-block: 3rem;
+  }
+}
+
+.signup-paper {
+  width: 100%;
+  max-width: 35rem;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid oklch(0.9 0.02 154.55);
+}
+
+@media (min-width: 900px) {
+  .signup-paper {
+    padding: 2.5rem;
+  }
+}
+
+.signup-paper .MuiTextField-root {
+  width: 100%;
+}
+
+.signup-heading {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: oklch(0.2 0.03 154.55);
+  margin-bottom: 1.5rem;
+}
+
+.signup-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.signup-field:focus-within .MuiOutlinedInput-notchedOutline {
+  border-color: oklch(0.32 0.1 154.55);
+}
+
+.signup-field:focus-within .MuiInputLabel-root {
+  color: oklch(0.32 0.1 154.55);
+}
+
+.signup-error {
+  display: block;
+  color: #d32f2f;
+}
+
+.signup-submit-error {
+  margin-top: 0.5rem;
+}
+
+.signup-submit-btn {
+  align-self: center;
+  width: 100%;
+  margin-top: 0.5rem;
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+  border-radius: 2rem;
+  padding-block: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+}
+
+@media (min-width: 600px) {
+  .signup-submit-btn {
+    width: 60%;
+  }
+}
+
+.signup-submit-btn:hover {
+  background-color: oklch(0.27 0.1 154.55);
+  box-shadow: none;
+}
+
+.signup-submit-btn.Mui-disabled {
+  background-color: oklch(0.9 0.02 154.55);
+  color: oklch(0.6 0.02 154.55);
+}
+
+/* ===== Login.jsx ===== */
+/* Paste into index.css. Same conventions as Signup.css/FileClaim.css. */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+
+.login-alert {
+  border-radius: 0.75rem;
+}
+
+.login-field .MuiOutlinedInput-root {
+  width: 100%;
+}
+
+.login-field:focus-within .MuiOutlinedInput-notchedOutline {
+  border-color: oklch(0.32 0.1 154.55);
+}
+
+.login-field:focus-within .MuiInputLabel-root {
+  color: oklch(0.32 0.1 154.55);
+}
+
+.login-signup-prompt {
+  margin: 0;
+  font-size: 0.9rem;
+  color: oklch(0.5 0.02 154.55);
+}
+
+.login-signup-link {
+  color: oklch(0.32 0.1 154.55);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-signup-link:hover {
+  text-decoration: underline;
+}
+
+.login-submit-btn {
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+  border-radius: 2rem;
+  padding-block: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+}
+
+.login-submit-btn:hover {
+  background-color: oklch(0.27 0.1 154.55);
+  box-shadow: none;
+}
+
+.login-submit-btn.Mui-disabled {
+  background-color: oklch(0.9 0.02 154.55);
+  color: oklch(0.6 0.02 154.55);
 }

@@ -1,25 +1,12 @@
-import { NavLink, Route, Routes, useNavigate } from "react-router";
-import {
-  AppBar,
-  Toolbar,
-  Box,
-  Stack,
-  Button,
-  GlobalStyles,
-} from "@mui/material";
-import ShieldIcon from "@mui/icons-material/Shield";
-import { Onboarding } from "./pages/Onboarding";
+import { GlobalStyles } from "@mui/material";
+import { Navigate, Route, Routes, useNavigate } from "react-router";
 import "./App.css";
-import { AnimalInspection } from "./component/AnimalInspection";
-import { RegisterAnimal } from "./component/RegisterAnimal";
-import { SelectCover } from "./component/SelectCover";
 import { Home } from "./pages/Home";
+import { Onboarding } from "./pages/Onboarding";
 // import { Signup } from "./pages/Signup";
 // import { Dashboard } from "./pages/dashboard";
 import { Dashboard } from "./pages/dashboard";
-import { FileClaim } from "./pages/FileClaim";
-import { Claim } from "./component/Claim";
-import { ClaimsList } from "./pages/ClaimsList";
+import { Login } from "./pages/Login";
 function App() {
   const navigate = useNavigate();
   const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
@@ -37,24 +24,46 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route
+        {/* <Route
           path="/onboarding/register-animal"
           element={<RegisterAnimal animalType={animal_type} />}
         />
-        <Route path="/onboarding" element={<Onboarding />} />
+
         <Route
           path="/onboarding/animal-inspection"
           element={<AnimalInspection animalType={animal_type} />}
         />
         <Route path="/onboarding/select-cover" element={<SelectCover />} />
-        {/* <Route path="/signup" element={<Signup />} />
-          <Route path="/signup" element={<Signup />} /> */}
+        <Route path="/signup" element={<Signup />} />
+        // <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/file-claim" element={<FileClaim />} />
-        <Route path="/claims" element={<ClaimsList />} />
+        <Route path="/claims" element={<ClaimsList />} /> */}
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
 }
 
 export default App;
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
+
+  return token ? children : <Navigate replace to="/login" />;
+}

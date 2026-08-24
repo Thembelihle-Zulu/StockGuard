@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { TextField, Typography, Stack, Paper } from "@mui/material";
-import { useFormik } from "formik";
-import { object, string, number } from "yup";
+import CloseIcon from "@mui/icons-material/Close";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import SendIcon from "@mui/icons-material/Send";
+import { IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import SendIcon from "@mui/icons-material/Send";
-import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
-const API_BASE = "http://127.0.0.1:5000/api/onboarding";
+import { useFormik } from "formik";
+import { useState } from "react";
+import { number, object, string } from "yup";
+import { apiFetch } from "../utils/api";
+import { uploadFile } from "../utils/uploadFile";
 
 const animalSchema = object({
   tagNumber: string().required("Tag number is required"),
@@ -36,15 +37,19 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+// Note: farm_profile_id is intentionally NOT sent here — the backend
+// derives it from the JWT-authenticated user (see animal_bp.add_animal),
+// and ignores/ would reject anything the client tries to pass instead.
 export function RegisterAnimal({
   animalType,
   setActiveStep,
-  setFirstAnimal,
-  farmProfile,
+  isModal,
+  handleClose,
+  onSuccess,
+  onSaved,
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-
   const {
     values,
     handleChange,
@@ -69,9 +74,8 @@ export function RegisterAnimal({
       setSubmitError(null);
 
       try {
-        const res = await fetch(`${API_BASE}/animal`, {
+        const res = await apiFetch("onboarding/animal", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             tag_number: data.tagNumber,
             species: data.species,
@@ -80,17 +84,22 @@ export function RegisterAnimal({
             age: data.age,
             image: data.image,
             status: data.status,
-            farm_profile_id: farmProfile?.id,
           }),
         });
 
         if (!res.ok) throw new Error("Failed to register animal");
 
         const savedAnimal = await res.json();
-        console.log("Animal saved:", savedAnimal);
 
-        setFirstAnimal(savedAnimal); // has .id now, used by inspection step
-        setActiveStep((prev) => prev + 1);
+        // success actions live here, inside the try block, so a failed
+        // save never closes the modal or advances the step silently
+        if (isModal) {
+          onSuccess && onSuccess();
+          handleClose();
+        } else {
+          onSaved(savedAnimal);
+          setActiveStep((prev) => prev + 1);
+        }
       } catch (err) {
         console.error(err);
         setSubmitError(
@@ -102,17 +111,19 @@ export function RegisterAnimal({
     },
   });
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // storing filename here since the field is validated as a string;
-      // if you need to actually upload the file, keep the File object in
-      // separate state rather than in formik's values
-      setFieldValue("image", file.name);
+
+    if (!file) return;
+    try {
+      const result = await uploadFile(file, "animals");
+
+      setFieldValue("image", result.url);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  // Shared outlined-field styling: brand-green focus/label states in place of MUI's default blue.
   const fieldSx = {
     "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
       borderColor: "oklch(0.32 0.1 154.55)",
@@ -145,18 +156,36 @@ export function RegisterAnimal({
           "& .MuiTextField-root": { width: "100%" },
         }}
       >
-        <Typography
-          component="h2"
+        <Box
           sx={{
-            fontFamily: '"Playfair Display", Georgia, serif',
-            fontSize: "1.75rem",
-            fontWeight: 700,
-            color: "oklch(0.2 0.03 154.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             mb: 3,
           }}
         >
-          Register First Animal
-        </Typography>
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: "1.75rem",
+              fontWeight: 700,
+              color: "oklch(0.2 0.03 154.55)",
+            }}
+          >
+            Register Animal
+          </Typography>
+
+          {isModal && (
+            <IconButton
+              onClick={handleClose}
+              aria-label="Close"
+              sx={{ color: "oklch(0.2 0.03 154.55)" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+        </Box>
 
         <Stack spacing={2.5}>
           <Box>

@@ -7,6 +7,7 @@ import { AnimalInspection } from "../component/AnimalInspection";
 import { SelectCover } from "../component/SelectCover";
 import { ConfirmPolicy } from "../component/ConfirmPolicy";
 import { PolicyCreated } from "../component/PolicyCreated";
+
 export function Onboarding() {
   const [activeStep, setActiveStep] = useState(0);
   const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
@@ -22,11 +23,16 @@ export function Onboarding() {
     "Western Cape",
   ];
   const farmTypes = ["Small-scale", "Commercial"];
-  const [farm_profile, setFarmProfile] = useState({});
-  const [firstAnimal, setFirstAnimal] = useState({});
-  const [inspection, setInspection] = useState({});
+
+  // Only IDs (+ cover, which isn't a DB model) live here. Any component
+  // that needs to *display* farm/animal/inspection details fetches by ID
+  // itself via the real GET routes — keeps this file decoupled from every
+  // table's schema, so a backend field rename doesn't ripple through here.
+  const [farmProfileId, setFarmProfileId] = useState(null);
+  const [firstAnimalId, setFirstAnimalId] = useState(null);
+  const [inspectionId, setInspectionId] = useState(null);
   const [cover, setCover] = useState({});
-  const [createdPolicy, setCreatedPolicy] = useState(null);
+  const [policyNumber, setPolicyNumber] = useState(null);
 
   const stepComponents = [
     <FarmProfile
@@ -34,37 +40,36 @@ export function Onboarding() {
       setActiveStep={setActiveStep}
       provinces={provinces}
       farmTypes={farmTypes}
-      setFarmProfile={setFarmProfile}
+      onSaved={(profile) => setFarmProfileId(profile.id)}
     />,
     <RegisterAnimal
       key={1}
       setActiveStep={setActiveStep}
       animalType={animal_type}
-      setFirstAnimal={setFirstAnimal}
-      farmProfile={farm_profile}
+      onSaved={(animal) => setFirstAnimalId(animal.id)}
     />,
     <AnimalInspection
       key={2}
       setActiveStep={setActiveStep}
-      setInspection={setInspection}
-      firstAnimal={firstAnimal}
+      animalId={firstAnimalId}
+      onSaved={(inspection) => setInspectionId(inspection.id)}
     />,
     <SelectCover
       key={3}
       setActiveStep={setActiveStep}
       setCover={setCover}
-      farmProfile={farm_profile}
+      farmProfileId={farmProfileId}
     />,
     <ConfirmPolicy
       key={4}
       setActiveStep={setActiveStep}
-      farmProfile={farm_profile}
-      firstAnimal={firstAnimal}
-      inspection={inspection}
+      farmProfileId={farmProfileId}
+      firstAnimalId={firstAnimalId}
+      inspectionId={inspectionId}
       cover={cover}
-      setCreatedPolicy={setCreatedPolicy}
+      onCreated={(policy) => setPolicyNumber(policy.policy_number)}
     />,
-    <PolicyCreated key={5} policy={createdPolicy} inspection={inspection} />,
+    <PolicyCreated key={5} policyNumber={policyNumber} />,
   ];
 
   return (

@@ -10,8 +10,7 @@ import { styled } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
-const API_BASE = "http://127.0.0.1:5000/api/onboarding";
+import { apiFetch } from "../utils/api";
 
 const inspectionSchema = object({
   status: string().required("status is required"),
@@ -34,11 +33,11 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export function AnimalInspection({
-  setActiveStep,
-  setInspection,
-  firstAnimal,
-}) {
+// Note: keys sent to the backend (inspectionDate, animalTagNameImage,
+// vetenaryHealthReport) are intentionally camelCase — that's what
+// animal_inspection_bp.add_animal_inspection actually reads via
+// data.get(...). Only livestock_id is snake_case, matching the model.
+export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
@@ -63,21 +62,21 @@ export function AnimalInspection({
       setSubmitError(null);
 
       try {
-        const res = await fetch(`${API_BASE}/inspection`, {
+        const res = await apiFetch("onboarding/inspection", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            ...data,
-            livestock_id: firstAnimal?.id,
+            status: data.status,
+            inspectionDate: data.inspectionDate,
+            animalTagNameImage: data.animalTagNameImage,
+            vetenaryHealthReport: data.vetenaryHealthReport,
+            livestock_id: animalId,
           }),
         });
 
         if (!res.ok) throw new Error("Failed to save inspection");
 
         const savedInspection = await res.json();
-        console.log("Inspection saved:", savedInspection);
-
-        setInspection(savedInspection); // has .id now, used by later steps
+        onSaved(savedInspection);
         setActiveStep((prev) => prev + 1);
       } catch (err) {
         console.error(err);
@@ -93,14 +92,10 @@ export function AnimalInspection({
   const handleFileChange = (fieldName) => (event) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Storing the file name here since the field is validated as a string.
-      // If you need the actual File object for upload, store it in separate
-      // state (e.g. a `files` object) rather than in formik's values.
       setFieldValue(fieldName, file.name);
     }
   };
 
-  // Shared outlined-field styling: brand-green focus/label states in place of MUI's default blue.
   const fieldSx = {
     "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
       borderColor: "oklch(0.32 0.1 154.55)",

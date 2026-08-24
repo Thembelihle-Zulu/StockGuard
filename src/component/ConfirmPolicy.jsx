@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,23 +11,55 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CheckIcon from "@mui/icons-material/Check";
+import { apiFetch } from "../utils/api";
 
-const API_BASE = "http://127.0.0.1:5000/api/onboarding";
-
+// farmProfileId / firstAnimalId / inspectionId are IDs only — this
+// component fetches its own display data via the real GET routes, each
+// of which enforces ownership server-side. The POST to /policy sends
+// only pricing fields; farm_profile_id is derived from the JWT on the
+// backend and would be ignored/rejected if sent from here.
 export function ConfirmPolicy({
   setActiveStep,
-  setCreatedPolicy,
-  farmProfile,
-  firstAnimal,
-  inspection,
+  farmProfileId,
+  firstAnimalId,
+  inspectionId,
   cover,
+  onCreated,
 }) {
-  // Payment method is UI-only for now — there's no column for it on the
-  // `policy` table, so it isn't sent in the POST. Add a `payment_method`
-  // column (or a separate `payment` table) if you want this persisted.
+  const [farm, setFarm] = useState(null);
+  const [animal, setAnimal] = useState(null);
+  const [inspectionStatus, setInspectionStatus] = useState(null);
+
   const [paymentMethod, setPaymentMethod] = useState("mobile_money");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (farmProfileId) {
+      apiFetch(`onboarding/farm_profile/${farmProfileId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => console.log(data) && setFarm(data))
+        .catch((err) => console.error(err));
+    }
+  }, [farmProfileId]);
+
+  useEffect(() => {
+    if (firstAnimalId) {
+      apiFetch(`onboarding/animal/${firstAnimalId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => data && setAnimal(data))
+        .catch((err) => console.error(err));
+    }
+  }, [firstAnimalId]);
+
+  useEffect(() => {
+    if (inspectionId) {
+      apiFetch(`onboarding/inspection/${inspectionId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => data && setInspectionStatus(data.status))
+        .catch((err) => console.error(err));
+    }
+  }, [inspectionId]);
 
   const monthlyPremium = cover?.monthlyPremium ?? 0;
 
@@ -38,24 +70,20 @@ export function ConfirmPolicy({
     try {
       const policyPayload = {
         policy_number: `POL-${Date.now()}`,
-        farm_profile_id: farmProfile?.id,
         product_id: 1, // Livestock Health Cover product id
-        creation_date: new Date().toISOString(),
         status: "Active",
         monthly_premium: monthlyPremium,
         animal_count_at_pricing: cover?.declaredAnimalCount ?? 1,
       };
 
-      const policyRes = await fetch(`${API_BASE}/policy`, {
+      const policyRes = await apiFetch("onboarding/policy", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(policyPayload),
       });
       if (!policyRes.ok) throw new Error("Failed to create policy");
       const savedPolicy = await policyRes.json();
 
-      console.log("Policy activated:", savedPolicy);
-      setCreatedPolicy(savedPolicy);
+      onCreated(savedPolicy);
       setActiveStep((prev) => prev + 1);
     } catch (err) {
       console.error(err);
@@ -93,13 +121,13 @@ export function ConfirmPolicy({
         </Typography>
 
         <Box sx={{ textAlign: "left" }}>
-          <ReviewRow label="Farm" value={farmProfile?.farmName || "-"} />
-          <ReviewRow label="Farmer Type" value={farmProfile?.farmType || "-"} />
+          <ReviewRow label="Farm" value={farm?.farm_name || "-"} />
+          <ReviewRow label="Farmer Type" value={farm?.farm_type || "-"} />
           <ReviewRow
             label="Animal"
             value={
-              firstAnimal
-                ? `${firstAnimal.species || ""} #${firstAnimal.tagNumber || ""}`
+              animal
+                ? `${animal.species || ""} #${animal.tag_number || ""}`
                 : "-"
             }
           />
@@ -131,9 +159,9 @@ export function ConfirmPolicy({
             <Typography color="text.secondary">Inspection</Typography>
             <Chip
               label={
-                !inspection?.status || inspection.status === "pending"
+                !inspectionStatus || inspectionStatus === "pending"
                   ? "Pending Review"
-                  : inspection.status
+                  : inspectionStatus
               }
               sx={{ bgcolor: "grey.200" }}
               size="small"

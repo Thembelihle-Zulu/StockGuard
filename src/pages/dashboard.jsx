@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Sidebar } from "../component/Sidebar";
 import { ClaimsList } from "./ClaimsList";
+import { Livestock } from "../component/Livestock";
+import { LivestockList } from "./LivestockList";
 
 export function Dashboard() {
-  const [showClaims, toggle] = useState(false);
+  const [livestockCount, setLivestockCount] = useState(0);
+  const [showLivestock, toggleLivestock] = useState(false);
+  const [activePanel, setActivePanel] = useState(null);
   return (
     <>
       <header class="topnav" role="banner">
@@ -97,10 +101,24 @@ export function Dashboard() {
           </div>
         </div>
       </header>
-      <Sidebar toggle={toggle} showClaims={showClaims} />
-      {showClaims && (
+      <Sidebar
+        livestockCount={livestockCount}
+        onToggleClaims={() =>
+          setActivePanel((prev) => (prev === "claims" ? null : "claims"))
+        }
+        onToggleLivestock={() =>
+          setActivePanel((prev) => (prev === "livestock" ? null : "livestock"))
+        }
+        activePanel={activePanel}
+      />
+      {activePanel === "claims" && (
         <section className="claim-list">
           <ClaimsList />
+        </section>
+      )}
+      {activePanel === "livestock" && (
+        <section className="claim-list">
+          <LivestockList onCountChange={setLivestockCount} />
         </section>
       )}
     </>
