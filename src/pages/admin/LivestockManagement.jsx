@@ -5,12 +5,15 @@ import AgricultureIcon from "@mui/icons-material/Agriculture";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import { KpiCard } from "../../component/admin/KPICard";
 import { useEffect, useState } from "react";
-import { apiFetch } from "../../utils/uploadFile";
+import { apiFetch } from "../../utils/api";
 import { LivestockFilters } from "../../component/admin/LivestockFilters";
 import { LivestockTable } from "../../component/admin/LivestockTable";
+import { LivestockModal } from "../../component/LivestockModal";
 import "../../styles/admin-management.css";
+
 const ANIMALS_URL = "onboarding/animal/admin/all";
 const FARMS_URL = "onboarding/farm_profile/admin/all";
+const INSPECTIONS_URL = "onboarding/inspection/admin/all";
 
 const EMPTY_FILTERS = {
   search: "",
@@ -27,7 +30,9 @@ const EMPTY_FILTERS = {
 export function LivestockManagement({ setLivestockCount }) {
   const [animals, setAnimals] = useState([]);
   const [farmProfiles, setFarmProfiles] = useState([]);
+  const [inspections, setInspections] = useState([]);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
 
   useEffect(() => {
     apiFetch(ANIMALS_URL)
@@ -43,15 +48,35 @@ export function LivestockManagement({ setLivestockCount }) {
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    apiFetch(INSPECTIONS_URL)
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
+      .then((data) => setInspections(Array.isArray(data) ? data : []))
+      .catch(console.error);
+  }, []);
+
   const farmById = {};
   farmProfiles.forEach((f) => {
     farmById[f.id] = f;
   });
 
-  // Joins each animal with its farm's name/province before anything
-  // downstream (filtering, the table) sees it — LivestockTable's
-  // columns read row.farm_name / row.province directly, which don't
-  // exist on the raw Animal record from the backend.
+  // livestock_id -> most recent inspection_date. AnimalInspection.livestock_id
+  // is unique today (one inspection per animal), so this is just a direct
+  // lookup in practice — written to take the latest date defensively in
+  // case that constraint is ever relaxed.
+  const lastInspectionByAnimal = {};
+  inspections.forEach((insp) => {
+    const existing = lastInspectionByAnimal[insp.livestock_id];
+    if (!existing || new Date(insp.inspection_date) > new Date(existing)) {
+      lastInspectionByAnimal[insp.livestock_id] = insp.inspection_date;
+    }
+  });
+
+  // Joins each animal with its farm's name/province and its most recent
+  // inspection date before anything downstream (filtering, the table)
+  // sees it — LivestockTable's columns read row.farm_name / row.province /
+  // row.last_inspection_date directly, none of which exist on the raw
+  // Animal record from the backend.
   //
   // province is assumed to be the field name on FarmProfile, matching
   // every other file that's used it (the onboarding provinces list,
@@ -67,6 +92,7 @@ export function LivestockManagement({ setLivestockCount }) {
       ...animal,
       farm_name: farm?.farm_name,
       province: farm?.province,
+      last_inspection_date: lastInspectionByAnimal[animal.id],
     };
   });
 
@@ -183,8 +209,19 @@ export function LivestockManagement({ setLivestockCount }) {
       </div>
 
       <div className="table-section">
-        <LivestockTable rows={filteredAnimals} />
+        <LivestockTable
+          rows={filteredAnimals}
+          onView={(animal) => setSelectedAnimal(animal)}
+        />
       </div>
+
+      {selectedAnimal && (
+        <LivestockModal
+          open={!!selectedAnimal}
+          setOpen={(isOpen) => !isOpen && setSelectedAnimal(null)}
+          livestock={selectedAnimal}
+        />
+      )}
     </div>
   );
 }

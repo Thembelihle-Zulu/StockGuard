@@ -1,0 +1,403 @@
+/* ===== farm-dashboard.css ===== */
+
+.farm-dashboard-page {
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+  padding-inline-start: calc(var(--sidebar-w) + 2rem);
+}
+
+/* --- Banner --- */
+.farm-banner {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, oklch(0.32 0.1 154.55), oklch(0.42 0.09 145));
+  color: white;
+  overflow: hidden;
+}
+
+.farm-banner-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(0.85 0.06 90);
+}
+
+.farm-banner-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.9rem;
+  margin: 0.2rem 0 0.75rem;
+}
+
+.farm-banner-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.farm-banner-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: oklch(0.92 0.01 154.55);
+}
+
+.farm-banner-progress {
+  max-width: 20rem;
+}
+
+.farm-banner-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  margin-bottom: 0.35rem;
+  color: oklch(0.9 0.01 154.55);
+}
+
+.farm-banner-progress-track {
+  height: 5px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.farm-banner-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: oklch(0.85 0.06 90);
+}
+
+/* --- KPI row spacing --- */
+.farm-dashboard-kpi-grid {
+  margin-bottom: 1.5rem !important;
+}
+
+/* --- Generic panel --- */
+.dashboard-panel {
+  background-color: #ffffff;
+  border: 1px solid oklch(0.93 0.005 90);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  height: 100%;
+}
+
+.dashboard-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.dashboard-panel-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: oklch(0.2 0.03 154.55);
+}
+
+.dashboard-panel-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: oklch(0.55 0.01 90);
+}
+
+.dashboard-panel-link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: oklch(0.32 0.1 154.55);
+  text-decoration: none;
+}
+
+.dashboard-panel-link:hover {
+  text-decoration: underline;
+}
+
+.farm-dashboard-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .farm-dashboard-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Livestock portfolio list --- */
+.livestock-portfolio-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.livestock-portfolio-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.livestock-portfolio-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  font-family: var(--font-display, "Playfair Display", Georgia, serif);
+}
+
+.livestock-portfolio-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.livestock-portfolio-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: oklch(0.25 0.01 90);
+}
+
+.livestock-portfolio-inspected {
+  font-size: 0.75rem;
+  color: oklch(0.55 0.01 90);
+}
+
+.livestock-portfolio-count {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: oklch(0.2 0.03 154.55);
+}
+
+/* --- Quick actions --- */
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.85rem;
+}
+
+.quick-action-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding: 0.85rem;
+  border: 1px solid oklch(0.92 0.005 90);
+  border-radius: 0.75rem;
+  background-color: oklch(0.99 0.002 90);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quick-action-tile:hover {
+  border-color: oklch(0.32 0.1 154.55);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.quick-action-icon {
+  color: oklch(0.32 0.1 154.55);
+}
+
+.quick-action-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: oklch(0.25 0.01 90);
+}
+
+.quick-action-sublabel {
+  font-size: 0.72rem;
+  color: oklch(0.55 0.01 90);
+}
+
+/* --- Active policy --- */
+.policy-active-pill {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: oklch(0.32 0.1 154.55);
+  background-color: oklch(0.95 0.03 154.55);
+  border: 1px solid oklch(0.85 0.06 154.55);
+  padding: 3px 10px;
+  border-radius: 1rem;
+}
+
+.policy-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.policy-number {
+  font-size: 0.75rem;
+  color: oklch(0.55 0.01 90);
+}
+
+.policy-name {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: oklch(0.2 0.01 90);
+}
+
+.policy-download-btn {
+  color: oklch(0.32 0.1 154.55) !important;
+  text-transform: none !important;
+}
+
+.policy-details {
+  margin: 0 0 1.25rem;
+}
+
+.policy-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid oklch(0.95 0.005 90);
+  font-size: 0.85rem;
+}
+
+.policy-detail-row dt {
+  color: oklch(0.55 0.01 90);
+}
+
+.policy-detail-row dd {
+  margin: 0;
+  font-weight: 600;
+  color: oklch(0.25 0.01 90);
+}
+
+.policy-renewal-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  margin-bottom: 0.4rem;
+  color: oklch(0.5 0.01 90);
+}
+
+.policy-renewal-days {
+  font-weight: 600;
+  color: oklch(0.5 0.1 60);
+}
+
+.policy-renewal-track {
+  height: 6px;
+  border-radius: 4px;
+  background-color: oklch(0.93 0.005 90);
+}
+
+.policy-renewal-fill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: oklch(0.55 0.1 60);
+}
+
+/* --- Stat block row (reusable) --- */
+.stat-block-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+}
+
+.stat-block-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.stat-block-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-block--warning { background-color: oklch(0.95 0.03 80); color: oklch(0.5 0.1 60); }
+.stat-block--success { background-color: oklch(0.95 0.05 154.55); color: oklch(0.32 0.1 154.55); }
+.stat-block--danger { background-color: oklch(0.93 0.06 25); color: oklch(0.45 0.15 25); }
+.stat-block--neutral { background-color: oklch(0.95 0.005 90); color: oklch(0.5 0.01 90); }
+
+/* --- Claims overview list --- */
+.claims-overview-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.claims-overview-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid oklch(0.95 0.005 90);
+}
+
+.claims-overview-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.claims-overview-dot--pending { background-color: oklch(0.65 0.15 60); }
+.claims-overview-dot--approved { background-color: oklch(0.5 0.12 154.55); }
+.claims-overview-dot--denied { background-color: oklch(0.55 0.18 25); }
+
+.claims-overview-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.claims-overview-id {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: oklch(0.25 0.01 90);
+}
+
+.claims-overview-desc {
+  font-size: 0.75rem;
+  color: oklch(0.55 0.01 90);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.claims-overview-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.claims-overview-amount {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: oklch(0.25 0.01 90);
+}

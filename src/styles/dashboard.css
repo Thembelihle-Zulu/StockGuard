@@ -2,7 +2,10 @@
 /* Dashboard.jsx / AdminDashboard.jsx — top nav bar, page content
    wrapper, and the hero card. Depends on globals.css's custom
    properties (--surface, --border, --topnav-h, --sidebar-w, etc.). */
+.admin{
+    padding-inline-start: calc(var(--sidebar-w, 240px) + 2rem);
 
+}
 .topnav {
   height: var(--topnav-h);
   background: var(--surface);
@@ -15,6 +18,7 @@
   top: 0;
   z-index: 90;
   box-shadow: var(--shadow-sm);
+  
 }
 
 .topnav-hamburger {
@@ -103,6 +107,8 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
+    padding-inline-start: calc(var(--sidebar-w, 240px) + 2rem);
+
 }
 
 /* ============================================================
@@ -217,5 +223,5 @@
 }
 
 .kpi-list {
-  padding-inline-start: calc(var(--sidebar-w) + 1rem);
+  /* padding-inline-start: calc(var(--sidebar-w) + 1rem); */
 }

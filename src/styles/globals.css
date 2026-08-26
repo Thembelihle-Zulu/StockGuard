@@ -1,12 +1,8 @@
-/* ===== globals.css ===== */
-/* Reset, CSS custom properties (design tokens), and body defaults —
-   loaded once, before any other stylesheet, since every other file
-   in src/styles/ references these var(--...) values. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
-* {
+*{
   box-sizing: border-box;
 }
-
 :root {
   --forest:       #234F32;
   --evergreen:    #2F6B45;
@@ -42,7 +38,13 @@
   --font-display: 'Playfair Display', Georgia, serif;
 }
 
-body {
+body{
   background-color: whitesmoke;
   padding-block-start: 1rem;
+  font-family: var(--font-base);
+  color: var(--text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
 }

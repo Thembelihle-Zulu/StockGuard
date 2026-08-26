@@ -15,7 +15,13 @@ const COLUMNS = [
 function renderCell(row, col, onStatusChange) {
   switch (col.key) {
     case "status":
-      return <StatusCell claim={row} onStatusChange={onStatusChange} />;
+      return (
+        <StatusCell
+          id={row.id}
+          status={row.status}
+          onStatusChange={onStatusChange}
+        />
+      );
     case "claim_amount":
       return row.claim_amount != null
         ? `R ${Number(row.claim_amount).toLocaleString()}`
