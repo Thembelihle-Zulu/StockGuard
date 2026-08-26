@@ -1,0 +1,23 @@
+/* ===== LivestockManagement.jsx ===== */
+/* Paste into index.css. Real vertical spacing between the KPI grid,
+   filters, and table — the missing piece that was causing everything
+   to render stacked with no gap (className="claim-list" was never a
+   defined rule anywhere). */
+
+.livestock-management-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.kpi-grid {
+  margin-bottom: 0;
+}
+
+.filters-section {
+  width: 100%;
+}
+
+.table-section {
+  width: 100%;
+}

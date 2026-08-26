@@ -19,7 +19,7 @@ import { useFormik } from "formik";
 import { number, object, string } from "yup";
 import { getPremium } from "../utils/Premuimcalculator";
 import { apiFetch } from "../utils/api";
-
+import "../styles/onboarding.css";
 const coverSchema = object({
   declaredAnimalCount: number()
     .typeError("Enter a number")

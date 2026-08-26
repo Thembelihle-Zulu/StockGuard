@@ -10,7 +10,7 @@ import {
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import SendIcon from "@mui/icons-material/Send";
-
+import "../styles/auth.css";
 const API_BASE = "http://127.0.0.1:5000/api";
 
 // Password rule: at least 8 characters, containing at least one letter

@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import { apiFetch } from "../utils/api";
-
+import "../styles/onboarding.css";
 // farmProfileId / firstAnimalId / inspectionId are IDs only — this
 // component fetches its own display data via the real GET routes, each
 // of which enforces ownership server-side. The POST to /policy sends

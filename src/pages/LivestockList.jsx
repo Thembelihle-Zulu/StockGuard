@@ -1,4 +1,4 @@
-// import { useEffect, useState } from "react";
+import "../styles/livestock-list.css";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -8,54 +8,44 @@ import { useState } from "react";
 import { ListItems } from "../component/ListItems";
 import { Livestock } from "../component/Livestock";
 import { RegisterAnimal } from "../component/RegisterAnimal";
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(2),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
+  "& .MuiDialogContent-root": { padding: theme.spacing(2) },
+  "& .MuiDialogActions-root": { padding: theme.spacing(1) },
 }));
+
 export function LivestockList({ onCountChange }) {
   const url = `onboarding/animal`;
   const [open, setOpen] = useState(false);
   const animalType = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
   const [refreshKey, setRefreshKey] = useState(0);
-  const handleAnimalAdded = () => {
-    setRefreshKey((k) => k + 1);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+
+  const handleAnimalAdded = () => setRefreshKey((k) => k + 1);
+  const handleClose = () => setOpen(false);
+
   return (
-    <section className="claims-page">
-      <div>
-        <h2>My Livestock</h2>
+    <section className="livestock-page">
+      <div className="livestock-page-header">
+        <div>
+          <span className="livestock-page-eyebrow">My Farm</span>
+          <h2 className="livestock-page-title">Livestock</h2>
+        </div>
         <Button
-          onClick={() => {
-            setOpen(true);
-          }}
+          className="livestock-new-btn"
+          startIcon={<AddIcon />}
+          onClick={() => setOpen(true)}
         >
-          <AddIcon />
+          Add Animal
         </Button>
       </div>
-      <div className="claim-card">
-        <div className="pills">
-          <span className="claim-status-badge claim-status-pending">
-            Pending
-          </span>
-          <span className="claim-status-badge claim-status-denied">Denied</span>
-          <span className="claim-status-badge claim-status-approved">
-            Approved
-          </span>
-        </div>
-      </div>
+
       <ListItems
         onCountChange={onCountChange}
         key={refreshKey}
         Component={Livestock}
         url={url}
       />
+
       {open && (
         <BootstrapDialog
           open={open}
@@ -63,13 +53,7 @@ export function LivestockList({ onCountChange }) {
           maxWidth="sm"
           fullWidth
           slotProps={{
-            paper: {
-              sx: {
-                m: 2, // shrink MUI's default 32px paper margin
-                boxShadow: "none", // FileClaim's Paper already has its own border
-                bgcolor: "transparent",
-              },
-            },
+            paper: { sx: { m: 2, boxShadow: "none", bgcolor: "transparent" } },
           }}
         >
           <DialogContent>

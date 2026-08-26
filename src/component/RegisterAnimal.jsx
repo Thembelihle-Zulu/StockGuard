@@ -14,7 +14,7 @@ import { useState } from "react";
 import { number, object, string } from "yup";
 import { apiFetch } from "../utils/api";
 import { uploadFile } from "../utils/uploadFile";
-
+import "../styles/onboarding.css";
 const animalSchema = object({
   tagNumber: string().required("Tag number is required"),
   species: string().required("Species is required"),

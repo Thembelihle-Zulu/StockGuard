@@ -3,7 +3,9 @@ import { Sidebar } from "../component/Sidebar";
 import { ClaimsList } from "./ClaimsList";
 import { Livestock } from "../component/Livestock";
 import { LivestockList } from "./LivestockList";
-
+import { LivestockManagement } from "./admin/LivestockManagement";
+import "../styles/dashboard.css";
+import "../styles/sidebar.css";
 export function Dashboard() {
   const [livestockCount, setLivestockCount] = useState(0);
   const [showLivestock, toggleLivestock] = useState(false);
@@ -121,6 +123,13 @@ export function Dashboard() {
           <LivestockList onCountChange={setLivestockCount} />
         </section>
       )}
+      {/* {activePanel === "livestock" && (
+        <LivestockManagement setLivestockCount={setLivestockCount} />
+      )} */}
+      {activePanel === "livestock" &&
+        localStorage.getItem("role") === "ADMIN" && (
+          <LivestockManagement setLivestockCount={setLivestockCount} />
+        )}
     </>
   );
 }

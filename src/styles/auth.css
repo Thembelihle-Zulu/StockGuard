@@ -1,0 +1,156 @@
+/* ===== auth.css ===== */
+/* Paste into src/styles. Signup.jsx and Login.jsx — same green oklch
+   palette and outlined-field focus pattern as the rest of the app. */
+
+.signup-page {
+  display: flex;
+  justify-content: center;
+  padding-block: 2rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 900px) {
+  .signup-page {
+    padding-block: 3rem;
+  }
+}
+
+.signup-paper {
+  width: 100%;
+  max-width: 35rem;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid oklch(0.9 0.02 154.55);
+}
+
+@media (min-width: 900px) {
+  .signup-paper {
+    padding: 2.5rem;
+  }
+}
+
+.signup-paper .MuiTextField-root {
+  width: 100%;
+}
+
+.signup-heading {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: oklch(0.2 0.03 154.55);
+  margin-bottom: 1.5rem;
+}
+
+.signup-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.signup-field:focus-within .MuiOutlinedInput-notchedOutline {
+  border-color: oklch(0.32 0.1 154.55);
+}
+
+.signup-field:focus-within .MuiInputLabel-root {
+  color: oklch(0.32 0.1 154.55);
+}
+
+.signup-error {
+  display: block;
+  color: #d32f2f;
+}
+
+.signup-submit-error {
+  margin-top: 0.5rem;
+}
+
+.signup-submit-btn {
+  align-self: center;
+  width: 100%;
+  margin-top: 0.5rem;
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+  border-radius: 2rem;
+  padding-block: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+}
+
+@media (min-width: 600px) {
+  .signup-submit-btn {
+    width: 60%;
+  }
+}
+
+.signup-submit-btn:hover {
+  background-color: oklch(0.27 0.1 154.55);
+  box-shadow: none;
+}
+
+.signup-submit-btn.Mui-disabled {
+  background-color: oklch(0.9 0.02 154.55);
+  color: oklch(0.6 0.02 154.55);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+
+.login-alert {
+  border-radius: 0.75rem;
+}
+
+.login-field .MuiOutlinedInput-root {
+  width: 100%;
+}
+
+.login-field:focus-within .MuiOutlinedInput-notchedOutline {
+  border-color: oklch(0.32 0.1 154.55);
+}
+
+.login-field:focus-within .MuiInputLabel-root {
+  color: oklch(0.32 0.1 154.55);
+}
+
+.login-signup-prompt {
+  margin: 0;
+  font-size: 0.9rem;
+  color: oklch(0.5 0.02 154.55);
+}
+
+.login-signup-link {
+  color: oklch(0.32 0.1 154.55);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-signup-link:hover {
+  text-decoration: underline;
+}
+
+.login-submit-btn {
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+  border-radius: 2rem;
+  padding-block: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none;
+}
+
+.login-submit-btn:hover {
+  background-color: oklch(0.27 0.1 154.55);
+  box-shadow: none;
+}
+
+.login-submit-btn.Mui-disabled {
+  background-color: oklch(0.9 0.02 154.55);
+  color: oklch(0.6 0.02 154.55);
+}

@@ -1,0 +1,208 @@
+/* ===== claims-list.css ===== */
+/* Covers ClaimsList.jsx (page shell), Claim.jsx (card + status
+   badges), and ClaimStatusFilter.jsx's pill row, which reuses the
+   same .claim-status-* classes as the card badges so a filter pill
+   and a status badge always match. */
+
+.claims-page {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+  padding-inline-start: calc(var(--sidebar-w, 240px) + 2rem);
+}
+
+.claims-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.claims-page-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(0.55 0.08 154.55);
+  margin-bottom: 2px;
+}
+
+.claims-page-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: oklch(0.2 0.03 154.55);
+  margin: 0;
+}
+
+.claims-new-btn {
+  background-color: oklch(0.32 0.1 154.55) !important;
+  color: white !important;
+  border-radius: 2rem;
+  padding-inline: 1.5rem;
+  padding-block: 0.6rem;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: none !important;
+}
+
+.claims-new-btn:hover {
+  background-color: oklch(0.27 0.1 154.55) !important;
+}
+
+/* Card grid, matching the livestock grid's approach — claims are
+   browsed several-across rather than as full-width stacked rows. */
+.claims-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.claim-card {
+  display: flex;
+  flex-direction: column;
+  background-color: oklch(0.99 0.005 90);
+  border: 1px solid oklch(0.91 0.005 90);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.claim-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.claim-card-image {
+  width: 100%;
+  height: 9rem;
+  object-fit: cover;
+}
+
+.claim-card-image--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: oklch(0.95 0.005 90);
+  color: oklch(0.6 0.005 90);
+  font-size: 0.8rem;
+}
+
+.claim-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.claim-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.claim-card-type {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: oklch(0.2 0.01 90);
+}
+
+.claim-card-meta {
+  display: flex;
+  gap: 0.9rem;
+}
+
+.claim-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: oklch(0.45 0.01 90);
+}
+
+.claim-card-cause {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: oklch(0.4 0.01 90);
+  /* clamp to 2 lines instead of a hard ellipsis-on-one-line cutoff,
+     so the cause description is actually legible without opening
+     the modal */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.claim-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid oklch(0.93 0.005 90);
+}
+
+.claim-card-amount {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: oklch(0.32 0.1 154.55);
+}
+
+.claim-status-badge {
+  display: inline-block;
+  padding-inline: 0.65rem;
+  padding-block: 0.2rem;
+  border-radius: 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.claim-status-pending {
+  background-color: oklch(0.95 0.03 80);
+  color: oklch(0.5 0.1 60);
+  border: 1px solid oklch(0.85 0.05 70);
+}
+
+.claim-status-approved {
+  background-color: oklch(0.95 0.05 154.55);
+  color: oklch(0.32 0.1 154.55);
+  border: 1px solid oklch(0.85 0.06 154.55);
+}
+
+.claim-status-denied {
+  background-color: oklch(0.93 0.06 25);
+  color: oklch(0.45 0.15 25);
+  border: 1px solid oklch(0.85 0.08 25);
+}
+
+.claim-view-btn {
+  height: 1.9rem;
+  padding-inline: 1rem;
+  border: none;
+  border-radius: 1rem;
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.claim-view-btn:hover {
+  background-color: oklch(0.27 0.1 154.55);
+}
+
+/* ClaimStatusFilter.jsx's filter pill row */
+.pills {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}

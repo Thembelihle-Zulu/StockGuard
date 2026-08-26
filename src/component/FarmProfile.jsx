@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
 import { apiFetch } from "../utils/api";
-
+import "../styles/onboarding.css";
 const farmProfileSchema = object({
   farmName: string().required("Farm name is required"),
   streetAddress: string()

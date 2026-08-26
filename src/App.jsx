@@ -1,12 +1,12 @@
 import { GlobalStyles } from "@mui/material";
 import { Navigate, Route, Routes, useNavigate } from "react-router";
 import "./App.css";
+import "./styles/index.css";
 import { Home } from "./pages/Home";
 import { Onboarding } from "./pages/Onboarding";
-// import { Signup } from "./pages/Signup";
-// import { Dashboard } from "./pages/dashboard";
 import { Dashboard } from "./pages/dashboard";
 import { Login } from "./pages/Login";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
 function App() {
   const navigate = useNavigate();
   const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
@@ -24,21 +24,6 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route
-          path="/onboarding/register-animal"
-          element={<RegisterAnimal animalType={animal_type} />}
-        />
-
-        <Route
-          path="/onboarding/animal-inspection"
-          element={<AnimalInspection animalType={animal_type} />}
-        />
-        <Route path="/onboarding/select-cover" element={<SelectCover />} />
-        <Route path="/signup" element={<Signup />} />
-        // <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/file-claim" element={<FileClaim />} />
-        <Route path="/claims" element={<ClaimsList />} /> */}
         <Route path="/login" element={<Login />} />
         <Route
           path="/onboarding"
@@ -56,6 +41,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
@@ -66,4 +59,8 @@ function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
 
   return token ? children : <Navigate replace to="/login" />;
+}
+function AdminOnlyRoute({ children }) {
+  const role = localStorage.getItem("role");
+  return role === "ADMIN" ? children : <Navigate replace to="/no-auth" />;
 }

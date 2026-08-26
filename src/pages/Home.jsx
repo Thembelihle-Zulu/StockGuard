@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { WhyUs } from "../component/WhyUs";
 import ShieldIcon from "@mui/icons-material/Shield";
-
+import "../styles/home.css";
 export function Home() {
   const navigate = useNavigate();
 

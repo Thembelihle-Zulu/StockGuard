@@ -1,0 +1,9 @@
+
+@import "./globals.css";
+@import "./sidebar.css";
+@import "./dashboard.css";
+@import "./livestock-table.css";
+@import "./claims-list.css";
+@import "./auth.css";
+@import "./admin-filters.css";
+@import "./admin-management.css";

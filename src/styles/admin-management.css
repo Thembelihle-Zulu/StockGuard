@@ -1,0 +1,24 @@
+/* ===== admin-management.css ===== */
+/* Paste into src/styles. Shared page-shell classes for
+   LivestockManagement.jsx and ClaimsManagement.jsx (the "livestock-
+   management-page" wrapper name is used by both — the class was
+   originally written for the livestock page and reused as-is for
+   claims, since the layout need is identical). */
+
+.livestock-management-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.kpi-grid {
+  margin-bottom: 0;
+}
+
+.filters-section {
+  width: 100%;
+}
+
+.table-section {
+  width: 100%;
+}

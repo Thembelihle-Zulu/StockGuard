@@ -17,7 +17,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CloseIcon from "@mui/icons-material/Close";
 import { apiFetch } from "../utils/api";
 import { uploadFile } from "../utils/uploadFile";
-
+import "../styles/claims-list.css";
 const claimTypes = ["Treatment Claim", "Mortality Claim"];
 
 const claimSchema = object({

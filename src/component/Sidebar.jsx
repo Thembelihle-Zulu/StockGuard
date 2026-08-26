@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router";
+import "../styles/sidebar.css";
 export function Sidebar({
   onToggleClaims,
   livestockCount,
   activePanel,
   onToggleLivestock,
 }) {
+  const navigate = useNavigate();
   return (
     <>
       <aside
@@ -58,6 +61,7 @@ export function Sidebar({
               </a>
             </li>
             <li>
+              {/* <a class="nav-item" onClick={onToggleLivestock}> */}
               <a class="nav-item" onClick={onToggleLivestock}>
                 <svg
                   width="18"
@@ -235,7 +239,14 @@ export function Sidebar({
             </svg>
             Help &amp; Support
           </a>
-          <a class="nav-item" href="#">
+          <a
+            class="nav-item"
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("role");
+              navigate("/login");
+            }}
+          >
             <svg
               width="18"
               height="18"

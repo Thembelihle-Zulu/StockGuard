@@ -1,0 +1,50 @@
+/* ===== onboarding.css ===== */
+/* Shared by FarmProfile.jsx, RegisterAnimal.jsx, AnimalInspection.jsx,
+   SelectCover.jsx, ConfirmPolicy.jsx — the pre-CSS-class-convention
+   onboarding cards (.form-container, .premium-box, etc.) that predate
+   FileClaim.css's individual-file-per-component pattern. */
+
+.onboarding-card {
+  display: flex;
+  flex-direction: column;
+  width: 25rem;
+  max-width: 30rem;
+  gap: 0.7rem;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  padding-block: 1rem;
+  border-radius: 4rem;
+  border: none;
+  padding-inline: 2rem;
+  background-color: white;
+}
+
+.form-container h2 {
+  text-align: center;
+}
+
+.form-container button {
+  width: 50%;
+  align-self: center;
+}
+
+.farm-profile-pic {
+  width: 20%;
+  align-self: center;
+}
+
+.premium-box {
+  border-top: 0.5px solid gray;
+  border-bottom: 0.5px solid gray;
+}
+
+.premium-box h2 {
+  text-align: start;
+}
+
+.waiting-period {
+  border: none;
+}

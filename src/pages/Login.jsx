@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { NavLink, useNavigate } from "react-router";
-
+import "../styles/auth.css";
 // Matches the User model exactly: email + password, not username.
 // There is no username column on User at all.
 const loginSchema = object({
@@ -44,20 +44,13 @@ export function Login() {
           const body = await res.json().catch(() => ({}));
 
           if (!res.ok) {
-            // Covers both "no account with this email" and "wrong
-            // password" — the backend intentionally returns the same
-            // generic message for both (login_user always says
-            // "Invalid credentials" either way), which is correct
-            // security practice: it doesn't let someone probe which
-            // emails have accounts by trying logins and comparing
-            // error messages.
             throw new Error(body.error || "Invalid email or password");
           }
 
           // Success — only now do we store the session and navigate.
           localStorage.setItem("token", body.token);
           localStorage.setItem("role", body.role);
-          navigate("/dashboard");
+          body.role == "USER" ? navigate("/dashboard") : navigate("/admin");
         } catch (err) {
           console.error(err);
           setError(err.message || "Something went wrong. Please try again.");

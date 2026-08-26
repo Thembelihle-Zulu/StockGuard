@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, Button } from "@mui/material";
-// import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import "../styles/home.css";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";

@@ -1,19 +1,11 @@
 import { useState } from "react";
-
+import "../styles/claims-list.css";
 const statuses = [
   { key: "pending", label: "Pending" },
   { key: "denied", label: "Denied" },
   { key: "approved", label: "Approved" },
 ];
 
-// Filter bar for claim status — reuses the same .claim-status-* pill
-// classes already defined in Claim.css for the badges on individual
-// claim cards, so a "Pending" filter pill and a "Pending" status badge
-// look identical on purpose.
-//
-// onFilterChange(status) fires with "pending" | "denied" | "approved" |
-// null (null = "All" / filter cleared) — wire this to whatever filters
-// your claims list.
 export function ClaimStatusFilter({ onFilterChange }) {
   const [active, setActive] = useState(null);
 

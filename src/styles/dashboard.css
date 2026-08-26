@@ -1,0 +1,221 @@
+/* ===== dashboard.css ===== */
+/* Dashboard.jsx / AdminDashboard.jsx — top nav bar, page content
+   wrapper, and the hero card. Depends on globals.css's custom
+   properties (--surface, --border, --topnav-h, --sidebar-w, etc.). */
+
+.topnav {
+  height: var(--topnav-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: var(--shadow-sm);
+}
+
+.topnav-hamburger {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: background .2s;
+}
+
+.topnav-hamburger:hover { background: var(--bg); }
+
+.topnav-welcome { flex: 1; }
+.topnav-welcome p { font-size: .8rem; color: var(--text-muted); font-weight: 400; }
+.topnav-welcome h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-top: 1px; }
+
+.topnav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  width: 240px;
+  transition: all .2s;
+}
+
+.topnav-search:focus-within {
+  border-color: var(--evergreen);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(47,107,69,.1);
+}
+
+.topnav-search input {
+  border: none; background: none;
+  font-size: .85rem; color: var(--text-primary);
+  outline: none; width: 100%;
+  font-family: inherit;
+}
+
+.topnav-search input::placeholder { color: var(--text-muted); }
+
+.topnav-actions { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  transition: all .2s;
+  position: relative;
+}
+
+.icon-btn:hover { background: var(--bg); color: var(--text-primary); }
+
+.notif-dot {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 8px; height: 8px;
+  background: var(--wheat);
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+.avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--evergreen), var(--olive));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--sage);
+}
+
+/* ============================================================
+   PAGE CONTENT
+   ============================================================ */
+.page-content {
+  padding: 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ============================================================
+   HERO CARD
+   ============================================================ */
+.hero-card {
+  background: linear-gradient(135deg, var(--forest) 0%, var(--evergreen) 55%, var(--olive) 100%);
+  border-radius: var(--radius-xl);
+  padding: 36px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  min-height: 200px;
+}
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: 200px;
+  width: 300px; height: 300px;
+  background: rgba(255,255,255,.04);
+  border-radius: 50%;
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 40%;
+  width: 240px; height: 240px;
+  background: rgba(255,255,255,.03);
+  border-radius: 50%;
+}
+
+.hero-left { flex: 1; z-index: 1; }
+
+.hero-eyebrow {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--wheat);
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,.75);
+  font-size: .85rem;
+}
+
+.hero-meta-item svg { color: var(--sage); }
+
+.hero-progress-wrap { max-width: 320px; }
+
+.hero-progress-label {
+  display: flex; justify-content: space-between;
+  color: rgba(255,255,255,.7);
+  font-size: .78rem;
+  margin-bottom: 6px;
+}
+
+.hero-progress-label span:last-child { color: var(--wheat); font-weight: 600; }
+
+.progress-track {
+  height: 6px;
+  background: rgba(255,255,255,.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--wheat), #E8C07A);
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+
+.hero-illustration {
+  width: 340px;
+  flex-shrink: 0;
+  z-index: 1;
+  position: relative;
+}
+
+/* Sidebar-offset page wrappers — Dashboard/AdminDashboard's panels
+   need to sit clear of the fixed .sidebar (see sidebar.css). */
+.claim-list {
+  /* reserved: was commented out in the original, no active rule */
+}
+
+.kpi-list {
+  padding-inline-start: calc(var(--sidebar-w) + 1rem);
+}
