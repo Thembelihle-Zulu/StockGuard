@@ -98,6 +98,40 @@
   border: 2px solid var(--sage);
 }
 
+/* Admin topnav — green variant of the shared .topnav bar, same
+   gradient as .farm-banner (farm-dashboard.css) for consistency. */
+.admin-topnav {
+  background: linear-gradient(135deg, var(--forest), var(--olive));
+  border-bottom: none;
+}
+
+.admin-topnav .topnav-welcome h3 {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+
+.admin-topnav .topnav-welcome p {
+  color: rgba(255, 255, 255, .75);
+}
+
+.admin-role-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, .15);
+  border: 1px solid rgba(255, 255, 255, .3);
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+}
+
+.admin-topnav .avatar {
+  border-color: rgba(255, 255, 255, .6);
+}
+
 /* ============================================================
    PAGE CONTENT
    ============================================================ */

@@ -1,8 +1,7 @@
 /* ===== claims-list.css ===== */
-/* Covers ClaimsList.jsx (page shell), Claim.jsx (card + status
-   badges), and ClaimStatusFilter.jsx's pill row, which reuses the
-   same .claim-status-* classes as the card badges so a filter pill
-   and a status badge always match. */
+/* Covers ClaimsList.jsx (page shell) and Claim.jsx (card + status
+   badges). Filter controls (ClaimsFilters.jsx) reuse admin-filters.css
+   via the shared FilterPanel component. */
 
 .claims-page {
   max-width: 72rem;
@@ -197,12 +196,4 @@
 
 .claim-view-btn:hover {
   background-color: oklch(0.27 0.1 154.55);
-}
-
-/* ClaimStatusFilter.jsx's filter pill row */
-.pills {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
 }

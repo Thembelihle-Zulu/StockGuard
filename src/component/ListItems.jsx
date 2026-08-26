@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "../utils/api";
 
-export function ListItems({ Component, url, onCountChange }) {
+export function ListItems({ Component, url, onCountChange, filterFn }) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -15,9 +15,11 @@ export function ListItems({ Component, url, onCountChange }) {
     onCountChange?.(items.length);
   }, [items]);
 
+  const visibleItems = filterFn ? items.filter(filterFn) : items;
+
   return (
     <div className="claims-grid">
-      {items.map((item) => (
+      {visibleItems.map((item) => (
         <Component key={item.id} item={item} />
       ))}
     </div>

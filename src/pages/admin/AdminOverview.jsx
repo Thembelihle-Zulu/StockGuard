@@ -25,7 +25,11 @@ const STATUS_LABEL = {
 // is deliberately left out here rather than guessed. Add
 // GET /onboarding/policy/admin/all on the backend first, then this can
 // gain a "Total Active Policies" KPI the same way the other three work.
-export function AdminOverview({ onToggleClaims, onToggleLivestock }) {
+export function AdminOverview({
+  onToggleClaims,
+  onToggleLivestock,
+  onToggleReports,
+}) {
   const [farmProfiles, setFarmProfiles] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [claims, setClaims] = useState([]);
@@ -126,9 +130,9 @@ export function AdminOverview({ onToggleClaims, onToggleLivestock }) {
     },
     {
       icon: <DownloadIcon />,
-      label: "Export Reports",
-      subLabel: "Coming soon",
-      onClick: () => {},
+      label: "View Reports",
+      subLabel: "Platform-wide summary",
+      onClick: onToggleReports,
     },
   ];
 

@@ -3,7 +3,6 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 2rem;
-  padding-inline-start: calc(var(--sidebar-w, 240px) + 2rem);
 }
 
 .admin-overview-header {

@@ -1,10 +1,26 @@
 import { useState } from "react";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { Sidebar } from "../../component/Sidebar";
 import { ClaimsManagement } from "./ClaimsManagement";
 import { LivestockManagement } from "./LivestockManagement";
 import { InspectionsManagement } from "./InspectionsManagement";
+import { PoliciesManagement } from "./PoliciesManagement";
+import { ReportsManagement } from "./ReportsManagement";
 import { AdminOverview } from "./AdminOverview";
 import "../../styles/dashboard.css";
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
+const TODAY = new Date().toLocaleDateString("en-ZA", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
 
 export function AdminDashboard() {
   const [livestockCount, setLivestockCount] = useState(0);
@@ -14,8 +30,18 @@ export function AdminDashboard() {
 
   return (
     <section className="admin">
-      <header className="topnav" role="banner">
-        {/* ...unchanged... */}
+      <header className="topnav admin-topnav" role="banner">
+        <div className="topnav-welcome">
+          <h3>{getGreeting()}, Admin</h3>
+          <p>{TODAY}</p>
+        </div>
+        <div className="topnav-actions">
+          <span className="admin-role-pill">
+            <AdminPanelSettingsIcon fontSize="inherit" />
+            Administrator
+          </span>
+          <div className="avatar">A</div>
+        </div>
       </header>
 
       <Sidebar
@@ -31,6 +57,12 @@ export function AdminDashboard() {
           setActivePanel((prev) =>
             prev === "inspections" ? null : "inspections",
           )
+        }
+        onTogglePolicies={() =>
+          setActivePanel((prev) => (prev === "policies" ? null : "policies"))
+        }
+        onToggleReports={() =>
+          setActivePanel((prev) => (prev === "reports" ? null : "reports"))
         }
         activePanel={activePanel}
       />
@@ -50,10 +82,21 @@ export function AdminDashboard() {
           <InspectionsManagement />
         </section>
       )}
+      {activePanel === "policies" && (
+        <section className="kpi-list">
+          <PoliciesManagement />
+        </section>
+      )}
+      {activePanel === "reports" && (
+        <section className="kpi-list">
+          <ReportsManagement />
+        </section>
+      )}
       {activePanel === null && (
         <AdminOverview
           onToggleClaims={() => setActivePanel("claims")}
           onToggleLivestock={() => setActivePanel("livestock")}
+          onToggleReports={() => setActivePanel("reports")}
         />
       )}
     </section>

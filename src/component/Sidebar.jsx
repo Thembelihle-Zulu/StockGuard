@@ -9,6 +9,7 @@ export function Sidebar({
   livestockCount,
   activePanel,
   onTogglePolicies,
+  onToggleReports,
 }) {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
@@ -184,7 +185,7 @@ export function Sidebar({
           <span className="nav-section-label">Insights</span>
           <ul>
             <li>
-              <a className="nav-item" href="#">
+              <a className={navItemClass("reports")} onClick={onToggleReports}>
                 <svg
                   width="18"
                   height="18"
