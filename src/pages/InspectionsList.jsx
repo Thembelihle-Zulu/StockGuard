@@ -15,7 +15,7 @@ const INSPECTION_STEPS = [
     label: "Vet Verified",
     desc: "We check the vet's registration number",
   },
-  { label: "Decision", desc: "Approved or denied, with reasons" },
+  { label: "Decision", desc: "Approved, or changes requested with a reason" },
   { label: "Claim Ready", desc: "Approved animals can now be claimed" },
 ];
 
@@ -31,6 +31,10 @@ export function InspectionsList() {
   const [inspections, setInspections] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+  // Bumped after a farmer resubmits value evidence on a denied inspection
+  // (see InspectionModal.jsx) so this list picks up the reset-to-pending
+  // status without needing a full page reload.
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     apiFetch(INSPECTIONS_URL)
@@ -42,7 +46,7 @@ export function InspectionsList() {
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setAnimals(Array.isArray(data) ? data : []))
       .catch(console.error);
-  }, []);
+  }, [refreshKey]);
 
   const animalById = {};
   animals.forEach((a) => {
@@ -115,6 +119,9 @@ export function InspectionsList() {
         Component={Inspection}
         items={joinedInspections}
         filterFn={filterFn}
+        componentProps={{
+          onResubmitted: () => setRefreshKey((k) => k + 1),
+        }}
         emptyState={
           <div className="list-empty-state">
             <p className="list-empty-state-title">No vet reports yet.</p>

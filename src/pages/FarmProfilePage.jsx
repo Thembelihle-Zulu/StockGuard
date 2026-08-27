@@ -19,6 +19,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import { apiFetch, API_ORIGIN } from "../utils/api";
 import { uploadFile } from "../utils/uploadFile";
+import { BankDetailsCard } from "../component/BankDetailsCard";
 import "../styles/claims-list.css";
 import "../styles/onboarding.css";
 
@@ -400,34 +401,14 @@ export function FarmProfilePage() {
               ) : null}
             </Box>
 
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
-              <Box sx={{ flex: 1 }}>
-                <TextField
-                  label="Bank Name"
-                  name="bankName"
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleChange}
-                  value={values.bankName}
-                  onBlur={handleBlur}
-                  type="text"
-                  sx={fieldSx}
-                />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <TextField
-                  label="Account Number"
-                  name="bankAccountNumber"
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleChange}
-                  value={values.bankAccountNumber}
-                  onBlur={handleBlur}
-                  type="text"
-                  sx={fieldSx}
-                />
-              </Box>
-            </Stack>
+            <BankDetailsCard
+              bankName={values.bankName}
+              bankAccountNumber={values.bankAccountNumber}
+              onSaved={(updated) => {
+                setFieldValue("bankName", updated.bank_name || "");
+                setFieldValue("bankAccountNumber", updated.bank_account_number || "");
+              }}
+            />
 
             {saved && (
               <Typography sx={{ color: "oklch(0.4 0.13 154.55)", fontWeight: 600 }}>

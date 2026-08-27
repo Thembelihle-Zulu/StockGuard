@@ -39,14 +39,7 @@ function renderCell(row, col, onStatusChange) {
   }
 }
 
-export function ClaimsTable({
-  rows,
-  onExport,
-  onView,
-  onEdit,
-  onHistory,
-  onStatusChange,
-}) {
+export function ClaimsTable({ rows, onView, onEdit, onHistory, onStatusChange }) {
   return (
     <GenericDataTable
       rows={rows}
@@ -55,7 +48,7 @@ export function ClaimsTable({
       searchPlaceholder="Search claims..."
       searchKeys={["claim_type", "cause", "farm_name", "status"]}
       emptyMessage="No claims match your search."
-      onExport={onExport}
+      exportFilename="claims"
       onView={onView}
       onEdit={onEdit}
       onHistory={onHistory}

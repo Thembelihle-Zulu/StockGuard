@@ -61,6 +61,7 @@ export function PoliciesTable({ rows, onView, onStatusChange }) {
       searchPlaceholder="Search policies..."
       searchKeys={["policy_number", "farm_name", "status"]}
       emptyMessage="No policies match your search."
+      exportFilename="policies"
       onView={onView}
       onStatusChange={onStatusChange}
     />

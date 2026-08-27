@@ -28,13 +28,13 @@ const STATUS_COLORS = {
   deceased: { bg: "oklch(0.95 0.06 25)", color: "oklch(0.45 0.15 25)" },
 };
 
-function StatusChip({ status }) {
+function StatusChip({ status, label }) {
   const key = (status || "pending").toLowerCase();
   const palette = STATUS_COLORS[key] || STATUS_COLORS.pending;
 
   return (
     <Chip
-      label={status || "Pending"}
+      label={label || status || "Pending"}
       size="small"
       sx={{
         bgcolor: palette.bg,
@@ -55,6 +55,7 @@ export function DetailModal({
   setOpen,
   title,
   status,
+  statusLabel,
   imageUrl,
   imageAlt,
   children,
@@ -111,7 +112,7 @@ export function DetailModal({
         }}
       >
         {title}
-        <StatusChip status={status} />
+        <StatusChip status={status} label={statusLabel} />
       </DialogTitle>
 
       <DialogContent sx={{ px: 3, pb: 1 }}>{children}</DialogContent>

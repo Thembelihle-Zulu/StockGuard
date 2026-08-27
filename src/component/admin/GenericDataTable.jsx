@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import HistoryIcon from "@mui/icons-material/History";
+import { downloadCsv } from "../../utils/exportCsv";
 import "../../Livestocktable.css";
 
 export function GenericDataTable({
@@ -30,7 +31,7 @@ export function GenericDataTable({
   emptyMessage = "No records match your search.",
   onAdd,
   addLabel = "Add",
-  onExport,
+  exportFilename = "export",
   onView,
   onEdit,
   onHistory,
@@ -109,15 +110,13 @@ export function GenericDataTable({
           className="table-search-field"
         />
         <Box className="table-toolbar-actions">
-          {onExport && (
-            <Button
-              startIcon={<DownloadIcon />}
-              onClick={onExport}
-              className="table-export-btn"
-            >
-              Export
-            </Button>
-          )}
+          <Button
+            startIcon={<DownloadIcon />}
+            onClick={() => downloadCsv(sortedRows, columns, exportFilename)}
+            className="table-export-btn"
+          >
+            Export
+          </Button>
           {onAdd && (
             <Button
               startIcon={<AddIcon />}

@@ -93,7 +93,7 @@ export function InspectionsFilters({ filters, setFilters, onClear }) {
           <MenuItem value="">All Statuses</MenuItem>
           <MenuItem value="pending">Pending</MenuItem>
           <MenuItem value="approved">Approved</MenuItem>
-          <MenuItem value="denied">Denied</MenuItem>
+          <MenuItem value="denied">Changes Requested</MenuItem>
         </Select>
       </FormControl>
     </FilterPanel>

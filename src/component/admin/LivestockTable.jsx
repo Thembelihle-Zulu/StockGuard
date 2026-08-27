@@ -61,14 +61,7 @@ function renderCell(row, col) {
   }
 }
 
-export function LivestockTable({
-  rows,
-  onAddAnimal,
-  onExport,
-  onView,
-  onEdit,
-  onHistory,
-}) {
+export function LivestockTable({ rows, onAddAnimal, onView, onEdit, onHistory }) {
   return (
     <GenericDataTable
       rows={rows}
@@ -86,7 +79,7 @@ export function LivestockTable({
       emptyMessage="No livestock records match your search."
       onAdd={onAddAnimal}
       addLabel="Add Animal"
-      onExport={onExport}
+      exportFilename="livestock"
       onView={onView}
       onEdit={onEdit}
       onHistory={onHistory}

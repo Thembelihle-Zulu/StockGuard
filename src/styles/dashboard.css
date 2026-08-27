@@ -149,6 +149,15 @@
   border-color: rgba(255, 255, 255, .6);
 }
 
+.admin-topnav .icon-btn {
+  color: rgba(255, 255, 255, .85);
+}
+
+.admin-topnav .icon-btn:hover {
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+}
+
 /* ============================================================
    PAGE CONTENT
    ============================================================ */

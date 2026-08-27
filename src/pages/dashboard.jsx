@@ -3,12 +3,14 @@ import AgricultureIcon from "@mui/icons-material/Agriculture";
 import { apiFetch } from "../utils/api";
 import { getGreeting, TODAY } from "../utils/greeting";
 import { Sidebar } from "../component/Sidebar";
+import { NotificationBell } from "../component/NotificationBell";
 import { ClaimsList } from "./ClaimsList";
 import { LivestockList } from "./LivestockList";
 import { InspectionsList } from "./InspectionsList";
 import { PoliciesList } from "./PoliciesList";
 import { PaymentsList } from "./PaymentsList";
 import { FarmProfilePage } from "./FarmProfilePage";
+import { FarmReports } from "./FarmReports";
 import { FarmDashboard } from "./FarmDashboard";
 import { LivestockManagement } from "./admin/LivestockManagement";
 import { ClaimsManagement } from "./admin/ClaimsManagement";
@@ -41,6 +43,7 @@ export function Dashboard() {
   const togglePolicies = () => setActivePanel("policies");
   const togglePayments = () => setActivePanel("payments");
   const toggleProfile = () => setActivePanel("profile");
+  const toggleReports = () => setActivePanel("reports");
 
   let panelContent;
   switch (activePanel) {
@@ -86,6 +89,13 @@ export function Dashboard() {
         </section>
       );
       break;
+    case "reports":
+      panelContent = (
+        <section className="claim-list">
+          <FarmReports />
+        </section>
+      );
+      break;
     default:
       panelContent = (
         <FarmDashboard
@@ -93,6 +103,7 @@ export function Dashboard() {
           onTogglePolicies={togglePolicies}
           onToggleLivestock={toggleLivestock}
           onToggleInspections={toggleInspections}
+          onToggleReports={toggleReports}
         />
       );
   }
@@ -108,6 +119,7 @@ export function Dashboard() {
           <p>{TODAY}</p>
         </div>
         <div className="topnav-actions">
+          {role !== "ADMIN" && <NotificationBell />}
           <span className="admin-role-pill topnav-role-pill">
             <AgricultureIcon fontSize="inherit" />
             {role === "ADMIN" ? "Administrator" : "Farmer"}
@@ -134,7 +146,7 @@ export function Dashboard() {
         onTogglePolicies={togglePolicies}
         onTogglePayments={togglePayments}
         onToggleProfile={toggleProfile}
-        onToggleReports={toggleDashboard}
+        onToggleReports={toggleReports}
       />
 
       {role === "ADMIN" ? (

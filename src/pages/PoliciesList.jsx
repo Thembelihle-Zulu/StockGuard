@@ -5,12 +5,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import FormControl from "@mui/material/FormControl";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { apiFetch } from "../utils/api";
 import { DashboardPanel } from "../component/DashboardPanel";
+import { PayPolicyAction } from "../component/PayPolicyAction";
 import "../styles/claims-list.css";
 import "../styles/farm-dashboard.css";
 import "../styles/livestock-table.css";
@@ -27,10 +24,6 @@ export function PoliciesList() {
   const [animals, setAnimals] = useState([]);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
-  const [payOpen, setPayOpen] = useState(false);
-  const [paying, setPaying] = useState(false);
-  const [payError, setPayError] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("Card");
 
   useEffect(() => {
     apiFetch("onboarding/policy")
@@ -85,30 +78,12 @@ export function PoliciesList() {
       .finally(() => setCancelling(false));
   };
 
-  const handlePay = () => {
-    setPaying(true);
-    setPayError(null);
-    apiFetch(`payments/${policy.policy_number}`, {
-      method: "POST",
-      body: JSON.stringify({ payment_method: paymentMethod }),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || "Payment failed.");
-        }
-        return res.json();
-      })
-      .then(({ policy: updated }) => {
-        setPolicies((prev) =>
-          prev.map((p) =>
-            p.policy_number === updated.policy_number ? updated : p,
-          ),
-        );
-        setPayOpen(false);
-      })
-      .catch((err) => setPayError(err.message))
-      .finally(() => setPaying(false));
+  const handlePolicyPaid = (updated) => {
+    setPolicies((prev) =>
+      prev.map((p) =>
+        p.policy_number === updated.policy_number ? updated : p,
+      ),
+    );
   };
 
   const statusKey = policy?.status?.toLowerCase();
@@ -199,11 +174,11 @@ export function PoliciesList() {
 
           <div className="policy-actions">
             {statusKey === "pending" && (
-              <Button
-                variant="contained"
-                disabled={!canActivate}
-                onClick={() => setPayOpen(true)}
-                sx={{
+              <PayPolicyAction
+                policy={policy}
+                canActivate={canActivate}
+                onPaid={handlePolicyPaid}
+                buttonSx={{
                   mt: 2,
                   mr: 1.5,
                   textTransform: "none",
@@ -211,9 +186,7 @@ export function PoliciesList() {
                   bgcolor: "oklch(0.32 0.1 154.55)",
                   "&:hover": { bgcolor: "oklch(0.27 0.1 154.55)" },
                 }}
-              >
-                Pay & Activate — R {Number(policy.monthly_premium).toLocaleString()}
-              </Button>
+              />
             )}
 
             {canCancel && (
@@ -240,39 +213,6 @@ export function PoliciesList() {
           <Button onClick={() => setCancelOpen(false)}>Keep Policy</Button>
           <Button color="error" onClick={handleCancel} disabled={cancelling}>
             {cancelling ? "Cancelling..." : "Cancel Policy"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={payOpen} onClose={() => setPayOpen(false)} fullWidth maxWidth="xs">
-        <DialogTitle>Pay & Activate Policy</DialogTitle>
-        <DialogContent>
-          <Typography sx={{ mb: 2 }}>
-            R {Number(policy?.monthly_premium).toLocaleString()} — first
-            month's premium for {policy?.policy_number}.
-          </Typography>
-          <FormControl>
-            <RadioGroup
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            >
-              <FormControlLabel value="Card" control={<Radio />} label="Debit / Credit Card" />
-              <FormControlLabel value="Mobile Money" control={<Radio />} label="Mobile Money" />
-            </RadioGroup>
-          </FormControl>
-          <Typography variant="caption" sx={{ display: "block", mt: 1.5, color: "oklch(0.55 0.01 90)" }}>
-            No real payment is processed — this is a mock for demonstration.
-          </Typography>
-          {payError && (
-            <Typography color="error" variant="body2" sx={{ mt: 1.5 }}>
-              {payError}
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setPayOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handlePay} disabled={paying}>
-            {paying ? "Processing..." : "Pay Now"}
           </Button>
         </DialogActions>
       </Dialog>

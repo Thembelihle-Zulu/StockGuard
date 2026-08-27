@@ -1,72 +1,72 @@
-import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import TrendingDownIcon from "@mui/icons-material/TrendingDown";
-
+// No trend arrow/chip here on purpose — every caller passed trend="—"
+// since there's no real historical data to compute a trend from, but the
+// TrendingUp/Down icon still rendered next to that dash, which read as a
+// broken chart rather than "no data yet". A colored left border gives
+// each card its own identity instead.
 export function KpiCard({
   icon,
   value,
   label,
   subText,
-  trend,
-  trendDirection = "up",
-  accent = "#2A5E38",
-  accentBg = "#EAF2EB",
+  accent = "oklch(0.32 0.1 154.55)",
+  accentBg = "oklch(0.95 0.05 154.55)",
 }) {
   return (
     <Card
-      elevation={2}
+      elevation={0}
       sx={{
         borderRadius: 3,
         height: "100%",
+        border: "1px solid oklch(0.91 0.005 90)",
+        borderInlineStart: `4px solid ${accent}`,
       }}
     >
-      <CardContent>
+      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
         <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={2}
+          sx={{
+            width: 34,
+            height: 34,
+            borderRadius: 1.5,
+            backgroundColor: accentBg,
+            color: accent,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 1.25,
+            "& svg": { fontSize: "1.1rem" },
+          }}
         >
-          <Box
-            sx={{
-              width: 48,
-              height: 48,
-              borderRadius: 2,
-              backgroundColor: accentBg,
-              color: accent,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {icon}
-          </Box>
-
-          <Chip
-            icon={
-              trendDirection === "up" ? (
-                <TrendingUpIcon />
-              ) : (
-                <TrendingDownIcon />
-              )
-            }
-            label={trend}
-            size="small"
-            color={trendDirection === "up" ? "success" : "error"}
-            variant="outlined"
-          />
+          {icon}
         </Box>
 
-        <Typography variant="h4" fontWeight={700}>
+        <Typography
+          sx={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontSize: "1.4rem",
+            fontWeight: 700,
+            color: "oklch(0.2 0.03 154.55)",
+            lineHeight: 1.2,
+          }}
+        >
           {value}
         </Typography>
 
-        <Typography variant="subtitle1" fontWeight={600} color="text.primary">
+        <Typography
+          sx={{
+            fontSize: "0.82rem",
+            fontWeight: 600,
+            color: "oklch(0.3 0.02 154.55)",
+            mt: 0.2,
+          }}
+        >
           {label}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          sx={{ fontSize: "0.72rem", color: "oklch(0.55 0.02 90)", mt: 0.15 }}
+        >
           {subText}
         </Typography>
       </CardContent>

@@ -6,10 +6,15 @@ import "../styles/claims-list.css";
 const STATUS_LABELS = {
   pending: "Pending",
   approved: "Approved",
-  denied: "Denied",
+  // "Denied" reads as final — an inspection missing evidence or under
+  // value dispute can be fixed and resubmitted, so the label should say
+  // that's expected, not that it's over. The status value itself stays
+  // "denied" (matches the backend/resubmission check), only the display
+  // text changes.
+  denied: "Changes Requested",
 };
 
-export function Inspection({ item }) {
+export function Inspection({ item, onResubmitted }) {
   const [open, setOpen] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const inspection = item;
@@ -55,7 +60,12 @@ export function Inspection({ item }) {
       </div>
 
       {open && (
-        <InspectionModal setOpen={setOpen} open={open} inspection={inspection} />
+        <InspectionModal
+          setOpen={setOpen}
+          open={open}
+          inspection={inspection}
+          onResubmitted={onResubmitted}
+        />
       )}
     </div>
   );

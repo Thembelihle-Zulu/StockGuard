@@ -18,8 +18,7 @@ import { DashboardPanel } from "../component/DashboardPanel";
 import { QuickActionsGrid } from "../component/QuickActionsGrid";
 import { FarmHeaderBanner } from "./FarmHeaderBanner";
 import { LivestockPortfolioList } from "./LivestockPortfolioList";
-import { ActivePolicyCard } from "./ActivatePolicyCard";
-import { ClaimsOverviewCard } from "../component/ClaimsOverviewCard";
+import { OverviewCard } from "../component/OverviewCard";
 import { ReadinessCard } from "../component/ReadinessCard";
 import { InspectionComplianceCard } from "../component/InspectionComplianceCard";
 import { ClaimEligibilityCard } from "../component/ClaimEligibilityCard";
@@ -35,6 +34,15 @@ const STATUS_LABEL = {
   approved: "Approved",
   denied: "Rejected",
 };
+
+// A denied inspection can be fixed and resubmitted (missing evidence,
+// disputed value); a denied claim is final — same status value, different
+// real-world meaning, so the display label differs too.
+const INSPECTION_STATUS_LABEL = {
+  pending: "Pending",
+  approved: "Approved",
+  denied: "Changes Requested",
+};
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": { padding: theme.spacing(2) },
   "& .MuiDialogActions-root": { padding: theme.spacing(1) },
@@ -44,6 +52,7 @@ export function FarmDashboard({
   onTogglePolicies,
   onToggleLivestock,
   onToggleInspections,
+  onToggleReports,
 }) {
   const navigate = useNavigate();
   const [farmProfile, setFarmProfile] = useState(null);
@@ -216,34 +225,63 @@ export function FarmDashboard({
     [claims],
   );
 
+  const inspectionCounts = useMemo(() => {
+    const counts = { pending: 0, approved: 0, denied: 0 };
+    inspections.forEach((i) => {
+      const key = (i.status || "pending").toLowerCase();
+      if (counts[key] !== undefined) counts[key] += 1;
+    });
+    return counts;
+  }, [inspections]);
+
+  const recentInspections = useMemo(() => {
+    const animalById = {};
+    animals.forEach((a) => {
+      animalById[a.id] = a;
+    });
+
+    return [...inspections]
+      .sort((a, b) => new Date(b.inspection_date) - new Date(a.inspection_date))
+      .slice(0, 4)
+      .map((i) => {
+        const key = (i.status || "pending").toLowerCase();
+        const animal = animalById[i.livestock_id];
+        return {
+          id: i.id,
+          description: animal
+            ? `${animal.species} — ${animal.tag_number}`
+            : i.livestock_id,
+          amount: i.approved_value ?? animal?.estimated_value ?? null,
+          status: key,
+          statusLabel: INSPECTION_STATUS_LABEL[key] || i.status,
+        };
+      });
+  }, [inspections, animals]);
+
   const kpis = [
     {
       icon: <PetsIcon />,
       value: animals.length,
       label: "Total Insured Animals",
       subText: `Across ${speciesBreakdown.length} species`,
-      trend: "—",
     },
     {
       icon: <PaidIcon />,
       value: `R ${totalInsuredValue.toLocaleString()}`,
       label: "Total Insured Value",
       subText: "Based on registered animals",
-      trend: "—",
     },
     {
       icon: <DescriptionIcon />,
       value: activePolicy?.status || "None",
       label: "Active Policy Status",
       subText: activePolicy ? activePolicy.policy_number : "No policy on file",
-      trend: "—",
     },
     {
       icon: <BoltIcon />,
       value: claimCounts.pending,
       label: "Open Claims",
       subText: "Awaiting review",
-      trend: "—",
       accent: "#8D6E63",
       accentBg: "#F4EDE8",
     },
@@ -278,10 +316,7 @@ export function FarmDashboard({
       icon: <BarChartIcon />,
       label: "View Reports",
       subLabel: "Analytics & history",
-      onClick: () =>
-        document
-          .getElementById("insights-section")
-          ?.scrollIntoView({ behavior: "smooth" }),
+      onClick: () => onToggleReports?.(),
     },
   ];
   const [open, setOpen] = useState(false);
@@ -318,10 +353,7 @@ export function FarmDashboard({
         checklist={readiness.checklist}
       />
 
-      <div
-        id="insights-section"
-        className="farm-dashboard-row farm-dashboard-row--three"
-      >
+      <div className="farm-dashboard-row farm-dashboard-row--three">
         <InspectionComplianceCard
           registeredCount={readiness.registeredCount}
           inspectedCount={readiness.inspectedCount}
@@ -354,29 +386,41 @@ export function FarmDashboard({
       </div>
 
       <div className="farm-dashboard-row">
-        <ActivePolicyCard
-          policy={
-            activePolicy && {
-              policyNumber: activePolicy.policy_number,
-              status: activePolicy.status,
-              monthlyPremium: activePolicy.monthly_premium,
-              animalCountAtPricing: activePolicy.animal_count_at_pricing,
-              startDate: activePolicy.creation_date
-                ? new Date(activePolicy.creation_date).toLocaleDateString()
-                : "—",
-            }
-          }
-          registeredCount={animals.length}
-          onTogglePolicies={onTogglePolicies}
+        <OverviewCard
+          title="Inspections Overview"
+          subtitle="Your most recent inspections"
+          actionLabel="All Inspections"
+          onToggle={onToggleInspections}
+          stats={[
+            {
+              value: inspectionCounts.pending,
+              label: "Pending",
+              tone: "warning",
+            },
+            {
+              value: inspectionCounts.approved,
+              label: "Approved",
+              tone: "success",
+            },
+            {
+              value: inspectionCounts.denied,
+              label: "Changes Requested",
+              tone: "danger",
+            },
+          ]}
+          items={recentInspections}
         />
-        <ClaimsOverviewCard
+        <OverviewCard
+          title="Claims Overview"
+          subtitle="Your most recent claims"
+          actionLabel="All Claims"
+          onToggle={onToggleClaims}
           stats={[
             { value: claimCounts.pending, label: "Pending", tone: "warning" },
             { value: claimCounts.approved, label: "Approved", tone: "success" },
             { value: claimCounts.denied, label: "Rejected", tone: "danger" },
           ]}
-          claims={recentClaims}
-          onToggleClaims={onToggleClaims}
+          items={recentClaims}
         />
       </div>
       {open && (

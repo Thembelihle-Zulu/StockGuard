@@ -154,7 +154,7 @@ export function InspectionsManagement() {
           { value: inspections.length, label: "Total Inspections", tone: "neutral" },
           { value: pendingCount, label: "Pending", tone: "warning" },
           { value: approvedCount, label: "Approved", tone: "success" },
-          { value: deniedCount, label: "Denied", tone: "danger" },
+          { value: deniedCount, label: "Changes Requested", tone: "danger" },
         ]}
       />
 

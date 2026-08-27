@@ -1,10 +1,12 @@
 import { useState } from "react";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { Sidebar } from "../../component/Sidebar";
+import { NotificationBell } from "../../component/NotificationBell";
 import { ClaimsManagement } from "./ClaimsManagement";
 import { LivestockManagement } from "./LivestockManagement";
 import { InspectionsManagement } from "./InspectionsManagement";
 import { PoliciesManagement } from "./PoliciesManagement";
+import { PaymentsManagement } from "./PaymentsManagement";
 import { ReportsManagement } from "./ReportsManagement";
 import { AdminOverview } from "./AdminOverview";
 import { getGreeting, TODAY } from "../../utils/greeting";
@@ -22,6 +24,7 @@ export function AdminDashboard() {
           <p>{TODAY}</p>
         </div>
         <div className="topnav-actions">
+          <NotificationBell />
           <span className="admin-role-pill">
             <AdminPanelSettingsIcon fontSize="inherit" />
             Administrator
@@ -51,6 +54,11 @@ export function AdminDashboard() {
             prev === "policies" ? "dashboard" : "policies",
           )
         }
+        onTogglePayments={() =>
+          setActivePanel((prev) =>
+            prev === "payments" ? "dashboard" : "payments",
+          )
+        }
         onToggleReports={() =>
           setActivePanel((prev) => (prev === "reports" ? "dashboard" : "reports"))
         }
@@ -75,6 +83,11 @@ export function AdminDashboard() {
       {activePanel === "policies" && (
         <section className="kpi-list">
           <PoliciesManagement />
+        </section>
+      )}
+      {activePanel === "payments" && (
+        <section className="kpi-list">
+          <PaymentsManagement />
         </section>
       )}
       {activePanel === "reports" && (

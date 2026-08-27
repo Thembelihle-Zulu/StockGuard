@@ -8,7 +8,7 @@
 // MONTHLY_RATE and MINIMUM_PREMIUM are placeholder figures, same caveat
 // as before — not actuarial advice, just a structurally sound starting
 // point to tune once real figures exist.
-const MONTHLY_RATE = 0.0035; // ~4.2%/year of insured value
+const MONTHLY_RATE = 0.0065; // ~7.8%/year of insured value
 const MINIMUM_PREMIUM = 100; // floor so a tiny/cheap herd still covers admin cost
 
 const COVERAGE_MULTIPLIERS = {

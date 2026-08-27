@@ -43,7 +43,6 @@ html {
 
 body{
   background-color: whitesmoke;
-  padding-block-start: 1rem;
   font-family: var(--font-base);
   color: var(--text-primary);
 }

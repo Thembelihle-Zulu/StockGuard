@@ -13,6 +13,7 @@ export function ListItems({
   onCountChange,
   filterFn,
   emptyState,
+  componentProps = {},
 }) {
   const [fetchedItems, setFetchedItems] = useState([]);
 
@@ -43,7 +44,7 @@ export function ListItems({
   return (
     <div className="claims-grid">
       {visibleItems.map((item) => (
-        <Component key={item.id} item={item} />
+        <Component key={item.id} item={item} {...componentProps} />
       ))}
     </div>
   );

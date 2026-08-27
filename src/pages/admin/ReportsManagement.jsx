@@ -1,8 +1,9 @@
 import Grid from "@mui/material/Grid";
 import PetsIcon from "@mui/icons-material/Pets";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import DescriptionIcon from "@mui/icons-material/Description";
+import PaidIcon from "@mui/icons-material/Paid";
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../utils/api";
 import { KpiCard } from "../../component/admin/KPICard";
@@ -26,6 +27,7 @@ export function ReportsManagement() {
   const [claims, setClaims] = useState([]);
   const [inspections, setInspections] = useState([]);
   const [policies, setPolicies] = useState([]);
+  const [payments, setPayments] = useState([]);
 
   useEffect(() => {
     apiFetch("onboarding/farm_profile/admin/all")
@@ -52,6 +54,11 @@ export function ReportsManagement() {
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setPolicies(Array.isArray(data) ? data : []))
       .catch(console.error);
+
+    apiFetch("payments/admin/all")
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
+      .then((data) => setPayments(Array.isArray(data) ? data : []))
+      .catch(console.error);
   }, []);
 
   // Same recompute-on-render approach as AdminOverview — small,
@@ -74,34 +81,48 @@ export function ReportsManagement() {
   );
   const policyCounts = countByStatus(policies, ["Active", "Cancelled", "Expired"]);
 
+  // Real money in vs. real money out — actual payment records, not the
+  // theoretical monthly_premium rate, and only claims actually approved
+  // (i.e. paid) count toward the payout total.
+  const totalPremiumsCollected = payments
+    .filter((p) => p.status === "completed")
+    .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  const totalClaimsPaidOut = claims
+    .filter((c) => (c.status || "").toLowerCase() === "approved")
+    .reduce((sum, c) => sum + (Number(c.claim_amount) || 0), 0);
+
   const kpis = [
     {
       icon: <AgricultureIcon />,
       value: farmProfiles.length,
       label: "Registered Farms",
       subText: "Active policy holders",
-      trend: "—",
     },
     {
       icon: <PetsIcon />,
       value: animals.length,
       label: "Total Livestock",
       subText: `Across ${farmProfiles.length} farms`,
-      trend: "—",
-    },
-    {
-      icon: <AssignmentIcon />,
-      value: claims.length,
-      label: "Total Claims",
-      subText: "All time",
-      trend: "—",
     },
     {
       icon: <DescriptionIcon />,
       value: policies.length,
       label: "Total Policies",
       subText: "All time",
-      trend: "—",
+    },
+    {
+      icon: <PaidIcon />,
+      value: `R ${totalPremiumsCollected.toLocaleString()}`,
+      label: "Total Premiums Collected",
+      subText: "From completed payments",
+    },
+    {
+      icon: <RequestQuoteIcon />,
+      value: `R ${totalClaimsPaidOut.toLocaleString()}`,
+      label: "Total Claims Paid Out",
+      subText: "Approved claims",
+      accent: "#8D6E63",
+      accentBg: "#F4EDE8",
     },
   ];
 
@@ -164,7 +185,11 @@ export function ReportsManagement() {
                 label: "Approved",
                 tone: "success",
               },
-              { value: inspectionCounts.denied, label: "Denied", tone: "danger" },
+              {
+                value: inspectionCounts.denied,
+                label: "Changes Requested",
+                tone: "danger",
+              },
             ]}
           />
         </DashboardPanel>

@@ -5,7 +5,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { apiFetch } from "../../utils/api";
 import { DashboardPanel } from "../../component/DashboardPanel";
 import { QuickActionsGrid } from "../../component/QuickActionsGrid";
-import { ClaimsOverviewCard } from "../../component/ClaimsOverviewCard";
+import { OverviewCard } from "../../component/OverviewCard";
 import { AttentionQueueCard } from "../../component/AttentionQueueCard";
 import { StatBlockRow } from "../../component/StatBlockRaw";
 import { LivestockPortfolioList } from "../LivestockPortfolioList";
@@ -15,6 +15,15 @@ const STATUS_LABEL = {
   pending: "Pending",
   approved: "Approved",
   denied: "Rejected",
+};
+
+// A denied inspection can be fixed and resubmitted (missing evidence,
+// disputed value); a denied claim is final — same status value, different
+// real-world meaning, so the display label differs too.
+const INSPECTION_STATUS_LABEL = {
+  pending: "Pending",
+  approved: "Approved",
+  denied: "Changes Requested",
 };
 
 // NOTE: there's no admin/all route for policies yet (unlike animal, farm
@@ -58,6 +67,11 @@ export function AdminOverview({
   // Plain values recomputed each render — these lists are small
   // (admin-side, fetched once), so there's no real cost to skipping
   // useMemo here.
+  const animalById = {};
+  animals.forEach((a) => {
+    animalById[a.id] = a;
+  });
+
   const speciesCounts = {};
   animals.forEach((a) => {
     speciesCounts[a.species] = (speciesCounts[a.species] || 0) + 1;
@@ -86,9 +100,29 @@ export function AdminOverview({
       };
     });
 
-  const pendingInspections = inspections.filter(
-    (i) => (i.status || "pending").toLowerCase() === "pending",
-  ).length;
+  const inspectionCounts = { pending: 0, approved: 0, denied: 0 };
+  inspections.forEach((i) => {
+    const key = (i.status || "pending").toLowerCase();
+    if (inspectionCounts[key] !== undefined) inspectionCounts[key] += 1;
+  });
+  const pendingInspections = inspectionCounts.pending;
+
+  const recentInspections = [...inspections]
+    .sort((a, b) => new Date(b.inspection_date) - new Date(a.inspection_date))
+    .slice(0, 4)
+    .map((i) => {
+      const key = (i.status || "pending").toLowerCase();
+      const animal = animalById[i.livestock_id];
+      return {
+        id: i.id,
+        description: animal
+          ? `${animal.species} — ${animal.tag_number}`
+          : i.livestock_id,
+        amount: i.approved_value ?? animal?.estimated_value ?? null,
+        status: key,
+        statusLabel: INSPECTION_STATUS_LABEL[key] || i.status,
+      };
+    });
 
   const attentionItems = [
     {
@@ -163,14 +197,42 @@ export function AdminOverview({
       </div>
 
       <div className="admin-overview-row">
-        <ClaimsOverviewCard
+        <OverviewCard
+          title="Claims Overview"
+          subtitle="Most recent claims across all farms"
+          actionLabel="All Claims"
+          onToggle={onToggleClaims}
           stats={[
             { value: claimCounts.pending, label: "Pending", tone: "warning" },
             { value: claimCounts.approved, label: "Approved", tone: "success" },
             { value: claimCounts.denied, label: "Rejected", tone: "danger" },
           ]}
-          claims={recentClaims}
-          onToggleClaims={onToggleClaims}
+          items={recentClaims}
+        />
+
+        <OverviewCard
+          title="Inspections Overview"
+          subtitle="Most recent inspections across all farms"
+          actionLabel="All Inspections"
+          onToggle={onToggleInspections}
+          stats={[
+            {
+              value: inspectionCounts.pending,
+              label: "Pending",
+              tone: "warning",
+            },
+            {
+              value: inspectionCounts.approved,
+              label: "Approved",
+              tone: "success",
+            },
+            {
+              value: inspectionCounts.denied,
+              label: "Changes Requested",
+              tone: "danger",
+            },
+          ]}
+          items={recentInspections}
         />
       </div>
     </div>
