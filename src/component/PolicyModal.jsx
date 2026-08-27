@@ -25,6 +25,14 @@ export function PolicyModal({ open, setOpen, policy }) {
           }
         />
         <DetailRow
+          label="Insured Value"
+          value={
+            policy.insured_value_at_pricing != null
+              ? `R ${Number(policy.insured_value_at_pricing).toLocaleString()}`
+              : "—"
+          }
+        />
+        <DetailRow
           label="Animals Covered"
           value={policy.animal_count_at_pricing}
         />

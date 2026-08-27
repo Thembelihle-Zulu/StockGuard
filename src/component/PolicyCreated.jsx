@@ -77,10 +77,10 @@ export function PolicyCreated({ policyNumber }) {
           </Box>
 
           <Typography color="text.secondary" sx={{ mb: 1 }}>
-            Inspection Status
+            Policy Status
           </Typography>
           <Chip
-            label="Pending Review"
+            label={policy?.status || "Pending"}
             sx={{ bgcolor: "grey.200", mb: 2 }}
             size="small"
           />
@@ -98,8 +98,10 @@ export function PolicyCreated({ policyNumber }) {
         <Box sx={{ textAlign: "left" }}>
           <Typography sx={{ fontWeight: 700, mb: 1 }}>Next Steps</Typography>
           <Typography color="text.secondary">
-            Our team will review your inspection documents before coverage
-            becomes active.
+            You've registered 1 of {policy?.animal_count_at_pricing ?? "your declared"}{" "}
+            animals. Coverage activates once every declared animal is
+            registered — add the rest from your Livestock page, then
+            activate your policy.
           </Typography>
         </Box>
 

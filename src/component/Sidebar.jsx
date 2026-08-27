@@ -10,10 +10,11 @@ export function Sidebar({
   activePanel,
   onTogglePolicies,
   onToggleReports,
+  onTogglePayments,
+  onToggleProfile,
+  claimsCount = 0,
 }) {
   const navigate = useNavigate();
-  const role = localStorage.getItem("role");
-  const isAdmin = role === "ADMIN";
 
   const navItemClass = (panelKey) =>
     `nav-item${activePanel === panelKey ? " active" : ""}`;
@@ -97,29 +98,27 @@ export function Sidebar({
                 <span className="nav-badge">{livestockCount}</span>
               </a>
             </li>
-            {isAdmin && (
-              <li>
-                <a
-                  className={navItemClass("inspections")}
-                  onClick={onToggleInspections}
+            <li>
+              <a
+                className={navItemClass("inspections")}
+                onClick={onToggleInspections}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M9 11l3 3L22 4" />
-                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
-                  </svg>
-                  Inspections
-                </a>
-              </li>
-            )}
+                  <path d="M9 11l3 3L22 4" />
+                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                </svg>
+                Inspections
+              </a>
+            </li>
             <li>
               <a
                 className={navItemClass("policies")}
@@ -159,11 +158,14 @@ export function Sidebar({
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                 </svg>
                 Claims
-                <span className="nav-badge">3</span>
+                <span className="nav-badge">{claimsCount}</span>
               </a>
             </li>
             <li>
-              <a className="nav-item" href="#">
+              <a
+                className={navItemClass("payments")}
+                onClick={onTogglePayments}
+              >
                 <svg
                   width="18"
                   height="18"
@@ -203,29 +205,12 @@ export function Sidebar({
                 Reports
               </a>
             </li>
-            <li>
-              <a className="nav-item" href="#">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
-                Health Records
-              </a>
-            </li>
           </ul>
 
           <span className="nav-section-label">Account</span>
           <ul>
             <li>
-              <a className="nav-item" href="#">
+              <a className={navItemClass("profile")} onClick={onToggleProfile}>
                 <svg
                   width="18"
                   height="18"
@@ -242,52 +227,16 @@ export function Sidebar({
                 Profile
               </a>
             </li>
-            <li>
-              <a className="nav-item" href="#">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
-                  <path d="M17.66 6.34a8 8 0 010 11.32M6.34 6.34a8 8 0 000 11.32" />
-                </svg>
-                Settings
-              </a>
-            </li>
           </ul>
         </nav>
 
         <div className="sidebar-bottom">
-          <a className="nav-item" href="#">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            Help &amp; Support
-          </a>
           <a
             className="nav-item"
             onClick={() => {
               localStorage.removeItem("token");
               localStorage.removeItem("role");
-              navigate("/login");
+              navigate("/");
             }}
           >
             <svg

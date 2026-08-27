@@ -1,8 +1,7 @@
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import { DetailModal, DetailRow } from "./DetailModal";
-
-const API_ORIGIN = "http://127.0.0.1:5000";
+import { API_ORIGIN } from "../utils/api";
 
 export function LivestockModal({ open, setOpen, livestock }) {
   return (

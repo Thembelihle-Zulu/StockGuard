@@ -94,8 +94,15 @@ export function RegisterAnimal({
         // success actions live here, inside the try block, so a failed
         // save never closes the modal or advances the step silently
         if (isModal) {
-          onSuccess && onSuccess();
-          handleClose();
+          // If the caller passed onSaved, it's driving what happens next
+          // (e.g. RegisterAnimalFlow advancing to the inspection step)
+          // instead of the default "just close" behavior.
+          if (onSaved) {
+            onSaved(savedAnimal);
+          } else {
+            onSuccess && onSuccess();
+            handleClose();
+          }
         } else {
           onSaved(savedAnimal);
           setActiveStep((prev) => prev + 1);
@@ -116,9 +123,9 @@ export function RegisterAnimal({
 
     if (!file) return;
     try {
-      const result = await uploadFile(file, "animals");
+      const url = await uploadFile(file, "animals");
 
-      setFieldValue("image", result.url);
+      setFieldValue("image", url);
     } catch (error) {
       console.error(error);
     }

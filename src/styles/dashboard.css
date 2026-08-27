@@ -3,8 +3,21 @@
    wrapper, and the hero card. Depends on globals.css's custom
    properties (--surface, --border, --topnav-h, --sidebar-w, etc.). */
 .admin{
-    padding-inline-start: calc(var(--sidebar-w, 240px) + 2rem);
+    /* padding-inline-start: calc(var(--sidebar-w, 240px)); */
 
+}
+
+.farmer-shell {
+  padding-inline-start: calc(var(--sidebar-w, 240px));
+}
+
+/* Farmer topnav role pill — evergreen variant of .admin-role-pill,
+   since the farmer topnav sits on the plain white .topnav background
+   rather than the admin's green gradient one. */
+.topnav-role-pill {
+  color: var(--evergreen);
+  background: oklch(0.95 0.03 154.55);
+  border: 1px solid oklch(0.85 0.06 154.55);
 }
 .topnav {
   height: var(--topnav-h);
@@ -99,10 +112,14 @@
 }
 
 /* Admin topnav — green variant of the shared .topnav bar, same
-   gradient as .farm-banner (farm-dashboard.css) for consistency. */
+   gradient as .farm-banner (farm-dashboard.css) for consistency.
+   Carries its own sidebar clearance since .admin's own
+   padding-inline-start is currently disabled (see top of file) —
+   without this the greeting text renders behind the fixed sidebar. */
 .admin-topnav {
   background: linear-gradient(135deg, var(--forest), var(--olive));
   border-bottom: none;
+  padding-inline-start: calc(var(--sidebar-w, 240px) + 32px);
 }
 
 .admin-topnav .topnav-welcome h3 {

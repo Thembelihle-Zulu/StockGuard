@@ -1,9 +1,4 @@
-import Grid from "@mui/material/Grid";
-import DescriptionIcon from "@mui/icons-material/Description";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import PaidIcon from "@mui/icons-material/Paid";
-import { KpiCard } from "../../component/admin/KPICard";
+import { StatBlockRow } from "../../component/StatBlockRaw";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../utils/api";
 import { PoliciesFilters } from "../../component/admin/PoliciesFilters";
@@ -98,52 +93,26 @@ export function PoliciesManagement() {
       .catch(console.error);
   };
 
+  const totalMonthlyPremiums = policies.reduce(
+    (sum, p) => sum + (p.monthly_premium || 0),
+    0,
+  );
+
   return (
     <div className="livestock-management-page">
-      <Grid container spacing={3} className="kpi-grid">
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<DescriptionIcon />}
-            value={policies.length}
-            label="Total Policies"
-            subText="All time"
-            trend="—"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<CheckCircleIcon />}
-            value={activeCount}
-            label="Active Policies"
-            subText="Currently covered"
-            trend="—"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<PaidIcon />}
-            value={`R ${policies.reduce((sum, p) => sum + (p.monthly_premium || 0), 0).toLocaleString()}`}
-            label="Total Monthly Premiums"
-            subText="Across all policies"
-            trend="—"
-            accent="#8D6E63"
-            accentBg="#F4EDE8"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<CancelIcon />}
-            value={cancelledCount + expiredCount}
-            label="Inactive Policies"
-            subText="Cancelled or expired"
-            trend="—"
-            trendDirection="down"
-          />
-        </Grid>
-      </Grid>
+      <StatBlockRow
+        stats={[
+          { value: policies.length, label: "Total Policies", tone: "neutral" },
+          { value: activeCount, label: "Active", tone: "success" },
+          { value: cancelledCount, label: "Cancelled", tone: "danger" },
+          { value: expiredCount, label: "Expired", tone: "warning" },
+          {
+            value: `R ${totalMonthlyPremiums.toLocaleString()}`,
+            label: "Monthly Premiums",
+            tone: "neutral",
+          },
+        ]}
+      />
 
       <div className="filters-section">
         <PoliciesFilters

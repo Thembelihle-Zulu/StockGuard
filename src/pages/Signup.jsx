@@ -11,6 +11,7 @@ import { useFormik } from "formik";
 import { object, string } from "yup";
 import SendIcon from "@mui/icons-material/Send";
 import "../styles/auth.css";
+import { useNavigate } from "react-router";
 const API_BASE = "http://127.0.0.1:5000/api";
 
 // Password rule: at least 8 characters, containing at least one letter
@@ -31,7 +32,7 @@ const userSchema = object({
 export function Signup() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-
+  const navigate = useNavigate();
   const { values, handleChange, handleBlur, handleSubmit, touched, errors } =
     useFormik({
       initialValues: {
@@ -62,6 +63,7 @@ export function Signup() {
           .then((data) => {
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.role);
+            navigate("/onboarding");
           })
           .catch((error) =>
             setSubmitError(
@@ -69,8 +71,6 @@ export function Signup() {
             ),
           )
           .finally(() => {
-            navigate("/onboarding");
-
             setSubmitting(false);
           });
       },

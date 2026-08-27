@@ -1,5 +1,7 @@
+import Avatar from "@mui/material/Avatar";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
+import { API_ORIGIN } from "../utils/api";
 import "../styles/farm-dashboard.css";
 
 export function FarmHeaderBanner({
@@ -9,9 +11,24 @@ export function FarmHeaderBanner({
   farmType,
   ownerName,
   profileCompletion,
+  imageUrl,
 }) {
   return (
     <div className="farm-banner">
+      {imageUrl && (
+        <Avatar
+          src={`${API_ORIGIN}${imageUrl}`}
+          sx={{
+            position: "absolute",
+            top: 24,
+            right: 24,
+            width: 56,
+            height: 56,
+            border: "2px solid rgba(255,255,255,.5)",
+            zIndex: 1,
+          }}
+        />
+      )}
       <span className="farm-banner-eyebrow">Farm Dashboard · {year}</span>
       <h1 className="farm-banner-title">{farmName}</h1>
 

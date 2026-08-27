@@ -2,9 +2,8 @@ import { LivestockModal } from "./LivestockModal";
 import { useState } from "react";
 import PetsIcon from "@mui/icons-material/Pets";
 import CakeIcon from "@mui/icons-material/Cake";
+import { API_ORIGIN } from "../utils/api";
 import "../styles/livestock-list.css";
-
-const API_ORIGIN = "http://127.0.0.1:5000";
 
 const STATUS_STYLES = {
   alive: {

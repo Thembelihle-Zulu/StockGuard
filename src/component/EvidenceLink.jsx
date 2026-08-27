@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
-
-const API_ORIGIN = "http://127.0.0.1:5000";
+import { API_ORIGIN } from "../utils/api";
 
 export function EvidenceLink({ label, url }) {
   if (!url) return null;

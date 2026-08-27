@@ -1,7 +1,6 @@
 import { DashboardPanel } from "./DashboardPanel";
 import { StatBlockRow } from "./StatBlockRaw";
 import "../styles/farm-dashboard.css";
-import { useNavigate } from "react-router";
 
 export function ClaimsOverviewCard({ stats, claims, onToggleClaims }) {
   return (

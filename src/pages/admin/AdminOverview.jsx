@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import PetsIcon from "@mui/icons-material/Pets";
-import AgricultureIcon from "@mui/icons-material/Agriculture";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import BoltIcon from "@mui/icons-material/Bolt";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import { apiFetch } from "../../utils/api";
-import { KpiCard } from "../../component/admin/KPICard";
 import { DashboardPanel } from "../../component/DashboardPanel";
 import { QuickActionsGrid } from "../../component/QuickActionsGrid";
 import { ClaimsOverviewCard } from "../../component/ClaimsOverviewCard";
+import { AttentionQueueCard } from "../../component/AttentionQueueCard";
+import { StatBlockRow } from "../../component/StatBlockRaw";
 import { LivestockPortfolioList } from "../LivestockPortfolioList";
 import "../../styles/AdminOverview.css";
 
@@ -21,18 +18,20 @@ const STATUS_LABEL = {
 };
 
 // NOTE: there's no admin/all route for policies yet (unlike animal, farm
-// profile, and claim, which all already have one) — a policy KPI/panel
-// is deliberately left out here rather than guessed. Add
+// profile, claim, and inspection, which all already have one) — a policy
+// stat/panel is deliberately left out here rather than guessed. Add
 // GET /onboarding/policy/admin/all on the backend first, then this can
-// gain a "Total Active Policies" KPI the same way the other three work.
+// gain a "Total Active Policies" figure the same way the others work.
 export function AdminOverview({
   onToggleClaims,
   onToggleLivestock,
+  onToggleInspections,
   onToggleReports,
 }) {
   const [farmProfiles, setFarmProfiles] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [claims, setClaims] = useState([]);
+  const [inspections, setInspections] = useState([]);
 
   useEffect(() => {
     apiFetch("onboarding/farm_profile/admin/all")
@@ -48,6 +47,11 @@ export function AdminOverview({
     apiFetch("claims/admin/all")
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setClaims(Array.isArray(data) ? data : []))
+      .catch(console.error);
+
+    apiFetch("onboarding/inspection/admin/all")
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
+      .then((data) => setInspections(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, []);
 
@@ -82,36 +86,20 @@ export function AdminOverview({
       };
     });
 
-  const kpis = [
+  const pendingInspections = inspections.filter(
+    (i) => (i.status || "pending").toLowerCase() === "pending",
+  ).length;
+
+  const attentionItems = [
     {
-      icon: <PetsIcon />,
-      value: animals.length,
-      label: "Total Livestock",
-      subText: `Across ${farmProfiles.length} farms`,
-      trend: "—",
+      label: `Pending claim${claimCounts.pending === 1 ? "" : "s"}`,
+      count: claimCounts.pending,
+      onClick: onToggleClaims,
     },
     {
-      icon: <AgricultureIcon />,
-      value: farmProfiles.length,
-      label: "Registered Farms",
-      subText: "Active policy holders",
-      trend: "—",
-    },
-    {
-      icon: <AssignmentIcon />,
-      value: claims.length,
-      label: "Total Claims",
-      subText: "All time",
-      trend: "—",
-    },
-    {
-      icon: <BoltIcon />,
-      value: claimCounts.pending,
-      label: "Open Claims",
-      subText: "Awaiting review",
-      trend: "—",
-      accent: "#8D6E63",
-      accentBg: "#F4EDE8",
+      label: `Pending inspection${pendingInspections === 1 ? "" : "s"}`,
+      count: pendingInspections,
+      onClick: onToggleInspections,
     },
   ];
 
@@ -139,19 +127,22 @@ export function AdminOverview({
   return (
     <div className="admin-overview-page">
       <div className="admin-overview-header">
-        <h1 className="admin-overview-title">Admin Overview</h1>
-        <p className="admin-overview-subtitle">
-          A summary across every registered farm.
-        </p>
+        <div>
+          <h1 className="admin-overview-title">Admin Overview</h1>
+          <p className="admin-overview-subtitle">
+            A summary across every registered farm.
+          </p>
+        </div>
+        <StatBlockRow
+          stats={[
+            { value: animals.length, label: "Livestock", tone: "neutral" },
+            { value: farmProfiles.length, label: "Farms", tone: "neutral" },
+            { value: claims.length, label: "Claims to date", tone: "neutral" },
+          ]}
+        />
       </div>
 
-      <Grid container spacing={3} className="admin-overview-kpi-grid">
-        {kpis.map((kpi) => (
-          <Grid key={kpi.label} size={{ xs: 12, md: 6, lg: 3 }}>
-            <KpiCard {...kpi} />
-          </Grid>
-        ))}
-      </Grid>
+      <AttentionQueueCard items={attentionItems} />
 
       <div className="admin-overview-row">
         <DashboardPanel

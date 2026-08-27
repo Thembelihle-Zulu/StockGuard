@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import "../styles/admin-filters.css";

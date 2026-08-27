@@ -1,4 +1,5 @@
-const API_BASE = "http://127.0.0.1:5000/api/";
+export const API_ORIGIN = "http://127.0.0.1:5000";
+const API_BASE = `${API_ORIGIN}/api/`;
 
 function authHeaders() {
   // Login.jsx stores this as a plain string (localStorage.setItem("token", body.token)),

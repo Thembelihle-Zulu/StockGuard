@@ -1,9 +1,4 @@
-import Grid from "@mui/material/Grid";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import PaidIcon from "@mui/icons-material/Paid";
-import { KpiCard } from "../../component/admin/KPICard";
+import { StatBlockRow } from "../../component/StatBlockRaw";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../utils/api";
 import { ClaimsFilters } from "../../component/admin/ClaimsFilter";
@@ -169,50 +164,14 @@ export function ClaimsManagement() {
 
   return (
     <div className="livestock-management-page">
-      <Grid container spacing={3} className="kpi-grid">
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<AssignmentIcon />}
-            value={claims.length}
-            label="Total Claims"
-            subText="All time"
-            trend="—"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<PaidIcon />}
-            value={pendingCount}
-            label="Pending Claims"
-            subText="Awaiting review"
-            trend="—"
-            accent="#8D6E63"
-            accentBg="#F4EDE8"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<CheckCircleIcon />}
-            value={approvedCount}
-            label="Approved Claims"
-            subText="Paid or approved"
-            trend="—"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<CancelIcon />}
-            value={deniedCount}
-            label="Denied Claims"
-            subText="Not approved"
-            trend="—"
-            trendDirection="down"
-          />
-        </Grid>
-      </Grid>
+      <StatBlockRow
+        stats={[
+          { value: claims.length, label: "Total Claims", tone: "neutral" },
+          { value: pendingCount, label: "Pending", tone: "warning" },
+          { value: approvedCount, label: "Approved", tone: "success" },
+          { value: deniedCount, label: "Denied", tone: "danger" },
+        ]}
+      />
 
       <div className="filters-section">
         <ClaimsFilters

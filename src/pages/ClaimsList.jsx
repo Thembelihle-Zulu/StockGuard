@@ -29,7 +29,7 @@ const EMPTY_FILTERS = {
   dateTo: "",
 };
 
-export function ClaimsList() {
+export function ClaimsList({ onCountChange }) {
   const [open, setOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
@@ -96,7 +96,17 @@ export function ClaimsList() {
         Component={Claim}
         url={CLAIMS_URL}
         filterFn={filterFn}
+        onCountChange={onCountChange}
         key={refreshKey}
+        emptyState={
+          <div className="list-empty-state">
+            <p className="list-empty-state-title">No claims filed yet.</p>
+            <p>
+              Only animals with an approved inspection are eligible — use
+              "New Claim" above once you have one.
+            </p>
+          </div>
+        }
       />
 
       {open && (

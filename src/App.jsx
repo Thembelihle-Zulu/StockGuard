@@ -1,5 +1,5 @@
 import { GlobalStyles } from "@mui/material";
-import { Navigate, Route, Routes, useNavigate } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import "./App.css";
 import "./styles/index.css";
 import { Home } from "./pages/Home";
@@ -7,10 +7,8 @@ import { Onboarding } from "./pages/Onboarding";
 import { Dashboard } from "./pages/dashboard";
 import { Login } from "./pages/Login";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import { Signup } from "./pages/Signup";
 function App() {
-  const navigate = useNavigate();
-  const animal_type = ["Cattle", "Sheep", "Goat", "Pig", "Poultry", "Horse"];
-
   return (
     <>
       <GlobalStyles
@@ -25,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route
           path="/onboarding"
           element={
@@ -45,7 +44,9 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute>
-              <AdminDashboard />
+              <AdminOnlyRoute>
+                <AdminDashboard />
+              </AdminOnlyRoute>
             </ProtectedRoute>
           }
         />
@@ -62,5 +63,5 @@ function ProtectedRoute({ children }) {
 }
 function AdminOnlyRoute({ children }) {
   const role = localStorage.getItem("role");
-  return role === "ADMIN" ? children : <Navigate replace to="/no-auth" />;
+  return role === "ADMIN" ? children : <Navigate replace to="/dashboard" />;
 }

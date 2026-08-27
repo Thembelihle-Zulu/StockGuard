@@ -1,12 +1,10 @@
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { DetailModal, DetailRow } from "./DetailModal";
-import { EvidenceLink } from "./admin/EvidenceLink";
-const API_ORIGIN = "http://127.0.0.1:5000";
+import { EvidenceLink } from "./EvidenceLink";
+import { API_ORIGIN } from "../utils/api";
 
 export function ClaimModal({ open, setOpen, claim }) {
   return (

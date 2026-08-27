@@ -1,4 +1,5 @@
 import "../styles/livestock-list.css";
+import "../styles/claims-list.css";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -7,7 +8,7 @@ import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { ListItems } from "../component/ListItems";
 import { Livestock } from "../component/Livestock";
-import { RegisterAnimal } from "../component/RegisterAnimal";
+import { RegisterAnimalFlow } from "../component/RegisterAnimalFlow";
 import { LivestockFilters } from "../component/LivestockFilters";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -79,6 +80,21 @@ export function LivestockList({ onCountChange }) {
         Component={Livestock}
         url={url}
         filterFn={filterFn}
+        emptyState={
+          <div className="list-empty-state">
+            <p className="list-empty-state-title">No livestock registered.</p>
+            <p>
+              Register livestock to begin inspections and insurance coverage.
+            </p>
+            <Button
+              className="livestock-new-btn"
+              startIcon={<AddIcon />}
+              onClick={() => setOpen(true)}
+            >
+              Register Livestock
+            </Button>
+          </div>
+        }
       />
 
       {open && (
@@ -92,9 +108,8 @@ export function LivestockList({ onCountChange }) {
           }}
         >
           <DialogContent>
-            <RegisterAnimal
+            <RegisterAnimalFlow
               animalType={animalType}
-              isModal={true}
               handleClose={handleClose}
               onSuccess={handleAnimalAdded}
             />

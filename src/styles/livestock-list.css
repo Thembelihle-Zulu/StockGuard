@@ -1,10 +1,12 @@
 /* ===== livestock-list.css ===== */
 
 .livestock-page {
-  max-width: 72rem;
-  margin-inline: auto;
-  padding: 2rem 1rem;
-  padding-inline-start: calc(var(--sidebar-w) + 2rem);
+  /* Left offset for the fixed sidebar comes from the parent
+     .farmer-shell (dashboard.css) — only add the page's own gutter
+     here, and deliberately omit padding-inline-start so it isn't
+     applied twice. */
+  padding-block: 2rem;
+  padding-inline-end: 2rem;
 }
 
 .livestock-page-header {

@@ -1,8 +1,7 @@
 import { ClaimModal } from "./ClaimModal";
 import { useState } from "react";
+import { API_ORIGIN } from "../utils/api";
 import "../styles/claims-list.css";
-
-const API_ORIGIN = "http://127.0.0.1:5000";
 
 const STATUS_LABELS = {
   pending: "Pending",
@@ -12,16 +11,18 @@ const STATUS_LABELS = {
 
 export function Claim({ item }) {
   const [open, setOpen] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   const claim = item;
   const statusKey = (claim.status || "pending").toLowerCase();
 
   return (
     <div className="claim-card">
-      {claim.incident_image ? (
+      {claim.incident_image && !imageFailed ? (
         <img
           className="claim-card-image"
           src={`${API_ORIGIN}${claim.incident_image}`}
           alt={`Incident photo for claim on livestock ${claim.livestock_id}`}
+          onError={() => setImageFailed(true)}
         />
       ) : (
         <div className="claim-card-image claim-card-image--placeholder">

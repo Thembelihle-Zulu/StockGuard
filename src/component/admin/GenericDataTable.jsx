@@ -95,8 +95,6 @@ export function GenericDataTable({
     );
   };
 
-  const hasRowActions = onView || onEdit || onHistory;
-
   return (
     <Box className="livestock-table-container">
       <Box className="table-toolbar">

@@ -7,26 +7,12 @@ import { InspectionsManagement } from "./InspectionsManagement";
 import { PoliciesManagement } from "./PoliciesManagement";
 import { ReportsManagement } from "./ReportsManagement";
 import { AdminOverview } from "./AdminOverview";
+import { getGreeting, TODAY } from "../../utils/greeting";
 import "../../styles/dashboard.css";
-
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
-
-const TODAY = new Date().toLocaleDateString("en-ZA", {
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-});
 
 export function AdminDashboard() {
   const [livestockCount, setLivestockCount] = useState(0);
   const [activePanel, setActivePanel] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
 
   return (
     <section className="admin">
@@ -45,7 +31,6 @@ export function AdminDashboard() {
       </header>
 
       <Sidebar
-        open={sidebarOpen}
         livestockCount={livestockCount}
         onToggleClaims={() =>
           setActivePanel((prev) => (prev === "claims" ? null : "claims"))
@@ -96,6 +81,7 @@ export function AdminDashboard() {
         <AdminOverview
           onToggleClaims={() => setActivePanel("claims")}
           onToggleLivestock={() => setActivePanel("livestock")}
+          onToggleInspections={() => setActivePanel("inspections")}
           onToggleReports={() => setActivePanel("reports")}
         />
       )}

@@ -1,16 +1,18 @@
-import { useState } from "react";
-import { TextField, Typography, Stack, Paper } from "@mui/material";
+import { useEffect, useState } from "react";
+import { TextField, Typography, Stack, Paper, IconButton } from "@mui/material";
 import { useFormik } from "formik";
 import { object, string, date } from "yup";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import SendIcon from "@mui/icons-material/Send";
+import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { apiFetch } from "../utils/api";
+import { uploadFile } from "../utils/uploadFile";
 import "../styles/onboarding.css";
 const inspectionSchema = object({
   status: string().required("status is required"),
@@ -37,9 +39,24 @@ const VisuallyHiddenInput = styled("input")({
 // vetenaryHealthReport) are intentionally camelCase — that's what
 // animal_inspection_bp.add_animal_inspection actually reads via
 // data.get(...). Only livestock_id is snake_case, matching the model.
-export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
+export function AnimalInspection({
+  setActiveStep,
+  animalId,
+  onSaved,
+  isModal,
+  handleClose,
+}) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [declaredValue, setDeclaredValue] = useState(null);
+
+  useEffect(() => {
+    if (!animalId) return;
+    apiFetch(`onboarding/animal/${animalId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((animal) => setDeclaredValue(animal?.estimated_value ?? null))
+      .catch(console.error);
+  }, [animalId]);
 
   const {
     values,
@@ -54,6 +71,7 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
       status: "pending",
       animalTagNameImage: "",
       vetenaryHealthReport: "",
+      valuationEvidence: "",
       inspectionDate: null,
     },
     validationSchema: inspectionSchema,
@@ -69,6 +87,7 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
             inspectionDate: data.inspectionDate,
             animalTagNameImage: data.animalTagNameImage,
             vetenaryHealthReport: data.vetenaryHealthReport,
+            valuationEvidence: data.valuationEvidence || null,
             livestock_id: animalId,
           }),
         });
@@ -76,8 +95,13 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
         if (!res.ok) throw new Error("Failed to save inspection");
 
         const savedInspection = await res.json();
-        onSaved(savedInspection);
-        setActiveStep((prev) => prev + 1);
+        if (isModal) {
+          onSaved?.(savedInspection);
+          handleClose?.();
+        } else {
+          onSaved(savedInspection);
+          setActiveStep((prev) => prev + 1);
+        }
       } catch (err) {
         console.error(err);
         setSubmitError(
@@ -89,10 +113,20 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
     },
   });
 
-  const handleFileChange = (fieldName) => (event) => {
+  // Was previously just storing file.name as a fake "URL" — never
+  // actually uploaded anything, so tag_photo_url/vet_health_report_url
+  // pointed nowhere. Matches the real upload pattern FileClaim.jsx and
+  // RegisterAnimal.jsx already use.
+  const handleFileChange = (fieldName) => async (event) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setFieldValue(fieldName, file.name);
+    if (!file) return;
+
+    try {
+      const url = await uploadFile(file, "inspections");
+      setFieldValue(fieldName, url);
+    } catch (err) {
+      console.error(err);
+      setSubmitError(err.message || "Upload failed. Please try again.");
     }
   };
 
@@ -128,18 +162,36 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
           "& .MuiTextField-root": { width: "100%" },
         }}
       >
-        <Typography
-          component="h2"
+        <Box
           sx={{
-            fontFamily: '"Playfair Display", Georgia, serif',
-            fontSize: "1.75rem",
-            fontWeight: 700,
-            color: "oklch(0.2 0.03 154.55)",
-            mb: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          Animal Inspection
-        </Typography>
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: "1.75rem",
+              fontWeight: 700,
+              color: "oklch(0.2 0.03 154.55)",
+              mb: 1,
+            }}
+          >
+            Animal Inspection
+          </Typography>
+
+          {isModal && (
+            <IconButton
+              onClick={handleClose}
+              aria-label="Close"
+              sx={{ color: "oklch(0.2 0.03 154.55)" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+        </Box>
         <Typography
           sx={{
             fontSize: "0.95rem",
@@ -151,6 +203,24 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
           To qualify for insurance, every animal must complete a pre-insurance
           inspection.
         </Typography>
+
+        {declaredValue != null && (
+          <Typography
+            variant="body2"
+            sx={{
+              mb: 3,
+              px: 1.5,
+              py: 1,
+              borderRadius: 2,
+              bgcolor: "oklch(0.97 0.02 154.55)",
+              color: "oklch(0.3 0.05 154.55)",
+              fontWeight: 600,
+            }}
+          >
+            Declared value: R {Number(declaredValue).toLocaleString()} — an
+            inspector will confirm or adjust this once reviewed.
+          </Typography>
+        )}
 
         <Stack spacing={2.5}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -285,6 +355,55 @@ export function AnimalInspection({ setActiveStep, animalId, onSaved }) {
                     {errors.vetenaryHealthReport}
                   </Typography>
                 ) : null}
+              </Box>
+
+              <Box>
+                <Button
+                  component="label"
+                  role={undefined}
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  sx={{
+                    bgcolor: "transparent",
+                    color: "oklch(0.32 0.1 154.55)",
+                    border: "1.5px solid oklch(0.8 0.03 154.55)",
+                    borderRadius: "2rem",
+                    px: "1.5rem",
+                    py: "0.6rem",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    "&:hover": { bgcolor: "oklch(0.97 0.02 154.55)" },
+                  }}
+                >
+                  Upload Value Evidence (Optional)
+                  <VisuallyHiddenInput
+                    type="file"
+                    name="valuationEvidence"
+                    onChange={handleFileChange("valuationEvidence")}
+                    onBlur={handleBlur}
+                  />
+                </Button>
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ mt: 0.5, color: "oklch(0.55 0.01 90)" }}
+                >
+                  Auction receipt, purchase invoice, or valuation
+                  certificate — speeds up approval, not required.
+                </Typography>
+                {values.valuationEvidence && (
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    sx={{
+                      mt: 1,
+                      color: "oklch(0.4 0.13 154.55)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    ✓ {values.valuationEvidence}
+                  </Typography>
+                )}
               </Box>
             </Stack>
           </Box>

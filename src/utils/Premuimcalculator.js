@@ -1,45 +1,37 @@
-// Small-scale: bands 1–10, 11–20, 21–30 (30 is the small-scale ceiling)
-// Commercial: 30+ starts here, bands 30–50, 51–100, 100+
-// Edit these numbers freely — this is just placeholder pricing until you
-// have real actuarial figures.
-const SMALL_SCALE_TIERS = [
-  { min: 1, max: 10, basePremium: 150 },
-  { min: 11, max: 20, basePremium: 250 },
-  { min: 21, max: 30, basePremium: 350 },
-];
-
-const COMMERCIAL_TIERS = [
-  { min: 30, max: 50, basePremium: 600 },
-  { min: 51, max: 100, basePremium: 1000 },
-  { min: 101, max: Infinity, basePremium: 1800 },
-];
+// Price as a percentage of insured value, not banded headcount. The old
+// tier tables gave every animal in the same band the identical flat fee —
+// a 1-animal and a 10-animal farm in the same small-scale band paid the
+// same total premium, and a 101-animal and a 10,000-animal commercial
+// herd paid the same uncapped flat fee. Pricing off total declared value
+// scales with actual risk exposure instead.
+//
+// MONTHLY_RATE and MINIMUM_PREMIUM are placeholder figures, same caveat
+// as before — not actuarial advice, just a structurally sound starting
+// point to tune once real figures exist.
+const MONTHLY_RATE = 0.0035; // ~4.2%/year of insured value
+const MINIMUM_PREMIUM = 100; // floor so a tiny/cheap herd still covers admin cost
 
 const COVERAGE_MULTIPLIERS = {
   basic: 1,
   full: 1.5,
 };
 
-function findTier(tiers, animalCount) {
-  const tier = tiers.find((t) => animalCount >= t.min && animalCount <= t.max);
-  // fall back to the last (highest) tier if count exceeds every band
-  return tier || tiers[tiers.length - 1];
-}
-
 /**
- * @param {"Small-scale"|"Commercial"} farmType
- * @param {number} animalCount
+ * @param {number} totalHerdValue estimated total insured value (R)
  * @param {"basic"|"full"} coverageTier
  * @returns {{ monthlyPremium: number, tierLabel: string }}
  */
-export function getPremium(farmType, animalCount, coverageTier = "basic") {
-  const count = Number(animalCount) || 1;
-  const isCommercial = farmType?.toLowerCase() === "commercial";
-  const tiers = isCommercial ? COMMERCIAL_TIERS : SMALL_SCALE_TIERS;
-  const tier = findTier(tiers, count);
+export function getPremium(totalHerdValue, coverageTier = "basic") {
+  const value = Number(totalHerdValue) || 0;
   const multiplier = COVERAGE_MULTIPLIERS[coverageTier] ?? 1;
 
+  const monthlyPremium = Math.max(
+    MINIMUM_PREMIUM,
+    Math.round(value * MONTHLY_RATE * multiplier),
+  );
+
   return {
-    monthlyPremium: Math.round(tier.basePremium * multiplier),
-    tierLabel: `${tier.min}${tier.max === Infinity ? "+" : `–${tier.max}`} animals`,
+    monthlyPremium,
+    tierLabel: `R ${value.toLocaleString()} insured value`,
   };
 }

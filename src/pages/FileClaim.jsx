@@ -62,10 +62,17 @@ const VisuallyHiddenInput = styled("input")({
 // Animals come from GET /animal (get_all_animals), already scoped
 // server-side to the authenticated user's own farm via JWT. No
 // farm_profile_id is sent or needed here — the backend derives it.
+// Only an "approved" inspection makes an animal claim eligible — see
+// claims_bp.create_claim's matching server-side check. Enforced here too
+// so the picker guides the farmer instead of letting them submit and
+// get rejected.
+const ELIGIBLE_INSPECTION_STATUS = "approved";
+
 export function FileClaim({ handleClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [animals, setAnimals] = useState([]);
+  const [inspections, setInspections] = useState([]);
   const [animalsError, setAnimalsError] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -77,7 +84,30 @@ export function FileClaim({ handleClose, onSuccess }) {
         console.error(err);
         setAnimalsError("Couldn't load your animals. Please try again.");
       });
+
+    apiFetch("onboarding/inspection")
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
+      .then((data) => setInspections(Array.isArray(data) ? data : []))
+      .catch(console.error);
   }, []);
+
+  const inspectionByAnimalId = {};
+  inspections.forEach((inspection) => {
+    inspectionByAnimalId[inspection.livestock_id] = inspection;
+  });
+
+  const animalsWithEligibility = animals.map((animal) => {
+    const inspection = inspectionByAnimalId[animal.id];
+    const eligible = inspection?.status === ELIGIBLE_INSPECTION_STATUS;
+    const reason = !inspection
+      ? "not inspected"
+      : inspection.status === "pending"
+        ? "inspection pending"
+        : inspection.status === "denied"
+          ? "inspection denied"
+          : null;
+    return { ...animal, eligible, reason, approvedValue: inspection?.approved_value };
+  });
 
   const {
     values,
@@ -118,10 +148,12 @@ export function FileClaim({ handleClose, onSuccess }) {
           }),
         });
 
-        if (!res.ok) throw new Error("Failed to submit claim");
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.message || "Failed to submit claim");
+        }
 
-        const savedClaim = await res.json();
-        console.log("Claim submitted:", savedClaim);
+        await res.json();
 
         // success actions only run here, once the save is confirmed —
         // not in `finally`, which runs on failure too
@@ -139,6 +171,10 @@ export function FileClaim({ handleClose, onSuccess }) {
       }
     },
   });
+
+  const selectedAnimal = animalsWithEligibility.find(
+    (animal) => animal.id === values.livestockId,
+  );
 
   const handleFileChange = (fieldName, subfolder) => async (event) => {
     const file = event.target.files?.[0];
@@ -229,6 +265,22 @@ export function FileClaim({ handleClose, onSuccess }) {
           </IconButton>
         </Box>
 
+        <Typography
+          variant="caption"
+          sx={{
+            display: "block",
+            mb: 2.5,
+            p: 1.25,
+            borderRadius: 2,
+            bgcolor: "oklch(0.97 0.02 154.55)",
+            color: "oklch(0.4 0.05 154.55)",
+          }}
+        >
+          Only animals with an approved inspection are eligible for claims —
+          grayed-out animals below aren't inspected, or are still
+          pending/denied.
+        </Typography>
+
         <Stack spacing={2.5}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
             <Box sx={{ flex: 1 }}>
@@ -247,9 +299,14 @@ export function FileClaim({ handleClose, onSuccess }) {
                   <MenuItem value="" disabled>
                     <em>--Select Animal--</em>
                   </MenuItem>
-                  {animals.map((animal) => (
-                    <MenuItem key={animal.id} value={animal.id}>
+                  {animalsWithEligibility.map((animal) => (
+                    <MenuItem
+                      key={animal.id}
+                      value={animal.id}
+                      disabled={!animal.eligible}
+                    >
                       {animal.species} #{animal.tag_number}
+                      {!animal.eligible ? ` — ${animal.reason}` : ""}
                     </MenuItem>
                   ))}
                 </Select>
@@ -354,6 +411,16 @@ export function FileClaim({ handleClose, onSuccess }) {
                 type="number"
                 sx={fieldSx}
               />
+              {selectedAnimal?.approvedValue != null && (
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ mt: 0.5, color: "oklch(0.5 0.02 154.55)" }}
+                >
+                  Maximum claimable for this animal: R{" "}
+                  {Number(selectedAnimal.approvedValue).toLocaleString()}
+                </Typography>
+              )}
               {touched.claimAmount && errors.claimAmount ? (
                 <Typography color="error" variant="caption" display="block">
                   {errors.claimAmount}

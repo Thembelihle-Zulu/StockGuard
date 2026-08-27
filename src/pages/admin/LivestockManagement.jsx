@@ -1,9 +1,4 @@
-import Grid from "@mui/material/Grid";
-import PetsIcon from "@mui/icons-material/Pets";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import AgricultureIcon from "@mui/icons-material/Agriculture";
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
-import { KpiCard } from "../../component/admin/KPICard";
+import { StatBlockRow } from "../../component/StatBlockRaw";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../utils/api";
 import { LivestockFilters } from "../../component/admin/LivestockFilters";
@@ -148,56 +143,26 @@ export function LivestockManagement({ setLivestockCount }) {
     return true;
   });
 
+  const aliveCount = animals.filter(
+    (a) => (a.status || "Alive") === "Alive",
+  ).length;
+  const sickCount = animals.filter((a) => a.status === "Sick").length;
+  const deceasedCount = animals.filter((a) => a.status === "Deceased").length;
+
   useEffect(() => {
     setLivestockCount?.(filteredAnimals.length);
   }, [filteredAnimals.length, setLivestockCount]);
 
   return (
     <div className="livestock-management-page">
-      <Grid container spacing={3} className="kpi-grid">
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<PetsIcon />}
-            value={animals.length}
-            label="Total Livestock"
-            subText={`Across ${farmProfiles.length} farms`}
-            trend="3.4%"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<AssignmentIcon />}
-            value="127"
-            label="Open Claims"
-            subText="Awaiting review"
-            trend="12%"
-            accent="#8D6E63"
-            accentBg="#F4EDE8"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<AgricultureIcon />}
-            value={farmProfiles.length}
-            label="Registered Farms"
-            subText="Active policy holders"
-            trend="5.1%"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<HealthAndSafetyIcon />}
-            value="18"
-            label="Pending Inspections"
-            subText="Need review"
-            trend="2%"
-            trendDirection="down"
-          />
-        </Grid>
-      </Grid>
+      <StatBlockRow
+        stats={[
+          { value: animals.length, label: "Total Livestock", tone: "neutral" },
+          { value: aliveCount, label: "Alive", tone: "success" },
+          { value: sickCount, label: "Sick", tone: "warning" },
+          { value: deceasedCount, label: "Deceased", tone: "danger" },
+        ]}
+      />
 
       <div className="filters-section">
         <LivestockFilters

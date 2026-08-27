@@ -1,10 +1,12 @@
 /* ===== farm-dashboard.css ===== */
 
 .farm-dashboard-page {
-  max-width: 90rem;
-  margin-inline: auto;
-  padding: 1.5rem;
-  padding-inline-start: calc(var(--sidebar-w) + 2rem);
+  /* Left offset for the fixed sidebar comes from the parent
+     .farmer-shell (dashboard.css) — only add the page's own gutter
+     here, and deliberately omit padding-inline-start so it isn't
+     applied twice. */
+  padding-block: 1.5rem;
+  padding-inline-end: 1.5rem;
 }
 
 /* --- Banner --- */
@@ -130,6 +132,16 @@
   }
 }
 
+.farm-dashboard-row--three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 1200px) {
+  .farm-dashboard-row--three {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Livestock portfolio list --- */
 .livestock-portfolio-list {
   list-style: none;
@@ -225,15 +237,9 @@
 }
 
 /* --- Active policy --- */
-.policy-active-pill {
-  align-self: flex-start;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: oklch(0.32 0.1 154.55);
-  background-color: oklch(0.95 0.03 154.55);
-  border: 1px solid oklch(0.85 0.06 154.55);
-  padding: 3px 10px;
-  border-radius: 1rem;
+.policy-empty {
+  color: oklch(0.55 0.01 90);
+  font-size: 0.88rem;
 }
 
 .policy-top {
@@ -307,10 +313,20 @@
   background-color: oklch(0.55 0.1 60);
 }
 
+.policy-renewal-wrap {
+  margin-top: 1.25rem;
+}
+
+.policy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 /* --- Stat block row (reusable) --- */
 .stat-block-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 0.75rem;
   margin-bottom: 1.25rem;
 }
@@ -338,6 +354,48 @@
 .stat-block--success { background-color: oklch(0.95 0.05 154.55); color: oklch(0.32 0.1 154.55); }
 .stat-block--danger { background-color: oklch(0.93 0.06 25); color: oklch(0.45 0.15 25); }
 .stat-block--neutral { background-color: oklch(0.95 0.005 90); color: oklch(0.5 0.01 90); }
+
+/* --- Attention queue (AttentionQueueCard.jsx) --- */
+.attention-queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.attention-queue-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: oklch(0.97 0.03 80);
+  border: 1px solid oklch(0.88 0.05 70);
+  border-radius: 0.75rem;
+}
+
+.attention-queue-count {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: oklch(0.5 0.1 60);
+  margin-right: 0.6rem;
+}
+
+.attention-queue-label {
+  font-size: 0.9rem;
+  color: oklch(0.4 0.02 90);
+  font-weight: 600;
+}
+
+.attention-queue-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  color: oklch(0.4 0.1 154.55);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
 
 /* --- Claims overview list --- */
 .claims-overview-list {
@@ -400,4 +458,86 @@
   font-size: 0.82rem;
   font-weight: 700;
   color: oklch(0.25 0.01 90);
+}
+
+/* --- Insurance readiness card --- */
+.readiness-card {
+  margin-bottom: 1.5rem;
+}
+
+.readiness-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.readiness-score-value {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: oklch(0.32 0.1 154.55);
+  line-height: 1;
+}
+
+.readiness-score-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: oklch(0.55 0.01 90);
+}
+
+.readiness-score-track {
+  height: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.readiness-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem 1.5rem;
+}
+
+.readiness-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.readiness-checklist-item.is-met {
+  color: oklch(0.3 0.03 154.55);
+}
+
+.readiness-checklist-item.is-unmet {
+  color: oklch(0.45 0.15 25);
+}
+
+.readiness-checklist-icon {
+  font-weight: 700;
+}
+
+.readiness-checklist-item.is-met .readiness-checklist-icon {
+  color: oklch(0.5 0.12 154.55);
+}
+
+.readiness-checklist-item.is-unmet .readiness-checklist-icon {
+  color: oklch(0.55 0.18 25);
+}
+
+/* --- Claim eligibility warning --- */
+.eligibility-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.6rem;
+  background-color: oklch(0.95 0.03 80);
+  color: oklch(0.5 0.1 60);
+  font-size: 0.85rem;
+  font-weight: 600;
 }

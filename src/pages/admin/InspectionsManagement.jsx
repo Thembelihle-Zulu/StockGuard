@@ -1,14 +1,9 @@
-import Grid from "@mui/material/Grid";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import { KpiCard } from "../../component/admin/KPICard";
+import { StatBlockRow } from "../../component/StatBlockRaw";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../utils/api";
 import { InspectionsFilters } from "../../component/admin/InspectionFilters";
 import { InspectionsTable } from "../../component/admin/InspectionsTable";
-import { InspectionModal } from "../../component/admin/InspectionModal";
+import { InspectionModal } from "../../component/InspectionModal";
 import "../../styles/admin-management.css";
 
 const INSPECTIONS_URL = "onboarding/inspection/admin/all";
@@ -72,6 +67,7 @@ export function InspectionsManagement() {
       ...inspection,
       tag_number: animal?.tag_number,
       species: animal?.species,
+      estimated_value: animal?.estimated_value,
       farm_id: farm?.id,
       farm_name: farm?.farm_name,
     };
@@ -122,10 +118,14 @@ export function InspectionsManagement() {
     (i) => i.status?.toLowerCase() === "denied",
   ).length;
 
-  const handleStatusChange = (inspectionId, status) => {
+  // Shared by the table's quick status dropdown and the detail modal's
+  // value-review form — both just PATCH a subset of fields and need the
+  // same "update the list, and the open modal if it's showing this row"
+  // follow-up.
+  const handleInspectionUpdate = (inspectionId, updates) => {
     apiFetch(`onboarding/inspection/admin/${inspectionId}`, {
       method: "PATCH",
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(updates),
     })
       .then((res) => {
         if (!res.ok) {
@@ -137,56 +137,26 @@ export function InspectionsManagement() {
         setInspections((prev) =>
           prev.map((i) => (i.id === updated.id ? updated : i)),
         );
+        setSelectedInspection((prev) =>
+          prev && prev.id === updated.id ? { ...prev, ...updated } : prev,
+        );
       })
       .catch(console.error);
   };
 
+  const handleStatusChange = (inspectionId, status) =>
+    handleInspectionUpdate(inspectionId, { status });
+
   return (
     <div className="livestock-management-page">
-      <Grid container spacing={3} className="kpi-grid">
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<AssignmentIcon />}
-            value={inspections.length}
-            label="Total Inspections"
-            subText="All time"
-            trend="—"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<HourglassEmptyIcon />}
-            value={pendingCount}
-            label="Pending Review"
-            subText="Awaiting review"
-            trend="—"
-            accent="#8D6E63"
-            accentBg="#F4EDE8"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<CheckCircleIcon />}
-            value={approvedCount}
-            label="Approved Inspections"
-            subText="Cleared"
-            trend="—"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-          <KpiCard
-            icon={<CancelIcon />}
-            value={deniedCount}
-            label="Denied Inspections"
-            subText="Not approved"
-            trend="—"
-            trendDirection="down"
-          />
-        </Grid>
-      </Grid>
+      <StatBlockRow
+        stats={[
+          { value: inspections.length, label: "Total Inspections", tone: "neutral" },
+          { value: pendingCount, label: "Pending", tone: "warning" },
+          { value: approvedCount, label: "Approved", tone: "success" },
+          { value: deniedCount, label: "Denied", tone: "danger" },
+        ]}
+      />
 
       <div className="filters-section">
         <InspectionsFilters
@@ -210,6 +180,9 @@ export function InspectionsManagement() {
           open={!!selectedInspection}
           setOpen={(isOpen) => !isOpen && setSelectedInspection(null)}
           inspection={selectedInspection}
+          onValueSaved={(updates) =>
+            handleInspectionUpdate(selectedInspection.id, updates)
+          }
         />
       )}
     </div>

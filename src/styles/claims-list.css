@@ -4,10 +4,12 @@
    via the shared FilterPanel component. */
 
 .claims-page {
-  max-width: 72rem;
-  margin-inline: auto;
-  padding: 2rem 1rem;
-  padding-inline-start: calc(var(--sidebar-w, 240px) + 2rem);
+  /* Left offset for the fixed sidebar comes from the parent
+     .farmer-shell (dashboard.css) — only add the page's own gutter
+     here, and deliberately omit padding-inline-start so it isn't
+     applied twice. */
+  padding-block: 2rem;
+  padding-inline-end: 2rem;
 }
 
 .claims-page-header {
@@ -90,11 +92,12 @@
   font-size: 0.8rem;
 }
 
-.claim-card-body {
+.claim-card-details {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: 0.9rem 1rem 1rem;
+  gap: 0.4rem;
+  padding: 0.9rem 1rem 0;
+  flex: 1;
 }
 
 .claim-card-top {
@@ -111,9 +114,20 @@
   color: oklch(0.2 0.01 90);
 }
 
+.claim-card-animal,
+.claim-card-date {
+  margin: 0;
+  font-size: 0.8rem;
+  color: oklch(0.45 0.01 90);
+}
+
 .claim-card-meta {
   display: flex;
-  gap: 0.9rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid oklch(0.93 0.005 90);
 }
 
 .claim-card-meta-item {
@@ -122,6 +136,10 @@
   gap: 0.3rem;
   font-size: 0.8rem;
   color: oklch(0.45 0.01 90);
+}
+
+.claim-view-btn {
+  margin-left: auto;
 }
 
 .claim-card-cause {
@@ -136,15 +154,6 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.claim-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 0.4rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid oklch(0.93 0.005 90);
 }
 
 .claim-card-amount {
@@ -196,4 +205,26 @@
 
 .claim-view-btn:hover {
   background-color: oklch(0.27 0.1 154.55);
+}
+
+/* --- Guided empty states (ListItems.jsx's emptyState prop) --- */
+.list-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.65rem;
+  padding: 3rem 1.5rem;
+  background-color: oklch(0.99 0.005 90);
+  border: 1px dashed oklch(0.88 0.005 90);
+  border-radius: 1rem;
+  color: oklch(0.5 0.02 154.55);
+  grid-column: 1 / -1;
+}
+
+.list-empty-state-title {
+  font-weight: 700;
+  color: oklch(0.25 0.02 154.55);
+  font-size: 1rem;
+  margin: 0;
 }

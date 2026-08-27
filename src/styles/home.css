@@ -1,49 +1,40 @@
 /* ===== home.css ===== */
-/* Home.jsx — hero, pill badge, headline, buttons, image content card,
-   and WhyUs.jsx's sections (Features grid, cover cards, how-it-works
-   timeline). Both pages share this file since WhyUs renders directly
-   inside Home and neither has its own separate stylesheet. */
-
-.home header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.home header nav {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-}
-
-.home .button-group {
-  display: flex;
-  gap: 1rem;
-}
+/* Home.jsx (navbar + hero) and its section components — WhyUs.jsx,
+   HowItWorks.jsx, WhoWeServe.jsx, TrustSection.jsx, FinalCta.jsx,
+   Footer.jsx. All landing-page-only sections share this one file since
+   none of them are used outside the landing page. Grid STRUCTURE (column
+   spans) is MUI Grid, same as every dashboard page — this file only
+   covers each cell's visual treatment (the "bento card" look) so the two
+   don't duplicate each other. */
 
 .home {
-  position-anchor: initial;
+  background-color: oklch(0.97 0.01 90);
 }
 
-.text-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.5rem;
-  padding-block-start: 2rem;
+/* ---------- Navbar ---------- */
+.home-nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: oklch(0.35 0.02 154.55);
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 
-/* Pill badge */
+.home-nav-link:hover {
+  color: oklch(0.32 0.1 154.55);
+}
+
+/* ---------- Pill badge ---------- */
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   background-color: oklch(0.93 0.05 154.55);
   color: oklch(0.32 0.1 154.55);
-  border: none;
+  border: 1px solid oklch(0.85 0.07 154.55);
   border-radius: 2rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
   width: fit-content;
 }
@@ -56,11 +47,11 @@
   flex-shrink: 0;
 }
 
-/* Headline */
+/* ---------- Headline / body text ---------- */
 .headline {
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 3.2rem;
-  line-height: 1.15;
+  font-size: 3rem;
+  line-height: 1.12;
   font-weight: 700;
   color: oklch(0.2 0.03 154.55);
   margin: 0;
@@ -71,34 +62,40 @@
   color: oklch(0.32 0.13 154.55);
 }
 
-/* Paragraph */
 .subtext {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: oklch(0.5 0.02 154.55);
   line-height: 1.6;
-  max-width: 32rem;
   margin: 0;
 }
 
-/* Buttons */
-.button-group {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+.eyebrow {
+  text-transform: uppercase;
+  color: oklch(0.32 0.1 154.55);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  margin: 0;
 }
 
+.eyebrow--on-dark {
+  color: oklch(0.75 0.08 154.55);
+}
+
+/* ---------- Buttons ---------- */
 .btn-primary {
   background-color: oklch(0.32 0.1 154.55);
   color: white;
   border: none;
   border-radius: 2rem;
   padding: 0.9rem 1.75rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  transition: background-color 0.15s ease;
 }
 
 .btn-primary:hover {
@@ -111,230 +108,260 @@
   border: 1.5px solid oklch(0.8 0.03 154.55);
   border-radius: 2rem;
   padding: 0.9rem 1.75rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
 .btn-secondary:hover {
   background-color: oklch(0.97 0.02 154.55);
 }
 
-.image-content {
-  background-image: url("https://images.unsplash.com/photo-1636998980792-63f27ddea4e3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 1rem;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 0.75rem;
-  padding: 1.5rem;
-}
-
-.claims,
-.claims-text-bottom {
-  display: flex;
+.btn-on-dark {
+  background-color: oklch(0.85 0.06 154.55);
+  color: oklch(0.2 0.03 154.55);
+  border: none;
+  border-radius: 2rem;
+  padding: 0.9rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: oklch(90.935% 0.00919 161.94);
-  border-radius: 1rem;
-  padding: 0.75rem 1rem;
-  max-width: 15rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.15s ease;
 }
 
-.claims-text-bottom .icon {
-  font-size: 1.25rem;
-  flex-shrink: 0;
+.btn-on-dark:hover {
+  background-color: white;
 }
 
-.claims {
-  align-self: flex-end;
+/* ---------- Bento cards (shared shell every section reuses) ---------- */
+.bento-card {
+  border-radius: 1.5rem;
+  padding: 2rem;
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.claims-text-bottom {
-  margin-top: auto;
+.bento-card--white {
+  background-color: white;
+  border: 1px solid oklch(0.91 0.01 154.55);
+  box-shadow: 0 1px 3px rgba(26, 43, 24, 0.06);
 }
 
-.claims p,
-.claims-text-bottom p {
-  margin: 0;
+.bento-card--tint-green {
+  background-color: oklch(0.95 0.03 154.55);
+  border: 1px solid oklch(0.86 0.06 154.55);
 }
 
-.claims ul,
-.claims-text-bottom ul {
-  margin: 0;
+.bento-card--tint-amber {
+  background-color: oklch(0.96 0.03 80);
+  border: 1px solid oklch(0.86 0.05 70);
+}
+
+.bento-card--tint-purple {
+  background-color: oklch(0.95 0.02 320);
+  border: 1px solid oklch(0.86 0.04 320);
+}
+
+.bento-card--tint-earth {
+  background-color: oklch(0.94 0.02 60);
+  border: 1px solid oklch(0.85 0.04 60);
+}
+
+.bento-card--primary {
+  background-color: oklch(0.32 0.1 154.55);
+  color: white;
+}
+
+.bento-card--dark {
+  background-color: oklch(0.2 0.03 154.55);
+  color: white;
+}
+
+.bento-card--sage {
+  background-color: oklch(0.85 0.06 154.55);
+  color: oklch(0.2 0.03 154.55);
+}
+
+.bento-card--image {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  background-color: oklch(0.2 0.03 154.55);
   padding: 0;
-  list-style: none;
 }
 
-.Features {
-  padding-block-start: 3rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 600px;
+.bento-card--image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.benefits {
-  display: flex;
-  flex-direction: row;
-  padding: 0;
-  gap: 1rem;
+.bento-card--image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(26, 43, 24, 0.75),
+    rgba(26, 43, 24, 0.15) 60%,
+    transparent
+  );
 }
 
-.benefits li {
-  list-style: none;
-}
-
-.why-us {
-  min-height: 600px;
-  padding-block-start: 5rem;
-}
-
-.why-us .text {
-  text-align: center;
-}
-
-.cards-container {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-}
-
-.cover-card {
-  background-color: rgb(238, 237, 234);
-  border-radius: 1rem;
+.bento-card-image-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  flex: 1;
+  justify-content: flex-end;
+  color: white;
 }
 
-.icon-badge {
+.bento-card--interactive {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.bento-card--interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(26, 43, 24, 0.1);
+}
+
+.bento-card-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  border-radius: 0.75rem;
-  font-size: 1.5rem;
+  border-radius: 0.85rem;
   background-color: oklch(0.95 0.03 154);
+  color: oklch(0.32 0.1 154.55);
+  flex-shrink: 0;
 }
 
-.eyebrow {
-  text-transform: uppercase;
-  color: oklch(0.4 0.13 154.55);
-  font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  margin: 0;
-}
-
-.how {
-  text-align: center;
-  padding-block: 5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3rem;
-}
-
-.timeline {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 4rem;
-  max-width: 70rem;
-  width: 100%;
-}
-
-.timeline-step {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  max-width: 16rem;
-}
-
-/* connecting line — drawn once per step, extending right to the next icon */
-.timeline-step:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 1.75rem;
-  left: calc(50% + 2.5rem);
-  width: calc(100% + 4rem - 5rem);
-  height: 1px;
-  background-color: oklch(0.85 0.03 154);
-}
-
-.timeline-icon {
-  position: relative;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 1rem;
-  background-color: oklch(0.35 0.11 154.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.timeline-icon .icon {
-  font-size: 1.5rem;
-  filter: brightness(0) invert(1);
-}
-
-.step-number {
-  position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background-color: oklch(0.9 0.05 154.55);
-  color: oklch(0.35 0.11 154.55);
-  font-size: 0.65rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.timeline-step h3 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.timeline-step p {
-  margin: 0;
-  color: gray;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.cta-button {
-  background-color: oklch(0.35 0.11 154.55);
+.bento-card-icon--on-dark {
+  background-color: rgba(255, 255, 255, 0.15);
   color: white;
-  border: none;
-  border-radius: 2rem;
-  padding: 0.9rem 2rem;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  display: inline-flex;
+}
+
+.bento-stat-value {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+}
+
+.bento-stat-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0.35rem 0 0;
+  opacity: 0.85;
+}
+
+.bento-check-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.bento-check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.bento-check-list--on-dark li {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.bento-check-icon {
+  color: oklch(0.32 0.1 154.55);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.bento-check-icon--on-dark {
+  color: oklch(0.75 0.08 154.55);
+}
+
+/* ---------- Testimonial stars ---------- */
+.star-row {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
+}
+
+.star-row svg {
+  color: oklch(0.7 0.12 80);
+}
+
+/* ---------- Footer ---------- */
+.home-footer {
+  background-color: oklch(0.2 0.03 154.55);
+  color: rgba(255, 255, 255, 0.55);
+  padding: 4rem 0 2rem;
+}
+
+.home-footer-heading {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 1rem;
+}
+
+.home-footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.home-footer-links a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.15s ease;
+}
+
+.home-footer-links a:hover {
+  color: oklch(0.75 0.08 154.55);
+}
+
+.home-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.78rem;
 }
 
-.cta-button:hover {
-  background-color: oklch(0.3 0.11 154.55);
+.home-footer-bottom a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  margin-inline-start: 1.25rem;
 }
 
-.text {
-  text-align: center;
+.home-footer-bottom a:hover {
+  color: oklch(0.75 0.08 154.55);
 }

@@ -26,6 +26,10 @@ const coverSchema = object({
     .integer("Enter a whole number")
     .min(1, "Must be at least 1 animal")
     .required("Number of animals is required"),
+  estimatedHerdValue: number()
+    .typeError("Enter a number")
+    .positive("Enter an amount greater than 0")
+    .required("Estimated herd value is required"),
   coverageTier: string().required("Select a coverage tier"),
 });
 
@@ -51,19 +55,20 @@ export function SelectCover({ setActiveStep, setCover, farmProfileId }) {
     useFormik({
       initialValues: {
         declaredAnimalCount: 1,
+        estimatedHerdValue: "",
         coverageTier: "basic",
       },
       validationSchema: coverSchema,
       onSubmit: (data) => {
         const { monthlyPremium, tierLabel } = getPremium(
-          farmType,
-          data.declaredAnimalCount,
+          data.estimatedHerdValue,
           data.coverageTier,
         );
 
         const coverSelection = {
           status: "pending",
           declaredAnimalCount: Number(data.declaredAnimalCount),
+          estimatedHerdValue: Number(data.estimatedHerdValue),
           coverageTier: data.coverageTier,
           monthlyPremium,
           tierLabel,
@@ -78,8 +83,8 @@ export function SelectCover({ setActiveStep, setCover, farmProfileId }) {
     });
 
   const preview = useMemo(
-    () => getPremium(farmType, values.declaredAnimalCount, values.coverageTier),
-    [farmType, values.declaredAnimalCount, values.coverageTier],
+    () => getPremium(values.estimatedHerdValue, values.coverageTier),
+    [values.estimatedHerdValue, values.coverageTier],
   );
 
   const fieldSx = {
@@ -142,6 +147,24 @@ export function SelectCover({ setActiveStep, setCover, farmProfileId }) {
             {touched.declaredAnimalCount && errors.declaredAnimalCount ? (
               <Typography color="error" variant="caption" display="block">
                 {errors.declaredAnimalCount}
+              </Typography>
+            ) : null}
+          </Box>
+
+          <Box>
+            <TextField
+              label="Estimated total herd value (R)"
+              name="estimatedHerdValue"
+              variant="outlined"
+              onChange={handleChange}
+              value={values.estimatedHerdValue}
+              onBlur={handleBlur}
+              type="number"
+              sx={fieldSx}
+            />
+            {touched.estimatedHerdValue && errors.estimatedHerdValue ? (
+              <Typography color="error" variant="caption" display="block">
+                {errors.estimatedHerdValue}
               </Typography>
             ) : null}
           </Box>

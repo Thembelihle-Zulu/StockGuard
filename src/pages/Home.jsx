@@ -1,317 +1,149 @@
-import { NavLink, useNavigate } from "react-router";
-import {
-  Box,
-  Stack,
-  Typography,
-  Chip,
-  Button,
-  Paper,
-  AppBar,
-  Toolbar,
-} from "@mui/material";
-import { WhyUs } from "../component/WhyUs";
+import { useNavigate } from "react-router";
+import { Box, Grid, Typography } from "@mui/material";
 import ShieldIcon from "@mui/icons-material/Shield";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Navbar } from "./Navbar";
+import { WhyUs } from "../component/WhyUs";
+import { HowItWorks } from "./HowItWorks";
+import { WhoWeServe } from "./WhoWeServe";
+import { TrustSection } from "./TrustSection";
+import { FinalCta } from "./FinalCta";
+import { Footer } from "./Footer";
 import "../styles/home.css";
+
+const TRUST_SIGNALS = ["No hidden fees", "Cancel anytime", "24hr claim support"];
+
 export function Home() {
   const navigate = useNavigate();
 
   return (
     <Box className="home">
-      <div className="home">
-        <AppBar
-          position="static"
-          elevation={0}
-          sx={{
-            bgcolor: "white",
-            borderBottom: "1px solid oklch(0.9 0.02 154.55)",
-          }}
-        >
-          <Toolbar
-            sx={{
-              justifyContent: "space-between",
-              maxWidth: 1200,
-              width: "100%",
-              mx: "auto",
-              py: 1,
-            }}
-          >
-            <ShieldIcon
-              sx={{ color: "oklch(0.32 0.1 154.55)", fontSize: 32 }}
-            />
+      <Navbar />
 
-            {/* Nav links currently all point to "/" — real routes/sections
-                for these don't exist yet, wire up once built. */}
-            <Stack direction="row" spacing={4} component="nav">
-              {[
-                { label: "Features", to: "/" },
-                { label: "How it works", to: "/" },
-                { label: "Who We Serve", to: "/" },
-                { label: "About", to: "/" },
-              ].map((link) => (
-                <NavLink
-                  key={link.label}
-                  to={link.to}
-                  style={{ textDecoration: "none" }}
-                >
-                  {({ isActive }) => (
-                    <Box
-                      component="span"
-                      sx={{
-                        fontSize: "0.95rem",
-                        fontWeight: 500,
-                        color: isActive
-                          ? "oklch(0.32 0.1 154.55)"
-                          : "oklch(0.35 0.02 154.55)",
-                        "&:hover": { color: "oklch(0.32 0.1 154.55)" },
-                      }}
-                    >
-                      {link.label}
-                    </Box>
-                  )}
-                </NavLink>
-              ))}
-            </Stack>
+      <Box component="main" sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, md: 4 }, py: 3 }}>
+        {/* ---------- Hero (bento) ---------- */}
+        <Box component="section" sx={{ pb: 1.5 }}>
+          <Grid container spacing={1.5}>
+            <Grid size={{ xs: 12, md: 7 }}>
+              <Box
+                className="bento-card bento-card--white"
+                sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: { xs: "auto", md: 340 } }}
+              >
+                <Box>
+                  <div className="pill">
+                    <span className="pill-dot" />
+                    South Africa's Livestock Insurance Platform
+                  </div>
+                  <h1 className="headline" style={{ marginTop: "1.5rem" }}>
+                    Protect Your <span className="accent">Livestock.</span>
+                    <br />
+                    Protect Your <span className="accent">Income.</span>
+                  </h1>
+                </Box>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, mt: 3 }}>
+                  <button className="btn-primary" onClick={() => navigate("/onboarding")}>
+                    Get Started <ArrowForwardIcon fontSize="small" />
+                  </button>
+                  <button className="btn-secondary" onClick={() => navigate("/login")}>
+                    Login
+                  </button>
+                </Box>
+              </Box>
+            </Grid>
 
-            <Stack direction="row" spacing={1.5} className="button-group">
-              <Button
-                onClick={() => navigate("/login")}
-                sx={{
-                  color: "oklch(0.32 0.1 154.55)",
-                  border: "1.5px solid oklch(0.8 0.03 154.55)",
-                  borderRadius: "2rem",
-                  px: "1.5rem",
-                  py: "0.5rem",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  "&:hover": { bgcolor: "oklch(0.97 0.02 154.55)" },
-                }}
-              >
-                Login
-              </Button>
-              <Button
-                onClick={() => navigate("/login")}
-                sx={{
-                  bgcolor: "oklch(0.32 0.1 154.55)",
-                  color: "white",
-                  borderRadius: "2rem",
-                  px: "1.5rem",
-                  py: "0.5rem",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  "&:hover": { bgcolor: "oklch(0.27 0.1 154.55)" },
-                }}
-              >
-                Get Started
-              </Button>
-            </Stack>
-          </Toolbar>
-        </AppBar>
-      </div>
-      <Box
-        component="main"
-        sx={{ maxWidth: 1200, mx: "auto", px: { xs: 3, md: 4 } }}
-      >
-        <Box
-          component="section"
-          className="Features"
-          sx={{
-            pt: "3rem",
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-            gap: { xs: 4, md: 6 },
-            minHeight: { md: 600 },
-            alignItems: "center",
-          }}
-        >
-          {/* ---------- Text content ---------- */}
-          <Stack sx={{ alignItems: "flex-start", gap: "1.5rem", pt: "2rem" }}>
-            <Chip
-              label="South Africa's Livestock Insurance Platform"
-              icon={
-                <Box
-                  component="span"
-                  sx={{
-                    width: "0.4rem",
-                    height: "0.4rem",
-                    borderRadius: "50%",
-                    bgcolor: "oklch(0.55 0.15 154.55)",
-                    ml: "0.5rem",
-                  }}
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Box className="bento-card bento-card--image" sx={{ minHeight: 300 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1588152850700-c82ecb8ba9b1?w=800&h=700&fit=crop&auto=format"
+                  alt="Herd of sheep grazing on green pasture"
                 />
-              }
-              sx={{
-                bgcolor: "oklch(0.93 0.05 154.55)",
-                color: "oklch(0.32 0.1 154.55)",
-                borderRadius: "2rem",
-                px: "0.5rem",
-                py: "1.4rem",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                height: "auto",
-                "& .MuiChip-label": { px: "0.5rem" },
-              }}
-            />
+                <Box sx={{ position: "absolute", top: 16, left: 16, zIndex: 1 }}>
+                  <Box
+                    sx={{
+                      bgcolor: "rgba(255,255,255,.95)",
+                      borderRadius: "0.75rem",
+                      px: 1.75,
+                      py: 1.25,
+                      boxShadow: "0 4px 12px rgba(0,0,0,.15)",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                      <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "#2e7d32" }} />
+                      <Typography sx={{ fontSize: "0.78rem", fontWeight: 700, color: "oklch(0.2 0.03 154.55)" }}>
+                        Claim #2847 Approved
+                      </Typography>
+                    </Box>
+                    <Typography sx={{ fontSize: "0.72rem", color: "oklch(0.5 0.02 154.55)", mt: 0.25 }}>
+                      Payout: R 8,500 · 2 min ago
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Grid>
 
-            <Typography
-              component="h1"
-              sx={{
-                fontFamily: '"Playfair Display", Georgia, serif',
-                fontSize: "3.2rem",
-                lineHeight: 1.15,
-                fontWeight: 700,
-                color: "oklch(0.2 0.03 154.55)",
-                m: 0,
-              }}
-            >
-              Protect Your{" "}
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Box className="bento-card bento-card--tint-green">
+                <p className="subtext" style={{ marginBottom: "1.25rem" }}>
+                  Affordable livestock insurance for South African farmers —
+                  covering illness, injury, and mortality with transparent
+                  pricing and fast claim payouts.
+                </p>
+                <ul className="bento-check-list">
+                  {TRUST_SIGNALS.map((item) => (
+                    <li key={item}>
+                      <CheckCircleIcon className="bento-check-icon" fontSize="small" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Box>
+            </Grid>
+
+            <Grid size={{ xs: 6, md: 4 }}>
               <Box
-                component="span"
-                sx={{ fontStyle: "italic", color: "oklch(0.32 0.13 154.55)" }}
+                className="bento-card bento-card--primary"
+                sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}
               >
-                Livestock.
+                <Box className="bento-card-icon bento-card-icon--on-dark">
+                  <ShieldIcon />
+                </Box>
+                <Box sx={{ mt: 3 }}>
+                  <p className="bento-stat-value" style={{ color: "white" }}>1,200+</p>
+                  <p className="bento-stat-label" style={{ color: "oklch(0.75 0.08 154.55)" }}>
+                    Animals currently protected
+                  </p>
+                </Box>
               </Box>
-              <br />
-              Protect Your{" "}
+            </Grid>
+
+            <Grid size={{ xs: 6, md: 3 }}>
               <Box
-                component="span"
-                sx={{ fontStyle: "italic", color: "oklch(0.32 0.13 154.55)" }}
+                className="bento-card bento-card--dark"
+                sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}
               >
-                Income.
+                <Box className="bento-card-icon bento-card-icon--on-dark">
+                  <CheckCircleIcon />
+                </Box>
+                <Box sx={{ mt: 3 }}>
+                  <p className="bento-stat-value" style={{ color: "white" }}>250+</p>
+                  <p className="bento-stat-label" style={{ color: "rgba(255,255,255,.6)" }}>
+                    Claims processed
+                  </p>
+                </Box>
               </Box>
-            </Typography>
-
-            <Typography
-              sx={{
-                fontSize: "1.1rem",
-                color: "oklch(0.5 0.02 154.55)",
-                lineHeight: 1.6,
-                maxWidth: "32rem",
-                m: 0,
-              }}
-            >
-              Affordable livestock insurance for South African farmers —
-              covering illness, injury, and mortality with transparent pricing
-              and fast claim payouts.
-            </Typography>
-
-            <Stack
-              direction="row"
-              spacing={2}
-              alignItems="center"
-              sx={{ pt: "0.25rem" }}
-            >
-              <Button
-                onClick={() => navigate("/onboarding")}
-                sx={{
-                  bgcolor: "oklch(0.32 0.1 154.55)",
-                  color: "white",
-                  borderRadius: "2rem",
-                  px: "1.75rem",
-                  py: "0.9rem",
-                  fontSize: "1rem",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  "&:hover": { bgcolor: "oklch(0.27 0.1 154.55)" },
-                }}
-                endIcon={<span>→</span>}
-              >
-                Get Started
-              </Button>
-              <Button
-                onClick={() => navigate("/login")}
-                sx={{
-                  bgcolor: "transparent",
-                  color: "oklch(0.32 0.1 154.55)",
-                  border: "1.5px solid oklch(0.8 0.03 154.55)",
-                  borderRadius: "2rem",
-                  px: "1.75rem",
-                  py: "0.9rem",
-                  fontSize: "1rem",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  "&:hover": {
-                    bgcolor: "oklch(0.97 0.02 154.55)",
-                    borderColor: "oklch(0.8 0.03 154.55)",
-                  },
-                }}
-              >
-                Login
-              </Button>
-            </Stack>
-          </Stack>
-
-          {/* ---------- Image content ---------- */}
-          <Box
-            className="image-content"
-            sx={{
-              backgroundImage:
-                'url("https://images.unsplash.com/photo-1636998980792-63f27ddea4e3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              borderRadius: "1rem",
-              overflow: "hidden",
-              height: "100%",
-              minHeight: 420,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              gap: "0.75rem",
-              p: "1.5rem",
-            }}
-          >
-            <Paper
-              elevation={0}
-              sx={{
-                alignSelf: "flex-end",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                bgcolor: "oklch(90.935% 0.00919 161.94)",
-                borderRadius: "1rem",
-                px: "1rem",
-                py: "0.75rem",
-                maxWidth: "15rem",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-              }}
-            >
-              <Box component="ul" sx={{ m: 0, p: 0, listStyle: "none" }}>
-                <li>Claims #2847 Approved</li>
-              </Box>
-              <Typography component="span" sx={{ m: 0 }}>
-                Payout: R 8,500 · 2 min ago
-              </Typography>
-            </Paper>
-
-            <Paper
-              elevation={0}
-              sx={{
-                mt: "auto",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                bgcolor: "oklch(90.935% 0.00919 161.94)",
-                borderRadius: "1rem",
-                px: "1rem",
-                py: "0.75rem",
-                maxWidth: "15rem",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-              }}
-            >
-              <Box component="span" sx={{ fontSize: "1.25rem", flexShrink: 0 }}>
-                🛡️
-              </Box>
-              <Typography component="span">
-                <Box component="strong">1,200+</Box> Animals protected
-              </Typography>
-            </Paper>
-          </Box>
+            </Grid>
+          </Grid>
         </Box>
 
-        <Box component="section">
-          <WhyUs />
-        </Box>
+        <WhyUs />
+        <HowItWorks />
+        <WhoWeServe />
+        <TrustSection />
+        <FinalCta />
       </Box>
+
+      <Footer />
     </Box>
   );
 }

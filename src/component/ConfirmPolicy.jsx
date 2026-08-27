@@ -38,7 +38,7 @@ export function ConfirmPolicy({
     if (farmProfileId) {
       apiFetch(`onboarding/farm_profile/${farmProfileId}`)
         .then((res) => (res.ok ? res.json() : null))
-        .then((data) => console.log(data) && setFarm(data))
+        .then((data) => setFarm(data))
         .catch((err) => console.error(err));
     }
   }, [farmProfileId]);
@@ -63,7 +63,7 @@ export function ConfirmPolicy({
 
   const monthlyPremium = cover?.monthlyPremium ?? 0;
 
-  const handleActivate = async () => {
+  const handleSubmitPolicy = async () => {
     setSubmitting(true);
     setError(null);
 
@@ -71,9 +71,14 @@ export function ConfirmPolicy({
       const policyPayload = {
         policy_number: `POL-${Date.now()}`,
         product_id: 1, // Livestock Health Cover product id
-        status: "Active",
+        // Policies always start Pending — the backend ignores any status
+        // sent here anyway (see policy_bp.create_policy), this is just
+        // for clarity. Coverage activates once all declared animals are
+        // registered (PoliciesList.jsx's Activate Policy action).
+        status: "Pending",
         monthly_premium: monthlyPremium,
         animal_count_at_pricing: cover?.declaredAnimalCount ?? 1,
+        insured_value_at_pricing: cover?.estimatedHerdValue ?? null,
       };
 
       const policyRes = await apiFetch("onboarding/policy", {
@@ -128,6 +133,14 @@ export function ConfirmPolicy({
             value={
               animal
                 ? `${animal.species || ""} #${animal.tag_number || ""}`
+                : "-"
+            }
+          />
+          <ReviewRow
+            label="Insured Value"
+            value={
+              cover?.estimatedHerdValue != null
+                ? `R ${Number(cover.estimatedHerdValue).toLocaleString()}`
                 : "-"
             }
           />
@@ -213,7 +226,7 @@ export function ConfirmPolicy({
           variant="contained"
           fullWidth
           disabled={submitting}
-          onClick={handleActivate}
+          onClick={handleSubmitPolicy}
           sx={{
             mt: 3,
             bgcolor: "grey.800",
@@ -221,7 +234,7 @@ export function ConfirmPolicy({
             py: 1.5,
           }}
         >
-          {submitting ? "Activating..." : "Activate Policy"}
+          {submitting ? "Submitting..." : "Submit Policy"}
         </Button>
       </Box>
     </div>
