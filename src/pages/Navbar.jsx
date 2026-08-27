@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { AppBar, Toolbar, Stack, Box, Button, IconButton } from "@mui/material";
-import ShieldIcon from "@mui/icons-material/Shield";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import logoMark from "../assets/logo-mark.png";
 import "../styles/home.css";
 
-const NAV_LINKS = ["Features", "How It Works", "Who We Serve", "About"];
+const NAV_LINKS = [
+  { label: "Features", id: "features" },
+  { label: "How It Works", id: "how-it-works" },
+  { label: "Who We Serve", id: "who-we-serve" },
+  { label: "About", id: "about" },
+];
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -32,8 +37,13 @@ export function Navbar() {
           py: 1,
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={1.2}>
-          <ShieldIcon sx={{ color: "oklch(0.32 0.1 154.55)", fontSize: 28 }} />
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Box
+            component="img"
+            src={logoMark}
+            alt="StockGuard"
+            sx={{ height: 36, width: "auto" }}
+          />
           <Box
             component="span"
             sx={{
@@ -54,8 +64,8 @@ export function Navbar() {
           sx={{ display: { xs: "none", md: "flex" } }}
         >
           {NAV_LINKS.map((link) => (
-            <a key={link} href="#" className="home-nav-link">
-              {link}
+            <a key={link.id} href={`#${link.id}`} className="home-nav-link">
+              {link.label}
             </a>
           ))}
         </Stack>
@@ -93,8 +103,13 @@ export function Navbar() {
           }}
         >
           {NAV_LINKS.map((link) => (
-            <a key={link} href="#" className="home-nav-link">
-              {link}
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              className="home-nav-link"
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
             </a>
           ))}
           <Stack direction="row" spacing={1.5} sx={{ pt: 1 }}>

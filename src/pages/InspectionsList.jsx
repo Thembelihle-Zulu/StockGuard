@@ -3,10 +3,21 @@ import { apiFetch } from "../utils/api";
 import { Inspection } from "../component/Inspection";
 import { ListItems } from "../component/ListItems";
 import { InspectionsFilters } from "../component/InspectionsFilters";
+import { ProcessStepper } from "../component/ProcessStepper";
 import "../styles/claims-list.css";
 
 const INSPECTIONS_URL = "onboarding/inspection";
 const ANIMALS_URL = "onboarding/animal";
+
+const INSPECTION_STEPS = [
+  { label: "Submit", desc: "Upload tag photo and vet health report" },
+  {
+    label: "Vet Verified",
+    desc: "We check the vet's registration number",
+  },
+  { label: "Decision", desc: "Approved or denied, with reasons" },
+  { label: "Claim Ready", desc: "Approved animals can now be claimed" },
+];
 
 const EMPTY_FILTERS = {
   search: "",
@@ -91,6 +102,8 @@ export function InspectionsList() {
       <div className="claims-page-header">
         <h2 className="claims-page-title">My Inspections</h2>
       </div>
+
+      <ProcessStepper steps={INSPECTION_STEPS} />
 
       <InspectionsFilters
         filters={filters}

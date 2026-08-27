@@ -38,7 +38,7 @@ export function HowItWorks() {
   const navigate = useNavigate();
 
   return (
-    <Box component="section" sx={{ py: 1.5 }}>
+    <Box component="section" id="how-it-works" sx={{ py: 1.5, scrollMarginTop: "90px" }}>
       <Grid container spacing={1.5}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Box

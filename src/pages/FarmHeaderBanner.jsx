@@ -1,6 +1,7 @@
 import Avatar from "@mui/material/Avatar";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
+import SavingsIcon from "@mui/icons-material/Savings";
 import { API_ORIGIN } from "../utils/api";
 import "../styles/farm-dashboard.css";
 
@@ -12,6 +13,7 @@ export function FarmHeaderBanner({
   ownerName,
   profileCompletion,
   imageUrl,
+  savedThisMonth,
 }) {
   return (
     <div className="farm-banner">
@@ -48,6 +50,13 @@ export function FarmHeaderBanner({
             {ownerName} · Policy Holder
           </span>
         )}
+      </div>
+
+      <div className="farm-banner-savings">
+        <SavingsIcon fontSize="small" />
+        {savedThisMonth > 0
+          ? `R ${savedThisMonth.toLocaleString()} paid out to you this month`
+          : "Your herd is fully covered — that's why farmers choose us"}
       </div>
 
       {profileCompletion != null && (

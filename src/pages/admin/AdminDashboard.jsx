@@ -12,7 +12,7 @@ import "../../styles/dashboard.css";
 
 export function AdminDashboard() {
   const [livestockCount, setLivestockCount] = useState(0);
-  const [activePanel, setActivePanel] = useState(null);
+  const [activePanel, setActivePanel] = useState("dashboard");
 
   return (
     <section className="admin">
@@ -32,22 +32,27 @@ export function AdminDashboard() {
 
       <Sidebar
         livestockCount={livestockCount}
+        onToggleDashboard={() => setActivePanel("dashboard")}
         onToggleClaims={() =>
-          setActivePanel((prev) => (prev === "claims" ? null : "claims"))
+          setActivePanel((prev) => (prev === "claims" ? "dashboard" : "claims"))
         }
         onToggleLivestock={() =>
-          setActivePanel((prev) => (prev === "livestock" ? null : "livestock"))
+          setActivePanel((prev) =>
+            prev === "livestock" ? "dashboard" : "livestock",
+          )
         }
         onToggleInspections={() =>
           setActivePanel((prev) =>
-            prev === "inspections" ? null : "inspections",
+            prev === "inspections" ? "dashboard" : "inspections",
           )
         }
         onTogglePolicies={() =>
-          setActivePanel((prev) => (prev === "policies" ? null : "policies"))
+          setActivePanel((prev) =>
+            prev === "policies" ? "dashboard" : "policies",
+          )
         }
         onToggleReports={() =>
-          setActivePanel((prev) => (prev === "reports" ? null : "reports"))
+          setActivePanel((prev) => (prev === "reports" ? "dashboard" : "reports"))
         }
         activePanel={activePanel}
       />
@@ -77,7 +82,7 @@ export function AdminDashboard() {
           <ReportsManagement />
         </section>
       )}
-      {activePanel === null && (
+      {activePanel === "dashboard" && (
         <AdminOverview
           onToggleClaims={() => setActivePanel("claims")}
           onToggleLivestock={() => setActivePanel("livestock")}

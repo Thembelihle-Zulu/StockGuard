@@ -25,7 +25,7 @@ export function WhoWeServe() {
   const navigate = useNavigate();
 
   return (
-    <Box component="section" sx={{ py: 1.5 }}>
+    <Box component="section" id="who-we-serve" sx={{ py: 1.5, scrollMarginTop: "90px" }}>
       <Grid container spacing={1.5}>
         <Grid size={{ xs: 12 }}>
           <Box

@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import { Claim } from "../component/Claim";
 import { ListItems } from "../component/ListItems";
 import { ClaimsFilters } from "../component/ClaimsFilters";
+import { ProcessStepper } from "../component/ProcessStepper";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -20,6 +21,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const CLAIMS_URL = "claims";
+
+const CLAIMS_STEPS = [
+  { label: "Submit", desc: "File with photos and vet documents" },
+  { label: "Under Review", desc: "Our team verifies the claim" },
+  { label: "Decision", desc: "Approved or denied, with reasons" },
+  { label: "Payout", desc: "Funds released for approved claims" },
+];
 
 const EMPTY_FILTERS = {
   search: "",
@@ -85,6 +93,8 @@ export function ClaimsList({ onCountChange }) {
           New Claim
         </Button>
       </div>
+
+      <ProcessStepper steps={CLAIMS_STEPS} />
 
       <ClaimsFilters
         filters={filters}

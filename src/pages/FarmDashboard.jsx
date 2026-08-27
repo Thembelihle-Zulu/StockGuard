@@ -182,6 +182,22 @@ export function FarmDashboard({
     return counts;
   }, [claims]);
 
+  // What StockGuard actually paid out this calendar month — the concrete
+  // reminder of the cover's value, not a projected/estimated figure.
+  const savedThisMonth = useMemo(() => {
+    const now = new Date();
+    return claims
+      .filter((c) => {
+        if ((c.status || "").toLowerCase() !== "approved") return false;
+        const created = new Date(c.created_date);
+        return (
+          created.getMonth() === now.getMonth() &&
+          created.getFullYear() === now.getFullYear()
+        );
+      })
+      .reduce((sum, c) => sum + (Number(c.claim_amount) || 0), 0);
+  }, [claims]);
+
   const recentClaims = useMemo(
     () =>
       [...claims]
@@ -286,6 +302,7 @@ export function FarmDashboard({
         }
         farmType={farmProfile?.farm_type}
         imageUrl={farmProfile?.image_url}
+        savedThisMonth={savedThisMonth}
       />
 
       <Grid container spacing={3} className="farm-dashboard-kpi-grid">

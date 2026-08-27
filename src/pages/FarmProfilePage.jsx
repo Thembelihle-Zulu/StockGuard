@@ -43,6 +43,11 @@ const farmProfileSchema = object({
   city: string().required("City field is required"),
   postalCode: number().required("Postal code is required"),
   farmType: string().required("Farm type selection is required"),
+  idNumber: string().test(
+    "id-number",
+    "Enter a valid 13-digit SA ID number",
+    (val) => !val || /^\d{13}$/.test(val),
+  ),
 });
 
 const VisuallyHiddenInput = styled("input")({
@@ -82,6 +87,9 @@ export function FarmProfilePage() {
       farmType: "",
       city: "",
       imageUrl: "",
+      idNumber: "",
+      bankName: "",
+      bankAccountNumber: "",
     },
     validationSchema: farmProfileSchema,
     onSubmit: async (data) => {
@@ -99,6 +107,9 @@ export function FarmProfilePage() {
             farm_type: data.farmType,
             city: data.city,
             image_url: data.imageUrl || null,
+            id_number: data.idNumber || null,
+            bank_name: data.bankName || null,
+            bank_account_number: data.bankAccountNumber || null,
           }),
         });
 
@@ -131,6 +142,9 @@ export function FarmProfilePage() {
           farmType: profile.farm_type || "",
           city: profile.city || "",
           imageUrl: profile.image_url || "",
+          idNumber: profile.id_number || "",
+          bankName: profile.bank_name || "",
+          bankAccountNumber: profile.bank_account_number || "",
         });
       })
       .catch(console.error)
@@ -340,6 +354,78 @@ export function FarmProfilePage() {
                     {errors.province}
                   </Typography>
                 ) : null}
+              </Box>
+            </Stack>
+
+            <Box sx={{ pt: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  fontWeight: 700,
+                  color: "oklch(0.5 0.02 154.55)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.03em",
+                  mb: 0.5,
+                }}
+              >
+                Identity &amp; Payout Details
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ display: "block", color: "oklch(0.55 0.01 90)", mb: 1.5 }}
+              >
+                Used to verify your identity and pay out approved claims —
+                checked through an external system, not this app.
+              </Typography>
+            </Box>
+
+            <Box>
+              <TextField
+                fullWidth
+                label="ID Number"
+                name="idNumber"
+                variant="outlined"
+                placeholder="13-digit SA ID number"
+                onChange={handleChange}
+                value={values.idNumber}
+                onBlur={handleBlur}
+                type="text"
+                sx={fieldSx}
+              />
+              {touched.idNumber && errors.idNumber ? (
+                <Typography color="error" variant="caption" display="block">
+                  {errors.idNumber}
+                </Typography>
+              ) : null}
+            </Box>
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
+              <Box sx={{ flex: 1 }}>
+                <TextField
+                  label="Bank Name"
+                  name="bankName"
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleChange}
+                  value={values.bankName}
+                  onBlur={handleBlur}
+                  type="text"
+                  sx={fieldSx}
+                />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <TextField
+                  label="Account Number"
+                  name="bankAccountNumber"
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleChange}
+                  value={values.bankAccountNumber}
+                  onBlur={handleBlur}
+                  type="text"
+                  sx={fieldSx}
+                />
               </Box>
             </Stack>
 

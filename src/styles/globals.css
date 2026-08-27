@@ -3,6 +3,9 @@
 *{
   box-sizing: border-box;
 }
+html {
+  scroll-behavior: smooth;
+}
 :root {
   --forest:       #234F32;
   --evergreen:    #2F6B45;

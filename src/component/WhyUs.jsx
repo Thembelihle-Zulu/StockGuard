@@ -31,7 +31,7 @@ export function WhyUs() {
   const [illness, injury, mortality] = COVER_CARDS;
 
   return (
-    <Box component="section" sx={{ py: 3 }}>
+    <Box component="section" id="features" sx={{ py: 3, scrollMarginTop: "90px" }}>
       <Box className="bento-card bento-card--white" sx={{ mb: 1.5, p: { xs: 3, md: 4 } }}>
         <Box
           sx={{

@@ -17,6 +17,9 @@ import "../styles/onboarding.css";
 const inspectionSchema = object({
   status: string().required("status is required"),
   inspectionDate: date().required("Select inspection date"),
+  vetRegistrationNumber: string().required(
+    "Enter the inspecting vet's registration number",
+  ),
   animalTagNameImage: string().required(
     "A valid animalTagNameImage is required",
   ),
@@ -69,6 +72,7 @@ export function AnimalInspection({
   } = useFormik({
     initialValues: {
       status: "pending",
+      vetRegistrationNumber: "",
       animalTagNameImage: "",
       vetenaryHealthReport: "",
       valuationEvidence: "",
@@ -85,6 +89,7 @@ export function AnimalInspection({
           body: JSON.stringify({
             status: data.status,
             inspectionDate: data.inspectionDate,
+            vetRegistrationNumber: data.vetRegistrationNumber,
             animalTagNameImage: data.animalTagNameImage,
             vetenaryHealthReport: data.vetenaryHealthReport,
             valuationEvidence: data.valuationEvidence || null,
@@ -248,6 +253,33 @@ export function AnimalInspection({
               ) : null}
             </Box>
           </LocalizationProvider>
+
+          <Box>
+            <TextField
+              label="Vet Registration Number"
+              name="vetRegistrationNumber"
+              variant="outlined"
+              placeholder="e.g. SAVC registration number"
+              fullWidth
+              onChange={handleChange}
+              value={values.vetRegistrationNumber}
+              onBlur={handleBlur}
+              sx={fieldSx}
+            />
+            <Typography
+              variant="caption"
+              display="block"
+              sx={{ mt: 0.5, color: "oklch(0.55 0.01 90)" }}
+            >
+              The inspecting vet's registration number — we check this
+              against them before approving.
+            </Typography>
+            {touched.vetRegistrationNumber && errors.vetRegistrationNumber ? (
+              <Typography color="error" variant="caption" display="block">
+                {errors.vetRegistrationNumber}
+              </Typography>
+            ) : null}
+          </Box>
 
           <Box>
             <Typography

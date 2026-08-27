@@ -12,6 +12,14 @@
   padding-inline-end: 2rem;
 }
 
+.process-stepper {
+  background-color: oklch(0.99 0.005 90);
+  border: 1px solid oklch(0.91 0.005 90);
+  border-radius: 1rem;
+  padding: 1.25rem 1rem 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .claims-page-header {
   display: flex;
   justify-content: space-between;

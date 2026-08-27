@@ -74,7 +74,7 @@ function TestimonialCard({ testimonial, dark }) {
 
 export function TrustSection() {
   return (
-    <Box component="section" sx={{ py: 1.5 }}>
+    <Box component="section" id="about" sx={{ py: 1.5, scrollMarginTop: "90px" }}>
       <Grid container spacing={1.5}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Box

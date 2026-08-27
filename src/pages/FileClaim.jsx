@@ -75,6 +75,10 @@ export function FileClaim({ handleClose, onSuccess }) {
   const [inspections, setInspections] = useState([]);
   const [animalsError, setAnimalsError] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [policies, setPolicies] = useState([]);
+  const [policiesLoaded, setPoliciesLoaded] = useState(false);
+  const [farmProfile, setFarmProfile] = useState(null);
+  const [farmProfileLoaded, setFarmProfileLoaded] = useState(false);
 
   useEffect(() => {
     apiFetch("onboarding/animal")
@@ -89,7 +93,26 @@ export function FileClaim({ handleClose, onSuccess }) {
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setInspections(Array.isArray(data) ? data : []))
       .catch(console.error);
+
+    apiFetch("onboarding/policy")
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
+      .then((data) => setPolicies(Array.isArray(data) ? data : []))
+      .catch(console.error)
+      .finally(() => setPoliciesLoaded(true));
+
+    apiFetch("onboarding/farm_profile/me")
+      .then((res) => (res.ok ? res.json() : Promise.reject("error")))
+      .then(setFarmProfile)
+      .catch(console.error)
+      .finally(() => setFarmProfileLoaded(true));
   }, []);
+
+  const hasActivePolicy = policies.some((p) => p.status === "Active");
+  const hasIdentityVerification = Boolean(
+    farmProfile?.id_number &&
+      farmProfile?.bank_name &&
+      farmProfile?.bank_account_number,
+  );
 
   const inspectionByAnimalId = {};
   inspections.forEach((inspection) => {
@@ -212,6 +235,73 @@ export function FileClaim({ handleClose, onSuccess }) {
     fontWeight: 600,
     "&:hover": { bgcolor: "oklch(0.97 0.02 154.55)" },
   };
+
+  const renderBlockingNotice = (title, message) => (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        py: { xs: 4, md: 6 },
+        px: 2,
+      }}
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          width: "100%",
+          maxWidth: 560,
+          borderRadius: 4,
+          p: { xs: 3, md: 5 },
+          border: "1px solid oklch(0.9 0.02 154.55)",
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          component="h2"
+          sx={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontSize: "1.5rem",
+            fontWeight: 700,
+            color: "oklch(0.2 0.03 154.55)",
+            mb: 1.5,
+          }}
+        >
+          {title}
+        </Typography>
+        <Typography sx={{ color: "oklch(0.5 0.02 154.55)", mb: 3 }}>
+          {message}
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={handleClose}
+          sx={{
+            textTransform: "none",
+            borderRadius: "2rem",
+            bgcolor: "oklch(0.32 0.1 154.55)",
+            "&:hover": { bgcolor: "oklch(0.27 0.1 154.55)" },
+          }}
+        >
+          Got it
+        </Button>
+      </Paper>
+    </Box>
+  );
+
+  if (policiesLoaded && !hasActivePolicy) {
+    return renderBlockingNotice(
+      "You need an active policy to file a claim",
+      policies.length === 0
+        ? "You don't have a policy yet — set one up from the Policies section."
+        : "Your policy isn't active yet — pay it to activate cover from the Policies section.",
+    );
+  }
+
+  if (farmProfileLoaded && !hasIdentityVerification) {
+    return renderBlockingNotice(
+      "Identity verification required",
+      "Before we can pay out an approved claim, we need your ID number and banking details on file — add them from your Farm Profile.",
+    );
+  }
 
   return (
     <Box

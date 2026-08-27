@@ -1,5 +1,5 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import ShieldIcon from "@mui/icons-material/Shield";
+import logoMark from "../assets/logo-mark.png";
 import "../styles/home.css";
 
 const FOOTER_COLUMNS = [
@@ -14,20 +14,8 @@ export function Footer() {
       <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 3, md: 4 } }}>
         <Grid container spacing={5} sx={{ mb: 4 }}>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-            <Stack direction="row" alignItems="center" spacing={1.2} sx={{ mb: 2 }}>
-              <Box
-                sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "0.5rem",
-                  bgcolor: "rgba(165,214,167,.2)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ShieldIcon sx={{ fontSize: 16, color: "oklch(0.75 0.08 154.55)" }} />
-              </Box>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+              <Box component="img" src={logoMark} alt="StockGuard" sx={{ height: 32, width: "auto" }} />
               <Typography sx={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 700, color: "white" }}>
                 StockGuard
               </Typography>
