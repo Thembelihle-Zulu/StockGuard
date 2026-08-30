@@ -833,7 +833,7 @@
       </div>
       <div class="body">
         <span class="kicker">Deployment &amp; delivery evidence</span>
-        <h2>A reproducible stack now; the cloud pipeline is the next milestone.</h2>
+        <h2>A reproducible stack now; the cloud pipeline built on the training.</h2>
         <div class="cols">
           <div>
             <div class="block__label">In place</div>
@@ -844,19 +844,19 @@
             </ul>
           </div>
           <div>
-            <div class="block__label">In progress &mdash; deliberately sequenced after the app</div>
+            <div class="block__label">In progress</div>
             <ul>
               <li class="warn">Docker &mdash; containerise both services</li>
-              <li class="warn">GitHub Actions &mdash; build + tests on push</li>
+              <li class="warn">GitHub Actions &mdash; build + checks on push</li>
               <li class="warn">Terraform &mdash; the AWS stack as code</li>
               <li class="warn">AWS &mdash; deploy, wire a working URL</li>
             </ul>
           </div>
         </div>
         <p>
-          The application carries 62% of the marks, so I put my time there first. This is a named
-          plan, not an accidental gap: a change on GitHub &rarr; CI build &amp; test &rarr; image &rarr;
-          Terraform‑managed AWS service.
+          The application carries 62% of the marks, so I built it first, then applied the cloud
+          training: Terraform describes the AWS stack once, in code, instead of a manual
+          click‑through &mdash; GitHub change &rarr; CI &rarr; image &rarr; Terraform‑managed AWS service.
         </p>
       </div>
     </div>
@@ -870,38 +870,28 @@
         <div class="rail__time">14:00&ndash;15:00</div>
       </div>
       <div class="body">
-        <span class="kicker">Personal reflection &amp; next goal</span>
+        <span class="kicker">Personal reflection</span>
+        <h2 style="font-size: clamp(1.5rem, 3vw, 2.1rem); margin-bottom: 0.3rem;">
+          What the training changed about how I work.
+        </h2>
         <dl class="reflect">
           <div>
-            <dt>Key learning</dt>
-            <dd>The gap between &ldquo;the feature exists&rdquo; and &ldquo;the feature is usable&rdquo; &mdash; my claim gate was server‑side correct, but a farmer only hit the 403 after filling the whole form.</dd>
+            <dt>Where I started strong</dt>
+            <dd>The backend &mdash; Flask, REST API design, SQL data modelling and auth. This is where I was most comfortable from day one and did my sharpest work.</dd>
           </div>
           <div>
-            <dt>Growth &mdash; concrete</dt>
-            <dd>At the start I could build a form that posts to an API. By the end I designed and enforced a three‑layer authorization chain server‑side, and corrected my own pricing model mid‑build when the numbers didn't add up.</dd>
+            <dt>A shift I didn't expect</dt>
+            <dd>I went in not expecting to enjoy frontend work. React changed that &mdash; thinking in components, and using hooks and state, made building the UI feel structured rather than fiddly.</dd>
           </div>
           <div>
-            <dt>Strength</dt>
-            <dd>Systematic bug‑hunting &mdash; found a silent <code>console.log() &amp;&amp; setState</code> that never set state, and a file‑casing bug that worked on Windows and would break a Linux build.</dd>
+            <dt>The hardest part, and my response</dt>
+            <dd>Deploying to AWS &mdash; the number of services and manual console steps to wire together, and how easy it is to get one wrong. I leaned into Terraform so the whole stack is written once, in code.</dd>
           </div>
           <div>
-            <dt>Development area &amp; action</dt>
-            <dd>Automated testing. This build has none &mdash; every check was manual under deadline pressure. It got me here but it doesn't scale.</dd>
-          </div>
-          <div>
-            <dt>What I'd do differently</dt>
-            <dd>Write tests as each feature lands, not as one verification pass at the end &mdash; most bugs I found had been sitting in the code for a while.</dd>
-          </div>
-          <div>
-            <dt>Next specific goal</dt>
-            <dd>Write my first real test suite, starting with the three‑layer claim‑eligibility logic &mdash; the rule most likely to break silently later.</dd>
+            <dt>Key learning &amp; next goal</dt>
+            <dd>Infrastructure as code: a Terraform config is repeatable and reviewable, not a click‑through I have to redo from memory. Next I want to go deeper on the two areas that surprised me most &mdash; React patterns and Terraform modules.</dd>
           </div>
         </dl>
-        <p class="closing">
-          &ldquo;StockGuard exists because I kept asking &lsquo;how would we actually know that's true?&rsquo; &mdash;
-          the value verification, the claim cap and the pricing model all came from taking that
-          question seriously. Thank you &mdash; happy to take questions.&rdquo;
-        </p>
       </div>
     </div>
   </section>
