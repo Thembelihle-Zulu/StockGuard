@@ -1,0 +1,981 @@
+<title>StockGuard Capstone Deck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+/>
+
+<style>
+  :root {
+    --ground: #f6f4ee;
+    --surface: #fffefb;
+    --ink: #1b2318;
+    --ink-soft: #4a5343;
+    --muted: #8b8676;
+    --rule: #d9d4c6;
+    --green: #3a6b49;
+    --green-bright: #4f8a60;
+    --slate: #26414f;
+    --ochre: #b9662f;
+    --ochre-soft: #f0e6da;
+    --good: #3a6b49;
+    --warn: #b9662f;
+    --shadow: 0 1px 0 rgba(27, 35, 24, 0.04), 0 18px 40px -28px rgba(27, 35, 24, 0.35);
+    --slide-w: 1280px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10130d;
+      --surface: #171b12;
+      --ink: #ece9dd;
+      --ink-soft: #b9b6a5;
+      --muted: #7f7b6b;
+      --rule: #333929;
+      --green: #6ba078;
+      --green-bright: #82b98f;
+      --slate: #8fb4c4;
+      --ochre: #d68a58;
+      --ochre-soft: #2a2114;
+      --good: #6ba078;
+      --warn: #d68a58;
+      --shadow: 0 18px 44px -30px rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #10130d;
+    --surface: #171b12;
+    --ink: #ece9dd;
+    --ink-soft: #b9b6a5;
+    --muted: #7f7b6b;
+    --rule: #333929;
+    --green: #6ba078;
+    --green-bright: #82b98f;
+    --slate: #8fb4c4;
+    --ochre: #d68a58;
+    --ochre-soft: #2a2114;
+    --good: #6ba078;
+    --warn: #d68a58;
+    --shadow: 0 18px 44px -30px rgba(0, 0, 0, 0.8);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck {
+    counter-reset: slide;
+  }
+
+  .slide {
+    counter-increment: slide;
+    position: relative;
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4.5vh 5vw 6vh;
+  }
+
+  .slide__frame {
+    width: min(var(--slide-w), 100%);
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    padding: clamp(1.4rem, 3.4vw, 3.4rem);
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    gap: clamp(1rem, 3vw, 2.6rem);
+    overflow: hidden;
+  }
+
+  .rail {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid var(--rule);
+    padding-right: clamp(0.6rem, 1.6vw, 1.4rem);
+  }
+
+  .rail__num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .rail__num b {
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .rail__eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-soft);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    margin-top: 1.2rem;
+  }
+
+  .rail__time {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.7rem, 1.8vh, 1.4rem);
+    min-width: 0;
+    align-self: center;
+  }
+
+  h1,
+  h2 {
+    font-family: "Zilla Slab", Georgia, serif;
+    font-weight: 600;
+    line-height: 1.06;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+    color: var(--ink);
+  }
+
+  h2 {
+    font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  }
+
+  .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--green);
+  }
+
+  .lede {
+    font-size: clamp(1.05rem, 1.9vw, 1.4rem);
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  p {
+    max-width: 64ch;
+    color: var(--ink-soft);
+  }
+
+  strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(0.8rem, 2vw, 1.6rem);
+  }
+
+  .block__label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  li {
+    position: relative;
+    padding-left: 1.1rem;
+    color: var(--ink-soft);
+    font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 1px;
+  }
+
+  li.out::before {
+    background: var(--muted);
+    box-shadow: none;
+    width: 8px;
+    height: 1px;
+    top: 0.85em;
+  }
+
+  li.warn::before {
+    background: var(--warn);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+    padding: 0.22rem 0.55rem;
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    color: var(--ink-soft);
+  }
+
+  .tag b {
+    color: var(--green);
+  }
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+    align-items: center;
+  }
+
+  .flow span {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(0.72rem, 1.2vw, 0.9rem);
+    padding: 0.32rem 0.6rem;
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink);
+  }
+
+  .flow i {
+    color: var(--muted);
+    font-style: normal;
+  }
+
+  .gate {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    counter-reset: gate;
+  }
+
+  .gate div {
+    counter-increment: gate;
+    position: relative;
+    padding: 0.55rem 0.8rem 0.55rem 2.6rem;
+    background: var(--ochre-soft);
+    border-left: 2px solid var(--ochre);
+    border-radius: 0 4px 4px 0;
+    font-size: clamp(0.9rem, 1.4vw, 1.03rem);
+    color: var(--ink);
+  }
+
+  .gate div::before {
+    content: counter(gate);
+    position: absolute;
+    left: 0.9rem;
+    top: 0.5rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 500;
+    color: var(--ochre);
+  }
+
+  .diagram {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    overflow: hidden;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(0.7rem, 1.15vw, 0.86rem);
+  }
+
+  .diagram figure {
+    flex: 1;
+    padding: 0.7rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    background: var(--surface);
+  }
+
+  .diagram figure + figure {
+    border-left: 1px solid var(--rule);
+  }
+
+  .diagram figcaption {
+    color: var(--muted);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .diagram b {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .diagram .mid {
+    background: var(--ground);
+  }
+
+  .slide--title .slide__frame {
+    grid-template-columns: 1fr;
+    background: linear-gradient(180deg, var(--surface) 60%, var(--ground) 100%);
+  }
+
+  .slide--title .body {
+    gap: 1.1rem;
+    z-index: 1;
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: "IBM Plex Mono", monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  .shield {
+    width: 16px;
+    height: 20px;
+    background: var(--green);
+    clip-path: polygon(50% 0, 100% 22%, 100% 62%, 50% 100%, 0 62%, 0 22%);
+  }
+
+  .hills {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 42%;
+    display: block;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.4rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-top: 0.4rem;
+  }
+
+  .value-statement {
+    font-family: "Zilla Slab", Georgia, serif;
+    font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+    font-weight: 500;
+    color: var(--ink);
+    max-width: 30ch;
+    border-left: 3px solid var(--ochre);
+    padding-left: 1rem;
+  }
+
+  .slide--demo .slide__frame {
+    grid-template-columns: 1fr;
+    background:
+      radial-gradient(120% 90% at 15% 0%, color-mix(in srgb, var(--green) 12%, var(--surface)), var(--surface) 55%);
+  }
+
+  .slide--demo .body {
+    gap: 1.3rem;
+    z-index: 1;
+  }
+
+  .demo-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .blink {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blink {
+      animation: none;
+    }
+  }
+
+  .reflect {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem 1.6rem;
+  }
+
+  .reflect div {
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .reflect dt {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--green);
+    margin-bottom: 0.25rem;
+  }
+
+  .reflect dd {
+    font-size: clamp(0.82rem, 1.25vw, 0.96rem);
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+
+  .closing {
+    font-family: "Zilla Slab", Georgia, serif;
+    font-size: clamp(1rem, 1.7vw, 1.25rem);
+    font-style: italic;
+    color: var(--ink);
+    max-width: 62ch;
+  }
+
+  .hud {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: var(--rule);
+    z-index: 50;
+  }
+
+  .hud__bar {
+    height: 100%;
+    width: 0;
+    background: var(--green);
+    transition: width 0.35s ease;
+  }
+
+  .foot {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--ground) 82%, transparent);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    z-index: 50;
+    backdrop-filter: blur(4px);
+  }
+
+  .hint {
+    position: fixed;
+    left: 14px;
+    bottom: 12px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    z-index: 50;
+    transition: opacity 0.4s ease;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 60;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 0.32rem 0.6rem;
+    cursor: pointer;
+  }
+
+  .theme-toggle:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 720px) {
+    .slide__frame {
+      aspect-ratio: auto;
+      grid-template-columns: 1fr;
+      min-height: 88vh;
+    }
+    .rail {
+      flex-direction: row;
+      align-items: center;
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
+      padding: 0 0 0.7rem;
+      gap: 1rem;
+    }
+    .rail__eyebrow {
+      writing-mode: horizontal-tb;
+      transform: none;
+      margin: 0;
+    }
+    .reflect {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media print {
+    html {
+      scroll-snap-type: none;
+    }
+    body {
+      background: #fff;
+    }
+    .hud,
+    .foot,
+    .hint,
+    .theme-toggle {
+      display: none;
+    }
+    .slide {
+      min-height: auto;
+      padding: 0;
+      page-break-after: always;
+      break-after: page;
+    }
+    .slide__frame {
+      box-shadow: none;
+      border: 1px solid #ccc;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+  }
+</style>
+
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle colour theme">
+  theme
+</button>
+
+<main class="deck">
+  <section class="slide slide--title" id="s1" aria-label="Slide 1: Title">
+    <div class="slide__frame">
+      <div class="body">
+        <div class="wordmark"><span class="shield"></span> StockGuard</div>
+        <h1>Livestock insurance that verifies what it insures.</h1>
+        <p class="value-statement">
+          Self‑service cover for South African farmers &mdash; priced and paid out on a
+          vet‑verified animal value, not a number typed into a form.
+        </p>
+        <div class="meta-row">
+          <span>Thembelihle Zulu</span>
+          <span>Sanlam 2026 &mdash; Individual Capstone</span>
+          <span>React &middot; Flask &middot; SQL&nbsp;Server</span>
+        </div>
+      </div>
+      <svg class="hills" viewBox="0 0 1280 300" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 210 Q 220 140 440 190 T 900 170 T 1280 200 V300 H0 Z" fill="var(--green)" opacity="0.14" />
+        <path d="M0 250 Q 300 190 640 230 T 1280 235 V300 H0 Z" fill="var(--green)" opacity="0.22" />
+        <path d="M0 285 Q 360 255 760 278 T 1280 275 V300 H0 Z" fill="var(--green)" opacity="0.34" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide" id="s2" aria-label="Slide 2: Problem, users and scope">
+    <div class="slide__frame">
+      <div class="rail">
+        <div class="rail__num"><b>02</b> / 08</div>
+        <div class="rail__eyebrow">Problem &amp; scope</div>
+        <div class="rail__time">1:00&ndash;3:00</div>
+      </div>
+      <div class="body">
+        <span class="kicker">The problem</span>
+        <h2>An animal dying is a financial cliff‑edge &mdash; and cover doesn't reach the farmers who need it.</h2>
+        <p>
+          South Africa's foot‑and‑mouth outbreak has hit <strong>210,000+ cattle across 90+ dairy
+          farms</strong> since 2024; beef exports fell 26% and recovery is estimated at up to four
+          years. Existing livestock insurance is priced for large commercial operations and trusts a
+          <strong>self‑reported animal value</strong> &mdash; which drives mispricing and real fraud exposure.
+        </p>
+        <div class="cols">
+          <div>
+            <div class="block__label">Who it's for</div>
+            <ul>
+              <li>Small‑scale farmers &mdash; simple, affordable</li>
+              <li>Commercial farmers &mdash; larger, higher‑value herds</li>
+              <li>Platform admins &mdash; insurer staff who verify</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block__label">Scope</div>
+            <ul>
+              <li>Registration &rarr; verification &rarr; underwriting &rarr; claims</li>
+              <li class="out">Theft cover &mdash; nothing left to inspect</li>
+              <li class="out">Live payment gateway &mdash; mocked by design</li>
+              <li class="out">Multi‑policy accounts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s3" aria-label="Slide 3: Main features and user journey">
+    <div class="slide__frame">
+      <div class="rail">
+        <div class="rail__num"><b>03</b> / 08</div>
+        <div class="rail__eyebrow">Features &amp; journey</div>
+        <div class="rail__time">1:00&ndash;3:00</div>
+      </div>
+      <div class="body">
+        <span class="kicker">The end‑to‑end journey</span>
+        <h2>One continuous flow, from &ldquo;this is my farm&rdquo; to a claim paid out.</h2>
+        <div class="flow">
+          <span>Sign up</span><i>&rarr;</i>
+          <span>Farm profile</span><i>&rarr;</i>
+          <span>Register livestock</span><i>&rarr;</i>
+          <span>Inspection &amp; value check</span><i>&rarr;</i>
+          <span>Policy: Pending &rarr; Active</span><i>&rarr;</i>
+          <span>Claim</span><i>&rarr;</i>
+          <span>Payout</span>
+        </div>
+        <div class="cols">
+          <div>
+            <div class="block__label">Core features</div>
+            <ul>
+              <li>Insurance‑readiness dashboard &mdash; live from real data, not decoration</li>
+              <li>Admin review queue &mdash; inspections, value approval, claims</li>
+              <li>Payment‑gated activation &mdash; no cover until it's paid for</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block__label">Today's live demo</div>
+            <ul>
+              <li>The farmer journey, end to end</li>
+              <li>Across three real seeded accounts at three stages</li>
+              <li>Plus the admin review side</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s4" aria-label="Slide 4: Architecture and data flow">
+    <div class="slide__frame">
+      <div class="rail">
+        <div class="rail__num"><b>04</b> / 08</div>
+        <div class="rail__eyebrow">Architecture</div>
+        <div class="rail__time">3:00&ndash;5:00</div>
+      </div>
+      <div class="body">
+        <span class="kicker">Architecture &amp; the decision that matters most</span>
+        <div class="diagram">
+          <figure>
+            <b>React (Vite)</b>
+            <figcaption>MUI &middot; Formik / Yup</figcaption>
+          </figure>
+          <figure class="mid">
+            <b>Flask REST API</b>
+            <figcaption>blueprint per resource &middot; JWT</figcaption>
+          </figure>
+          <figure>
+            <b>SQL Server</b>
+            <figcaption>SQLAlchemy ORM</figcaption>
+          </figure>
+        </div>
+        <p>
+          <strong>Every protected route derives the farm from the JWT</strong>, never from the
+          request &mdash; a client can't act on another farm by editing a URL or body. Cross‑farm
+          reads return <em>404</em>, not 403, so the API never confirms another farm's records exist.
+        </p>
+        <div>
+          <div class="block__label">A claim pays out only if all three server‑enforced checks pass</div>
+          <div class="gate">
+            <div>The farm's policy status is <strong>Active</strong></div>
+            <div>That specific animal's inspection is <strong>Approved</strong></div>
+            <div>Claim amount &le; the <strong>admin‑approved</strong> insured value</div>
+          </div>
+        </div>
+        <span class="tag">Mocked on purpose: <b>payment</b> &mdash; data model already matches a real gateway</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide slide--demo" id="s5" aria-label="Slide 5: Live demonstration">
+    <div class="slide__frame">
+      <div class="body">
+        <span class="demo-cue"><span class="blink"></span> Live demonstration</span>
+        <h1>The farmer journey, end to end.</h1>
+        <div>
+          <div class="block__label">Watch for</div>
+          <ul>
+            <li>Registering an animal auto‑chains into its inspection &mdash; no separate step to forget</li>
+            <li>The readiness dashboard updates from real API data, live</li>
+            <li>An ineligible animal is blocked in the claim form <strong>and</strong> rejected server‑side if you bypass the UI</li>
+          </ul>
+        </div>
+        <span class="tag">Switching to the running application &mdash; <b>~6 min</b></span>
+      </div>
+      <svg class="hills" viewBox="0 0 1280 300" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 230 Q 260 160 520 200 T 1040 185 T 1280 210 V300 H0 Z" fill="var(--green)" opacity="0.13" />
+        <path d="M0 262 Q 340 205 700 240 T 1280 240 V300 H0 Z" fill="var(--green)" opacity="0.26" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide" id="s6" aria-label="Slide 6: Engineering quality">
+    <div class="slide__frame">
+      <div class="rail">
+        <div class="rail__num"><b>06</b> / 08</div>
+        <div class="rail__eyebrow">Engineering quality</div>
+        <div class="rail__time">11:00&ndash;13:00</div>
+      </div>
+      <div class="body">
+        <span class="kicker">Security, validation, testing &mdash; and one real challenge</span>
+        <div class="cols">
+          <div>
+            <div class="block__label">Security &amp; validation</div>
+            <ul>
+              <li>JWT ownership check on every protected route</li>
+              <li>Passwords hashed (werkzeug); login can't be used to enumerate accounts</li>
+              <li>Yup client‑side, <strong>mirrored</strong> by server checks that don't trust the client &mdash; claim cap, status‑transition rules, ISO‑date parsing with a 400</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block__label">Testing &mdash; manual, and honest about it</div>
+            <ul>
+              <li>Every workflow walked by hand against a seeded database</li>
+              <li>Three demo farms staged at three journey points &mdash; success, empty and failure states all reachable</li>
+              <li class="warn">No automated suite yet &mdash; the claim‑eligibility gate is where I'd start</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="block__label">The challenge I solved</div>
+          <p>
+            The claim gate was already correct server‑side &mdash; but the UI let a farmer fill in the
+            <em>entire</em> claim form before the 403 came back. <strong>Correct isn't the same as
+            usable.</strong> I added a pre‑check that tells the farmer exactly what's missing &mdash;
+            no policy, policy not active, identity not on file &mdash; before the form opens.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s7" aria-label="Slide 7: Deployment and delivery evidence">
+    <div class="slide__frame">
+      <div class="rail">
+        <div class="rail__num"><b>07</b> / 08</div>
+        <div class="rail__eyebrow">Delivery</div>
+        <div class="rail__time">13:00&ndash;14:00</div>
+      </div>
+      <div class="body">
+        <span class="kicker">Deployment &amp; delivery evidence</span>
+        <h2>A reproducible stack now; the cloud pipeline is the next milestone.</h2>
+        <div class="cols">
+          <div>
+            <div class="block__label">In place</div>
+            <ul>
+              <li>Working local stack: React &#8646; Flask &#8646; SQL Server</li>
+              <li>Reproducible database: <code>schema.sql</code> + re‑runnable <code>seed.py</code></li>
+              <li>Two repos, README, API reference, technical summary &mdash; all in‑repo</li>
+            </ul>
+          </div>
+          <div>
+            <div class="block__label">In progress &mdash; deliberately sequenced after the app</div>
+            <ul>
+              <li class="warn">Docker &mdash; containerise both services</li>
+              <li class="warn">GitHub Actions &mdash; build + tests on push</li>
+              <li class="warn">Terraform &mdash; the AWS stack as code</li>
+              <li class="warn">AWS &mdash; deploy, wire a working URL</li>
+            </ul>
+          </div>
+        </div>
+        <p>
+          The application carries 62% of the marks, so I put my time there first. This is a named
+          plan, not an accidental gap: a change on GitHub &rarr; CI build &amp; test &rarr; image &rarr;
+          Terraform‑managed AWS service.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s8" aria-label="Slide 8: Personal reflection">
+    <div class="slide__frame">
+      <div class="rail">
+        <div class="rail__num"><b>08</b> / 08</div>
+        <div class="rail__eyebrow">Reflection</div>
+        <div class="rail__time">14:00&ndash;15:00</div>
+      </div>
+      <div class="body">
+        <span class="kicker">Personal reflection &amp; next goal</span>
+        <dl class="reflect">
+          <div>
+            <dt>Key learning</dt>
+            <dd>The gap between &ldquo;the feature exists&rdquo; and &ldquo;the feature is usable&rdquo; &mdash; my claim gate was server‑side correct, but a farmer only hit the 403 after filling the whole form.</dd>
+          </div>
+          <div>
+            <dt>Growth &mdash; concrete</dt>
+            <dd>At the start I could build a form that posts to an API. By the end I designed and enforced a three‑layer authorization chain server‑side, and corrected my own pricing model mid‑build when the numbers didn't add up.</dd>
+          </div>
+          <div>
+            <dt>Strength</dt>
+            <dd>Systematic bug‑hunting &mdash; found a silent <code>console.log() &amp;&amp; setState</code> that never set state, and a file‑casing bug that worked on Windows and would break a Linux build.</dd>
+          </div>
+          <div>
+            <dt>Development area &amp; action</dt>
+            <dd>Automated testing. This build has none &mdash; every check was manual under deadline pressure. It got me here but it doesn't scale.</dd>
+          </div>
+          <div>
+            <dt>What I'd do differently</dt>
+            <dd>Write tests as each feature lands, not as one verification pass at the end &mdash; most bugs I found had been sitting in the code for a while.</dd>
+          </div>
+          <div>
+            <dt>Next specific goal</dt>
+            <dd>Write my first real test suite, starting with the three‑layer claim‑eligibility logic &mdash; the rule most likely to break silently later.</dd>
+          </div>
+        </dl>
+        <p class="closing">
+          &ldquo;StockGuard exists because I kept asking &lsquo;how would we actually know that's true?&rsquo; &mdash;
+          the value verification, the claim cap and the pricing model all came from taking that
+          question seriously. Thank you &mdash; happy to take questions.&rdquo;
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="hud"><div class="hud__bar" id="bar"></div></div>
+<div class="foot" id="foot">01 / 08</div>
+<div class="hint" id="hint">&larr; &rarr; / space to navigate</div>
+
+<script>
+  (function () {
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const bar = document.getElementById("bar");
+    const foot = document.getElementById("foot");
+    const hint = document.getElementById("hint");
+    let current = 0;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            current = slides.indexOf(e.target);
+            const n = String(current + 1).padStart(2, "0");
+            foot.textContent = n + " / 08";
+            bar.style.width = ((current + 1) / slides.length) * 100 + "%";
+          }
+        });
+      },
+      { threshold: 0.55 },
+    );
+    slides.forEach((s) => io.observe(s));
+
+    function go(dir) {
+      const next = Math.min(slides.length - 1, Math.max(0, current + dir));
+      slides[next].scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    addEventListener("keydown", (e) => {
+      if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+        e.preventDefault();
+        go(1);
+      } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault();
+        go(-1);
+      } else if (e.key === "Home") {
+        slides[0].scrollIntoView();
+      } else if (e.key === "End") {
+        slides[slides.length - 1].scrollIntoView();
+      }
+    });
+
+    setTimeout(() => {
+      hint.style.opacity = "0";
+    }, 4200);
+
+    const root = document.documentElement;
+    const toggle = document.getElementById("themeToggle");
+    const order = [null, "dark", "light"];
+    let ti = 0;
+    try {
+      const saved = localStorage.getItem("sg-theme");
+      if (saved === "dark" || saved === "light") {
+        root.setAttribute("data-theme", saved);
+        ti = order.indexOf(saved);
+      }
+    } catch (_) {}
+    toggle.addEventListener("click", () => {
+      ti = (ti + 1) % order.length;
+      const v = order[ti];
+      if (v) root.setAttribute("data-theme", v);
+      else root.removeAttribute("data-theme");
+      try {
+        v ? localStorage.setItem("sg-theme", v) : localStorage.removeItem("sg-theme");
+      } catch (_) {}
+    });
+  })();
+</script>
