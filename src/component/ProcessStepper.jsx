@@ -3,9 +3,6 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
 
-// Minimal, static process explainer — not tied to any single record's
-// live status, just orients the farmer on what happens after they submit.
-// Reused by ClaimsList.jsx and InspectionsList.jsx with their own steps.
 export function ProcessStepper({ steps }) {
   return (
     <div className="process-stepper">

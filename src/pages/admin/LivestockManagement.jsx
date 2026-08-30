@@ -55,10 +55,6 @@ export function LivestockManagement({ setLivestockCount }) {
     farmById[f.id] = f;
   });
 
-  // livestock_id -> most recent inspection_date. AnimalInspection.livestock_id
-  // is unique today (one inspection per animal), so this is just a direct
-  // lookup in practice — written to take the latest date defensively in
-  // case that constraint is ever relaxed.
   const lastInspectionByAnimal = {};
   inspections.forEach((insp) => {
     const existing = lastInspectionByAnimal[insp.livestock_id];
@@ -67,20 +63,6 @@ export function LivestockManagement({ setLivestockCount }) {
     }
   });
 
-  // Joins each animal with its farm's name/province and its most recent
-  // inspection date before anything downstream (filtering, the table)
-  // sees it — LivestockTable's columns read row.farm_name / row.province /
-  // row.last_inspection_date directly, none of which exist on the raw
-  // Animal record from the backend.
-  //
-  // province is assumed to be the field name on FarmProfile, matching
-  // every other file that's used it (the onboarding provinces list,
-  // FarmProfile.jsx) — unverified against the real
-  // FarmProfile.to_dict() keys, confirm this if provinces don't show.
-  //
-  // farm_owner is left out entirely rather than guessed — nothing
-  // available here gives an owner's name distinct from the farm
-  // itself; LivestockTable already renders that field as optional.
   const joinedAnimals = animals.map((animal) => {
     const farm = farmById[animal.farm_profile_id];
     return {
@@ -91,10 +73,6 @@ export function LivestockManagement({ setLivestockCount }) {
     };
   });
 
-  // Client-side filtering — the whole admin animal list is small
-  // enough to fetch once and filter in memory; see the note in
-  // LivestockFilters.jsx for why this beats server-side filtering at
-  // this scale.
   const filteredAnimals = joinedAnimals.filter((animal) => {
     if (filters.search) {
       const q = filters.search.toLowerCase();

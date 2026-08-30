@@ -37,9 +37,6 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-// Note: farm_profile_id is intentionally NOT sent here — the backend
-// derives it from the JWT-authenticated user (see animal_bp.add_animal),
-// and ignores/ would reject anything the client tries to pass instead.
 export function RegisterAnimal({
   animalType,
   setActiveStep,
@@ -91,12 +88,7 @@ export function RegisterAnimal({
 
         const savedAnimal = await res.json();
 
-        // success actions live here, inside the try block, so a failed
-        // save never closes the modal or advances the step silently
         if (isModal) {
-          // If the caller passed onSaved, it's driving what happens next
-          // (e.g. RegisterAnimalFlow advancing to the inspection step)
-          // instead of the default "just close" behavior.
           if (onSaved) {
             onSaved(savedAnimal);
           } else {

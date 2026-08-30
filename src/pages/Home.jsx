@@ -22,7 +22,6 @@ export function Home() {
       <Navbar />
 
       <Box component="main" sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, md: 4 }, py: 3 }}>
-        {/* ---------- Hero (bento) ---------- */}
         <Box component="section" sx={{ pb: 1.5 }}>
           <Grid container spacing={1.5}>
             <Grid size={{ xs: 12, md: 7 }}>

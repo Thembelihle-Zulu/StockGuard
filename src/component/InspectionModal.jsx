@@ -51,12 +51,6 @@ export function InspectionModal({
   const [evidenceUploaded, setEvidenceUploaded] = useState(false);
   const [evidenceError, setEvidenceError] = useState(null);
 
-  // A denied inspection can be missing exactly the thing that would fix
-  // it — a valuation certificate, an auction receipt, etc. This resends
-  // the inspection through the same resubmission path the full "Submit
-  // Vet Report" form uses (existing fields carried over unchanged, only
-  // the evidence document is new), which resets status to pending
-  // server-side — no new endpoint needed.
   const handleEvidenceUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;

@@ -13,10 +13,6 @@ import { apiFetch } from "../utils/api";
 
 const SEEN_KEY = "stockguard_seen_notifications";
 
-// No backend notification store — these are derived client-side from
-// already-approved claims/inspections. "New" just means "not opened the
-// bell since this became approved yet", tracked as a set of seen ids in
-// localStorage, not a real read/unread flag on the server.
 function loadSeenIds() {
   try {
     return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || "[]"));
@@ -29,8 +25,6 @@ function saveSeenIds(ids) {
   try {
     localStorage.setItem(SEEN_KEY, JSON.stringify([...ids]));
   } catch {
-    // localStorage unavailable (private mode, etc.) — badge just won't
-    // remember what's been seen across reloads, not worth failing over.
   }
 }
 
@@ -59,9 +53,6 @@ export function NotificationBell() {
       .catch(() => {});
   }, [isAdmin]);
 
-  // Farmers get notified when their submissions are decided; admins get
-  // notified about new submissions waiting on them — different status,
-  // same derivation approach.
   const notifications = useMemo(() => {
     const animalById = {};
     animals.forEach((a) => {

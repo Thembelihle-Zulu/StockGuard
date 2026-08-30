@@ -10,10 +10,6 @@ const COLUMNS = [
   { key: "status", label: "Status", sortable: true },
 ];
 
-// Overrides StatusCell's shared claims-oriented defaults — an inspection
-// missing evidence or under value dispute can be fixed and resubmitted,
-// so "Denied" (which reads as final) doesn't fit here the way it does
-// for claims. The underlying status value stays "denied" either way.
 const STATUS_OPTIONS = [
   { value: "pending", label: "Pending" },
   { value: "approved", label: "Approved" },

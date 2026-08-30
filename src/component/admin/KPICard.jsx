@@ -1,10 +1,5 @@
 import { Card, CardContent, Typography, Box } from "@mui/material";
 
-// No trend arrow/chip here on purpose — every caller passed trend="—"
-// since there's no real historical data to compute a trend from, but the
-// TrendingUp/Down icon still rendered next to that dash, which read as a
-// broken chart rather than "no data yet". A colored left border gives
-// each card its own identity instead.
 export function KpiCard({
   icon,
   value,

@@ -27,9 +27,6 @@ function renderCell(row, col) {
   }
 }
 
-// Payments are historical facts, not something an admin edits — no
-// status dropdown, no detail modal, just the list (matches how it was
-// asked for).
 export function PaymentsTable({ rows }) {
   return (
     <GenericDataTable

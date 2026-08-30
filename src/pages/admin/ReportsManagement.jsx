@@ -61,8 +61,6 @@ export function ReportsManagement() {
       .catch(console.error);
   }, []);
 
-  // Same recompute-on-render approach as AdminOverview — small,
-  // admin-side lists fetched once, no useMemo needed.
   const speciesCounts = {};
   animals.forEach((a) => {
     speciesCounts[a.species] = (speciesCounts[a.species] || 0) + 1;
@@ -81,9 +79,6 @@ export function ReportsManagement() {
   );
   const policyCounts = countByStatus(policies, ["Active", "Cancelled", "Expired"]);
 
-  // Real money in vs. real money out — actual payment records, not the
-  // theoretical monthly_premium rate, and only claims actually approved
-  // (i.e. paid) count toward the payout total.
   const totalPremiumsCollected = payments
     .filter((p) => p.status === "completed")
     .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);

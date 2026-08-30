@@ -1,7 +1,3 @@
-// Plain CSV, not a real .xlsx — Excel opens .csv natively (double-click
-// just works), so this covers "export to Excel" without a charting/xlsx
-// library or any backend involvement. Reused by every admin table via
-// GenericDataTable.jsx, rather than each page building its own export.
 function csvCell(value) {
   const str = value == null ? "" : String(value);
   return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;

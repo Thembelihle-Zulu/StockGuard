@@ -13,10 +13,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { apiFetch } from "../utils/api";
 import { AnimalInspection } from "./AnimalInspection";
 
-// Picks any of the farmer's already-registered animals that don't have a
-// submitted vet report yet, then hands off to the exact same form
-// RegisterAnimalFlow uses — closes the gap for animals registered before
-// that flow existed, or where the report step got skipped.
 export function SubmitInspectionFlow({ handleClose, onSuccess }) {
   const [animals, setAnimals] = useState([]);
   const [inspections, setInspections] = useState([]);
@@ -49,9 +45,6 @@ export function SubmitInspectionFlow({ handleClose, onSuccess }) {
     );
   }
 
-  // Pending/approved inspections block resubmission (already exists /
-  // already reviewed) — a denied one doesn't, since resubmitting after a
-  // denial is exactly how a farmer recovers from it.
   const blockedIds = new Set(
     inspections
       .filter((i) => i.status !== "denied")

@@ -14,9 +14,6 @@ import "../styles/auth.css";
 import { useNavigate } from "react-router";
 const API_BASE = "http://127.0.0.1:5000/api";
 
-// Password rule: at least 8 characters, containing at least one letter
-// and one number. Not a spec you gave me — a reasonable common default,
-// called out here specifically so it's easy to find and change.
 const PASSWORD_RULE = /^(?=.*[A-Za-z])(?=.*\d).+$/;
 
 const userSchema = object({
@@ -46,7 +43,6 @@ export function Signup() {
         setSubmitting(true);
         setSubmitError(null);
 
-        // Route matches @users_bp.post("/signup") — not /user.
         fetch(`${API_BASE}/users/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

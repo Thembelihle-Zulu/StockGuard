@@ -7,8 +7,6 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { NavLink, useNavigate } from "react-router";
 import "../styles/auth.css";
-// Matches the User model exactly: email + password, not username.
-// There is no username column on User at all.
 const loginSchema = object({
   email: string().email("Enter a valid email").required("Email is required"),
   password: string().required("Password is required"),
@@ -47,7 +45,6 @@ export function Login() {
             throw new Error(body.error || "Invalid email or password");
           }
 
-          // Success — only now do we store the session and navigate.
           localStorage.setItem("token", body.token);
           localStorage.setItem("role", body.role);
           body.role == "USER" ? navigate("/dashboard") : navigate("/admin");

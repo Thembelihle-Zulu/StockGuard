@@ -1,11 +1,3 @@
-// Single source of truth for the farmer dashboard's insurance-readiness
-// numbers — FarmDashboard.jsx, ReadinessCard, InspectionComplianceCard,
-// ClaimEligibilityCard, and NextActionCard all derive from this one call
-// so the numbers can't drift apart between cards.
-//
-// "approved" is the ONLY real eligible inspection status in this system
-// (AnimalInspection.status is pending/approved/denied, enforced server-side
-// in animal_inspection_bp.py) — there is no "reviewed" status.
 const ELIGIBLE_INSPECTION_STATUS = "approved";
 
 export function computeReadiness({ farmProfile, animals, inspections, policy }) {
@@ -44,10 +36,6 @@ export function computeReadiness({ farmProfile, animals, inspections, policy }) 
   const eligibilityPercent =
     registeredCount > 0 ? Math.round((eligibleCount / registeredCount) * 100) : 0;
 
-  // Readiness score: 5 equally-weighted pillars (20% each). Farm
-  // Profile / Livestock Registered / Policy Active are binary (met or
-  // not); Inspection Coverage and Claim Eligibility are continuous,
-  // taken straight from real registered/inspected/eligible counts.
   const pillars = [
     hasFarmProfile ? 100 : 0,
     hasLivestock ? 100 : 0,

@@ -6,11 +6,6 @@ import "../styles/claims-list.css";
 const STATUS_LABELS = {
   pending: "Pending",
   approved: "Approved",
-  // "Denied" reads as final — an inspection missing evidence or under
-  // value dispute can be fixed and resubmitted, so the label should say
-  // that's expected, not that it's over. The status value itself stays
-  // "denied" (matches the backend/resubmission check), only the display
-  // text changes.
   denied: "Changes Requested",
 };
 

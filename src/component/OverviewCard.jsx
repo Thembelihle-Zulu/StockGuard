@@ -2,10 +2,6 @@ import { DashboardPanel } from "./DashboardPanel";
 import { StatBlockRow } from "./StatBlockRaw";
 import "../styles/farm-dashboard.css";
 
-// Generic "status breakdown + recent items" panel — used for both Claims
-// Overview and Inspections Overview (admin and farmer dashboards). The
-// item status values (pending/approved/denied) match on both entities, so
-// the same .claims-overview-*/.claim-status-* classes work for either.
 export function OverviewCard({
   title,
   subtitle,

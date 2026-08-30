@@ -6,9 +6,6 @@ import "../../styles/admin-management.css";
 const PAYMENTS_URL = "payments/admin/all";
 const FARMS_URL = "onboarding/farm_profile/admin/all";
 
-// Asked for as "just a list" — no KPI row, no filters, no modal, unlike
-// the other management pages. Payments are historical facts, nothing
-// here for an admin to act on.
 export function PaymentsManagement() {
   const [payments, setPayments] = useState([]);
   const [farmProfiles, setFarmProfiles] = useState([]);

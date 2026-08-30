@@ -16,7 +16,6 @@ const steps = [
 ];
 
 export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
-  // const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
 
   const isStepOptional = React.useCallback((step) => {
@@ -44,8 +43,6 @@ export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
 
   const handleSkip = () => {
     if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.");
     }
 
@@ -65,23 +62,19 @@ export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
   const resetButtonRef = React.useRef(null);
   const nextButtonRef = React.useRef(null);
 
-  // Manage focus when the active step changes.
   React.useEffect(() => {
     const previousActiveStep = previousActiveStepRef.current;
     previousActiveStepRef.current = activeStep;
 
     if (activeStep === steps.length) {
-      // If the user has completed all steps and hits "Finish", focus the "Reset" button.
       resetButtonRef.current.focus();
       return;
     }
     if (activeStep === 0 && previousActiveStep === steps.length) {
-      // If the user has completed all steps and hits "Reset", focus the "Next" button.
       nextButtonRef.current.focus();
       return;
     }
     if (isStepOptional(previousActiveStep) && !isStepOptional(activeStep)) {
-      // If the user hits "Skip" and the next step is not optional, focus the "Next" button.
       nextButtonRef.current.focus();
     }
   }, [activeStep, isStepOptional]);
@@ -94,13 +87,13 @@ export function HorizontalLinearStepper({ setActiveStep, activeStep }) {
         activeStep={activeStep}
         sx={{
           "& .MuiStepIcon-root": {
-            color: "oklch(0.9 0.02 154.55)", // upcoming steps
+            color: "oklch(0.9 0.02 154.55)",
           },
           "& .MuiStepIcon-root.Mui-active": {
-            color: "oklch(0.32 0.1 154.55)", // current step
+            color: "oklch(0.32 0.1 154.55)",
           },
           "& .MuiStepIcon-root.Mui-completed": {
-            color: "oklch(0.55 0.15 154.55)", // completed steps
+            color: "oklch(0.55 0.15 154.55)",
           },
           "& .MuiStepLabel-label": {
             fontFamily: '"Inter", "Helvetica Neue", Arial, sans-serif',

@@ -33,9 +33,6 @@ const coverSchema = object({
   coverageTier: string().required("Select a coverage tier"),
 });
 
-// farmProfileId is passed down from Onboarding.js (set after FarmProfile's
-// save). Used only to look up farm_type for the premium calculation via
-// GET /farm_profile/<id>, which enforces its own ownership check server-side.
 export function SelectCover({ setActiveStep, setCover, farmProfileId }) {
   const [farmType, setFarmType] = useState(null);
 
@@ -74,9 +71,6 @@ export function SelectCover({ setActiveStep, setCover, farmProfileId }) {
           tierLabel,
         };
 
-        // No fetch here — there's no dedicated table for a "cover
-        // selection". This just carries the inputs forward; ConfirmPolicy
-        // uses them to create the actual policy record.
         setCover(coverSelection);
         setActiveStep((prev) => prev + 1);
       },

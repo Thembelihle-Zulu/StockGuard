@@ -17,20 +17,12 @@ const STATUS_LABEL = {
   denied: "Rejected",
 };
 
-// A denied inspection can be fixed and resubmitted (missing evidence,
-// disputed value); a denied claim is final — same status value, different
-// real-world meaning, so the display label differs too.
 const INSPECTION_STATUS_LABEL = {
   pending: "Pending",
   approved: "Approved",
   denied: "Changes Requested",
 };
 
-// NOTE: there's no admin/all route for policies yet (unlike animal, farm
-// profile, claim, and inspection, which all already have one) — a policy
-// stat/panel is deliberately left out here rather than guessed. Add
-// GET /onboarding/policy/admin/all on the backend first, then this can
-// gain a "Total Active Policies" figure the same way the others work.
 export function AdminOverview({
   onToggleClaims,
   onToggleLivestock,
@@ -64,9 +56,6 @@ export function AdminOverview({
       .catch(console.error);
   }, []);
 
-  // Plain values recomputed each render — these lists are small
-  // (admin-side, fetched once), so there's no real cost to skipping
-  // useMemo here.
   const animalById = {};
   animals.forEach((a) => {
     animalById[a.id] = a;

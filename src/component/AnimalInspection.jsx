@@ -38,10 +38,6 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-// Note: keys sent to the backend (inspectionDate, animalTagNameImage,
-// vetenaryHealthReport) are intentionally camelCase — that's what
-// animal_inspection_bp.add_animal_inspection actually reads via
-// data.get(...). Only livestock_id is snake_case, matching the model.
 export function AnimalInspection({
   setActiveStep,
   animalId,
@@ -118,10 +114,6 @@ export function AnimalInspection({
     },
   });
 
-  // Was previously just storing file.name as a fake "URL" — never
-  // actually uploaded anything, so tag_photo_url/vet_health_report_url
-  // pointed nowhere. Matches the real upload pattern FileClaim.jsx and
-  // RegisterAnimal.jsx already use.
   const handleFileChange = (fieldName) => async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;

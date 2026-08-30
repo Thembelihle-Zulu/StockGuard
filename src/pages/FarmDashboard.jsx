@@ -35,9 +35,6 @@ const STATUS_LABEL = {
   denied: "Rejected",
 };
 
-// A denied inspection can be fixed and resubmitted (missing evidence,
-// disputed value); a denied claim is final — same status value, different
-// real-world meaning, so the display label differs too.
 const INSPECTION_STATUS_LABEL = {
   pending: "Pending",
   approved: "Approved",
@@ -93,9 +90,6 @@ export function FarmDashboard({
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setClaims(Array.isArray(data) ? data : []))
       .catch(console.error);
-    // refreshKey in the deps: registering an animal, submitting a vet
-    // report, or filing a claim all bump it so the readiness numbers
-    // and KPIs actually reflect the change instead of needing a reload.
   }, [refreshKey]);
 
   const activePolicy =
@@ -134,9 +128,6 @@ export function FarmDashboard({
     }
   };
 
-  // No PDF generation on the backend — this builds a plain-text summary
-  // client-side and downloads it directly. A real download, just not a
-  // real PDF.
   const handleDownloadPolicy = () => {
     if (!activePolicy) return;
 
@@ -191,8 +182,6 @@ export function FarmDashboard({
     return counts;
   }, [claims]);
 
-  // What StockGuard actually paid out this calendar month — the concrete
-  // reminder of the cover's value, not a projected/estimated figure.
   const savedThisMonth = useMemo(() => {
     const now = new Date();
     return claims
@@ -451,8 +440,8 @@ export function FarmDashboard({
           slotProps={{
             paper: {
               sx: {
-                m: 2, // shrink MUI's default 32px paper margin
-                boxShadow: "none", // FileClaim's Paper already has its own border
+                m: 2,
+                boxShadow: "none",
                 bgcolor: "transparent",
               },
             },

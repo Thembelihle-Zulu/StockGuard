@@ -31,9 +31,6 @@ export function InspectionsList() {
   const [inspections, setInspections] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
-  // Bumped after a farmer resubmits value evidence on a denied inspection
-  // (see InspectionModal.jsx) so this list picks up the reset-to-pending
-  // status without needing a full page reload.
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -53,9 +50,6 @@ export function InspectionsList() {
     animalById[a.id] = a;
   });
 
-  // Single-hop join, same shape as the admin page's inspection ->
-  // animal step — just no second hop to farm, since this list is
-  // already scoped to the requester's own farm on the backend.
   const joinedInspections = inspections.map((inspection) => {
     const animal = animalById[inspection.livestock_id];
     return {

@@ -1,7 +1,7 @@
 const API_BASE = "http://127.0.0.1:5000/api/";
 
 function authHeaders() {
-  const token = localStorage.getItem("token"); // set this at login
+  const token = localStorage.getItem("token");
   return {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -27,7 +27,6 @@ export async function uploadFile(file, subfolder) {
   const response = await fetch(UPLOAD_BASE, {
     method: "POST",
     headers: {
-      // no Content-Type here — the browser sets the multipart boundary itself
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: formData,
@@ -39,5 +38,5 @@ export async function uploadFile(file, subfolder) {
   }
 
   const data = await response.json();
-  return data.url; // return just the string, not the whole response object
+  return data.url;
 }

@@ -56,10 +56,6 @@ export function InspectionsManagement() {
     farmById[f.id] = f;
   });
 
-  // Two-hop join, same pattern as ClaimsManagement: inspection ->
-  // animal (via livestock_id) -> farm (via the animal's
-  // farm_profile_id). Inspection itself has no tag_number or farm
-  // reference at all.
   const joinedInspections = inspections.map((inspection) => {
     const animal = animalById[inspection.livestock_id];
     const farm = animal ? farmById[animal.farm_profile_id] : undefined;
@@ -118,10 +114,6 @@ export function InspectionsManagement() {
     (i) => i.status?.toLowerCase() === "denied",
   ).length;
 
-  // Shared by the table's quick status dropdown and the detail modal's
-  // value-review form — both just PATCH a subset of fields and need the
-  // same "update the list, and the open modal if it's showing this row"
-  // follow-up.
   const handleInspectionUpdate = (inspectionId, updates) => {
     apiFetch(`onboarding/inspection/admin/${inspectionId}`, {
       method: "PATCH",

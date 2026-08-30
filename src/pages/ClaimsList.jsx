@@ -128,8 +128,8 @@ export function ClaimsList({ onCountChange }) {
           slotProps={{
             paper: {
               sx: {
-                m: 2, // shrink MUI's default 32px paper margin
-                boxShadow: "none", // FileClaim's Paper already has its own border
+                m: 2,
+                boxShadow: "none",
                 bgcolor: "transparent",
               },
             },

@@ -46,10 +46,6 @@ function StatusChip({ status, label }) {
   );
 }
 
-// Shared dialog shell for any "view details" modal — a hero image up top,
-// a title + status chip, a content area for record-specific fields
-// (passed as children), and a single Close action. Extracted so Claim
-// and Livestock detail modals don't each duplicate this structure.
 export function DetailModal({
   open,
   setOpen,
@@ -140,7 +136,6 @@ export function DetailModal({
   );
 }
 
-// Reusable row + section pieces, so both modals' content stays consistent
 export function DetailRow({ label, value }) {
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>

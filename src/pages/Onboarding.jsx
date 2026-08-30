@@ -24,10 +24,6 @@ export function Onboarding() {
   ];
   const farmTypes = ["Small-scale", "Commercial"];
 
-  // Only IDs (+ cover, which isn't a DB model) live here. Any component
-  // that needs to *display* farm/animal/inspection details fetches by ID
-  // itself via the real GET routes — keeps this file decoupled from every
-  // table's schema, so a backend field rename doesn't ripple through here.
   const [farmProfileId, setFarmProfileId] = useState(null);
   const [firstAnimalId, setFirstAnimalId] = useState(null);
   const [inspectionId, setInspectionId] = useState(null);

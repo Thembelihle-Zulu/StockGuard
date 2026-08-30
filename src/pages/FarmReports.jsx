@@ -13,9 +13,6 @@ import "../styles/claims-list.css";
 import "../styles/farm-dashboard.css";
 
 const CLAIM_STATUS_LABEL = { pending: "Pending", approved: "Approved", denied: "Denied" };
-// A denied inspection can be fixed and resubmitted; a denied claim is
-// final — same status value, different real-world meaning (see
-// InspectionModal.jsx for the full reasoning).
 const INSPECTION_STATUS_LABEL = {
   pending: "Pending",
   approved: "Approved",
@@ -83,9 +80,6 @@ export function FarmReports() {
     return counts;
   }, [inspections]);
 
-  // Real money paid in vs. real money received back — same approach as
-  // the admin Reports page: actual payment/claim records, not projected
-  // figures.
   const totalPremiumsPaid = useMemo(
     () =>
       payments

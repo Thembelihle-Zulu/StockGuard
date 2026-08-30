@@ -42,8 +42,6 @@ export function PaymentsList() {
         p.policy_number === updated.policy_number ? updated : p,
       ),
     );
-    // The new payment record isn't in this list yet — a full refetch is
-    // the simplest way to pick it up rather than guessing its shape here.
     apiFetch("payments")
       .then((res) => (res.ok ? res.json() : Promise.reject("error")))
       .then((data) => setPayments(Array.isArray(data) ? data : []))

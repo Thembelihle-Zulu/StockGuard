@@ -18,10 +18,6 @@ function maskAccountNumber(accountNumber) {
   return `•••• •••• ${last4}`;
 }
 
-// Self-contained: saves just bank_name/bank_account_number via its own
-// PUT (the same /onboarding/farm_profile/me route the main profile form
-// uses, just a partial update), so changing banking details doesn't
-// require resubmitting the whole farm profile form.
 export function BankDetailsCard({ bankName, bankAccountNumber, onSaved }) {
   const [open, setOpen] = useState(false);
   const [nameInput, setNameInput] = useState(bankName || "");

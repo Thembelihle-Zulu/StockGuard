@@ -1,10 +1,5 @@
 import "../styles/farm-dashboard.css";
 
-// Cycled through by row position — the same color drives both the icon
-// badge and the progress bar, so each species reads as one consistent
-// unit rather than two unrelated color choices. Swap this to a
-// name-keyed lookup if you want a fixed color per species regardless
-// of sort order.
 const BAR_COLORS = [
   "var(--forest)",
   "var(--evergreen)",

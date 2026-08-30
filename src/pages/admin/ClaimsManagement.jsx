@@ -48,10 +48,6 @@ export function ClaimsManagement() {
       .catch(console.error);
   }, []);
 
-  // Plain lookup objects, rebuilt on every render. animals/farmProfiles
-  // are small admin-side lists, so recomputing these each time React
-  // re-renders this component costs nothing noticeable — no need for
-  // useMemo here.
   const animalById = {};
   animals.forEach((a) => {
     animalById[a.id] = a;
@@ -62,11 +58,6 @@ export function ClaimsManagement() {
     farmById[f.id] = f;
   });
 
-  // Two-hop join: claim -> animal (via livestock_id) -> farm (via the
-  // animal's farm_profile_id). Claim itself has no farm reference at
-  // all, so this is required before farm_name/farm_id can be used for
-  // display or filtering. If animals/farmProfiles haven't loaded yet,
-  // farm_name simply comes back undefined for that row until they do.
   const joinedClaims = claims.map((claim) => {
     const animal = animalById[claim.livestock_id];
     const farm = animal ? farmById[animal.farm_profile_id] : undefined;

@@ -59,13 +59,6 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-// Animals come from GET /animal (get_all_animals), already scoped
-// server-side to the authenticated user's own farm via JWT. No
-// farm_profile_id is sent or needed here — the backend derives it.
-// Only an "approved" inspection makes an animal claim eligible — see
-// claims_bp.create_claim's matching server-side check. Enforced here too
-// so the picker guides the farmer instead of letting them submit and
-// get rejected.
 const ELIGIBLE_INSPECTION_STATUS = "approved";
 
 export function FileClaim({ handleClose, onSuccess }) {
@@ -178,8 +171,6 @@ export function FileClaim({ handleClose, onSuccess }) {
 
         await res.json();
 
-        // success actions only run here, once the save is confirmed —
-        // not in `finally`, which runs on failure too
         onSuccess && onSuccess();
         handleClose();
       } catch (err) {
@@ -187,8 +178,6 @@ export function FileClaim({ handleClose, onSuccess }) {
         setSubmitError(
           err.message || "Something went wrong. Please try again.",
         );
-        // no handleClose()/onSuccess() here on purpose — the farmer needs
-        // to see submitError and stays on the form to retry
       } finally {
         setSubmitting(false);
       }
@@ -206,7 +195,7 @@ export function FileClaim({ handleClose, onSuccess }) {
     setUploading(true);
     try {
       const url = await uploadFile(file, subfolder);
-      setFieldValue(fieldName, url); // real saved path, not just file.name
+      setFieldValue(fieldName, url);
     } catch (err) {
       console.error(err);
       setSubmitError(err.message || "Upload failed. Please try again.");

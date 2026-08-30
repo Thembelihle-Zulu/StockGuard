@@ -13,11 +13,6 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import { apiFetch } from "../utils/api";
 import "../styles/onboarding.css";
-// farmProfileId / firstAnimalId / inspectionId are IDs only — this
-// component fetches its own display data via the real GET routes, each
-// of which enforces ownership server-side. The POST to /policy sends
-// only pricing fields; farm_profile_id is derived from the JWT on the
-// backend and would be ignored/rejected if sent from here.
 export function ConfirmPolicy({
   setActiveStep,
   farmProfileId,
@@ -70,11 +65,7 @@ export function ConfirmPolicy({
     try {
       const policyPayload = {
         policy_number: `POL-${Date.now()}`,
-        product_id: 1, // Livestock Health Cover product id
-        // Policies always start Pending — the backend ignores any status
-        // sent here anyway (see policy_bp.create_policy), this is just
-        // for clarity. Coverage activates once all declared animals are
-        // registered (PoliciesList.jsx's Activate Policy action).
+        product_id: 1,
         status: "Pending",
         monthly_premium: monthlyPremium,
         animal_count_at_pricing: cover?.declaredAnimalCount ?? 1,

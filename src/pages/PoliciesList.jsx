@@ -37,9 +37,6 @@ export function PoliciesList() {
       .catch(console.error);
   }, []);
 
-  // Same "pick the active one, else fall back to whatever's there"
-  // selection FarmDashboard.jsx uses — there's only ever one policy
-  // per farm profile, this just tolerates a non-Active one existing.
   const policy =
     policies.find((p) => p.status?.toLowerCase() === "active") || policies[0];
 
